@@ -79,6 +79,86 @@ st.markdown(
     f"villages."
 )
 
+
+# ===================================================================== HERO
+# The headline number, then the map that is the headline number. Everything
+# else on this page is supporting material and sits below the divider.
+
+def zone_id_of(feature: dict) -> str:
+    return str(feature["properties"].get("NAME", "")).lower().replace(" ", "_")
+
+
+#: Union of silent zones across every evaluated clause -- the same set that
+#: produces the published population figure. Not a new computation.
+SILENT: set[str] = set()
+for _c in res["clauses"]:
+    SILENT |= set(_c.get("silent_zones") or [])
+
+exposed = summary.get("population_exposed")
+total_pop = summary.get("population_total")
+
+if exposed:
+    st.markdown(
+        f"<div style='text-align:center;padding:0.6rem 0 0 0'>"
+        f"<div style='font-size:4.2rem;line-height:1;font-weight:700;"
+        f"color:#b2182b'>{exposed:,}</div>"
+        f"<div style='font-size:1.15rem;margin-top:0.5rem'>people — "
+        f"<b>{exposed/total_pop:.0%} of Phoenix</b> — live in the "
+        f"<b>{len(SILENT)} of {len(res['zones'])}</b> urban villages that met the "
+        f"City's own overnight-heat benchmark<br>on days the citywide reading "
+        f"never fired.</div></div>",
+        unsafe_allow_html=True)
+st.caption(
+    f"<div style='text-align:center'>Study window "
+    f"{summary['window'][0]} to {summary['window'][1]}. The comparator is a "
+    f"<b>proxy</b> for station-based sensing, not a station feed — and a "
+    f"best-case one, so this is a lower bound.</div>",
+    unsafe_allow_html=True)
+
+hero = folium.Map(location=[33.55, -112.09], zoom_start=9,
+                  tiles="cartodbpositron")
+for ft in geo["features"]:
+    zid = zone_id_of(ft)
+    if zid not in {z["zone_id"] for z in res["zones"]}:
+        continue
+    silent = zid in SILENT
+    nm = next((z["name"] for z in res["zones"] if z["zone_id"] == zid), zid)
+    p = pop.get(zid, {}).get("population")
+    folium.GeoJson(
+        ft,
+        style_function=lambda _f, s=silent: {
+            "fillColor": "#c1121f" if s else "#dfe6ec",
+            "color": "#7f0000" if s else "#9aa5b1",
+            "weight": 2.5 if s else 1,
+            "fillOpacity": 0.80 if s else 0.30,
+        },
+        tooltip=folium.Tooltip(
+            f"<b>{nm}</b><br>"
+            + ("<span style='color:#c1121f'><b>SILENT ZONE</b></span><br>"
+               "met the benchmark on days the citywide reading did not"
+               if silent else "not silent in this window")
+            + (f"<br>{p:,} people" if p else "")),
+    ).add_to(hero)
+
+folium.Marker(
+    [33.4342, -112.0116],  # Sky Harbor: the station the plan is triggered from
+    tooltip=("<b>Phoenix Sky Harbor</b><br>One station. One reading for "
+             "1,053 square miles."),
+    icon=folium.Icon(color="darkblue", icon="plane", prefix="fa"),
+).add_to(hero)
+
+st_folium(hero, height=560, use_container_width=True, returned_objects=[],
+          key="hero_map")
+st.markdown(
+    "<span style='background:#c1121f;color:#fff;padding:2px 8px;"
+    "border-radius:3px'><b>Silent zone</b></span> &nbsp; met the City's own "
+    "benchmark on days the citywide reading never fired &nbsp;·&nbsp; "
+    "<span style='background:#dfe6ec;padding:2px 8px;border-radius:3px'>"
+    "not silent</span> &nbsp;·&nbsp; ✈ the one station the plan reads",
+    unsafe_allow_html=True)
+
+st.divider()
+
 c1, c2, c3, c4, c5 = st.columns(5)
 if summary.get("population_exposed"):
     c1.metric("People in silent zones",
@@ -100,6 +180,10 @@ st.caption(f"Study window {summary['window'][0]} to {summary['window'][1]}. "
 
 
 # ------------------------------------------------------------------- missions
+
+st.subheader("Explore the result")
+st.caption("Pick a mission and a clause in the sidebar. The map below is "
+           "per-clause and per-day; the hero map above is the whole window.")
 
 MISSIONS = {
     "1. Who did the plan miss last night?":
@@ -289,10 +373,6 @@ fired = {z["zone_id"]: z["fired"] for z in det["zones"]}
 names = {z["zone_id"]: z["name"] for z in det["zones"]}
 
 
-def zone_id_of(feature: dict) -> str:
-    return str(feature["properties"].get("NAME", "")).lower().replace(" ", "_")
-
-
 m = folium.Map(location=[33.55, -112.09], zoom_start=9, tiles="cartodbpositron")
 
 for ft in geo["features"]:
@@ -335,7 +415,8 @@ folium.Marker(
 
 mc1, mc2 = st.columns([3, 1])
 with mc1:
-    st_folium(m, height=520, use_container_width=True, returned_objects=[])  # st_folium keeps this kwarg
+    st_folium(m, height=520, use_container_width=True, returned_objects=[],
+              key="explorer_map")
 with mc2:
     st.markdown(
         f"**Citywide proxy**  \n### {pv:.1f} {unit}  \n"
@@ -350,6 +431,106 @@ with mc2:
         st.markdown(f"**People in them**  \n### {exp:,}")
     st.caption("Red = condition met. Heavy black outline = silent zone: met the "
                "condition on a day the citywide number did not.")
+
+
+# ======================================================= SECONDARY RESULTS
+# Below the fold on purpose. The headline is the coverage failure above.
+
+st.divider()
+st.subheader("Secondary results")
+
+tab_over, tab_rec, tab_retract = st.tabs(
+    ["Over-trigger: the targeting failure",
+     "Recovery: a different rule",
+     "What we retracted"])
+
+with tab_over:
+    st.markdown(
+        f"The same rules, measured on **all 272,917 tiles before any "
+        f"aggregation** — fifteen zone averages say nothing about whether the "
+        f"underlying field had structure. A clause is **actionable** only if it "
+        f"fires on between 5% and 95% of tiles: an emergency manager can send "
+        f"crews neither to the whole city nor to nowhere.")
+    n = summary.get("clause_days")
+    act = summary.get("actionable_clause_days")
+    if n:
+        o1, o2, o3 = st.columns(3)
+        o1.metric("Actionable", f"{act} of {n}", f"{act/n:.0%}")
+        o2.metric("Over-triggered", summary.get("over_triggered_clause_days"),
+                  "fired on >95% of tiles", delta_color="off")
+        o3.metric("Under-triggered", summary.get("under_triggered_clause_days"),
+                  "fired on <5% of tiles", delta_color="off")
+        st.info(f"On **{n - act} of {n} clause-days ({(n-act)/n:.0%})** the plan "
+                f"gave no basis for choosing where to send anyone.")
+
+    sat = res.get("saturation") or []
+    if sat:
+        rows = []
+        for scl in sat:
+            for d in scl.get("per_day", []):
+                rows.append({
+                    "clause": scl["clause_id"],
+                    "day": d["day"],
+                    "severity °F": (round(d["severity_c"] * 9 / 5 + 32, 1)
+                                    if d.get("severity_c") is not None else None),
+                    "saturation": round(d["saturation_index"], 3),
+                    "verdict": d["failure_mode"],
+                })
+        st.dataframe(pd.DataFrame(rows), hide_index=True, height=300)
+        st.caption(
+            "Saturation is the share of tiles where the clause fires. For the "
+            "two clauses measured through `exceedance` it is approximate to "
+            "about a percentage point, because that field is smoothed rather "
+            "than counted. The verdicts are unaffected — they sit far from the "
+            "5% and 95% boundaries.")
+
+with tab_rec:
+    st.markdown(
+        "Replacing a fixed threshold with the **90th percentile of that day's "
+        "own distribution** restores a rankable ordering in both failure "
+        "directions — the benchmarks that over-fire and the one that never "
+        "fires alike.")
+    recs = [r for r in (res.get("recovery") or []) if r.get("percentile")]
+    if recs:
+        st.dataframe(pd.DataFrame([{
+            "clause": r["fixed"]["clause_id"],
+            "day": r["fixed"]["day"],
+            "as written °F": r["fixed"]["threshold_f"],
+            "saturation": round(r["fixed"]["saturation_index"], 3),
+            "p90 °F": r["percentile"]["threshold_f"],
+            "saturation (p90)": round(r["percentile"]["saturation_index"], 3),
+            "villages recovered": r["zones_recovered"],
+        } for r in recs]), hide_index=True)
+    st.warning(
+        "**A same-day percentile is post hoc.** Today's 90th percentile is not "
+        "knowable before today ends, so this demonstrates that the signal "
+        "survives in the data — not that a city could adopt this rule as "
+        "written. A deployable version would fit the percentile on historical "
+        "climatology, which this project has not done.")
+
+with tab_retract:
+    st.markdown(
+        "**We withdrew a result.** We measured, and then retracted, a finding "
+        "that adding a duration requirement to Action 1.1's existing 105 °F "
+        "threshold would restore targeting value.")
+    st.error(
+        "**FortyGuard exposes no trustworthy duration analytic at city scale.** "
+        "`exceedance` returns a *total* of qualifying hours where a dwell "
+        "clause describes a *continuous spell* — wrong analytic for the "
+        "question. `persistence` is the right one, but citywide it returns runs "
+        "of 25.92 h inside a single day, 3,110 negative runs, and up to 39,329 "
+        "tiles whose longest run exceeds that tile's own total. It is also "
+        "93.9% identical to `exceedance` at that threshold, so it is not an "
+        "independent measurement. `tcm` carries no time information at all.")
+    st.markdown(
+        "We publish it as a **negative finding** rather than deleting it: a "
+        "dwell requirement is the most natural fix for a saturating threshold, "
+        "so it is the first thing a reader will propose and worth knowing it "
+        "cannot be evaluated here. The failing harness is `sweep_dwell.py`, "
+        "which exits non-zero, and `verify_all.py` asserts that it *continues* "
+        "to fail — so the retraction cannot quietly go stale.")
+    st.caption("Full methodology: docs/api_findings.md §8. "
+               "All three corrections: README → \"What we got wrong\".")
 
 st.divider()
 st.caption(
