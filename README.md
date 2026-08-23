@@ -175,7 +175,9 @@ Phoenix 2026 Heat Response Plan (PDF, 23 pages)
         │         src/aggregate.py  area-weighted tiles -> 15 urban villages
    [C] DIVERGE    src/diverge.py    lead time | silent zones | false-calm days
         │
-   [D] BRIEF      app.py            map, clause table, click-through to source page
+   [D] BRIEF      src/brief.py      ranked actions; every number in generated
+        │                           prose verified against computed facts
+                  app.py            map, clause table, click-through to source page
 ```
 
 **The language model decides nothing.** It extracts structure from the PDF and
@@ -290,6 +292,7 @@ difference.
 | API findings reproduce from cache | `python verify_api.py` | offline, no key |
 | The plan's 10 °F claim | `python test_claim.py` | holds, conservative |
 | Compiler vs golden set | `python eval_compiler.py` | **P 1.000 / R 0.926 / F1 0.962** |
+| Generated prose cannot invent a number | `python test_brief_guard.py` | rejection path demonstrated |
 
 ### Event selection
 
@@ -340,12 +343,16 @@ peak temperature is ranking noise.
 ```bash
 pip install -r requirements.txt
 
-python run_analysis.py     # the headline number, offline, ~1 minute
-python verify_api.py       # every API claim we make, offline
-python test_aggregate.py   # aggregation correctness
-python test_claim.py       # the plan's 10 F claim vs measurement
-python build_golden.py     # re-verify all 29 quotes against the PDF
-streamlit run app.py       # map, clause table, provenance
+python run_analysis.py       # the headline number, offline, ~1 minute
+python verify_api.py         # every API claim we make, offline
+python test_aggregate.py     # aggregation correctness (vs brute force)
+python test_claim.py         # the plan's 10 F claim vs measurement
+python test_brief_guard.py   # prove generated prose cannot invent a number
+python eval_compiler.py      # compiler precision / recall / F1
+python build_golden.py       # re-verify all 29 quotes against the PDF
+python make_report.py        # regenerate the standalone research report
+python make_brief.py         # regenerate the ranked action brief
+streamlit run app.py         # map, clause table, provenance
 ```
 
 No API key is needed for any of these. To re-fetch from the API instead, set
@@ -371,7 +378,10 @@ data/
   cache/         committed API responses — the demo runs offline
   results/       divergence.json
 docs/
-  api_findings.md   everything we measured about the API
+  trigger_divergence_report.md   the standalone research result
+  action_brief.md                ranked actions, each citing clause/page/owner
+  api_findings.md                everything we measured about the API
+  SUBMISSION.md                  deployment, checklist, video script
 ```
 
 ### Timezone

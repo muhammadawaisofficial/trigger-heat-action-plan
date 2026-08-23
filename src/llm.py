@@ -25,19 +25,24 @@ from dataclasses import dataclass
 DEFAULT_PROVIDER = os.getenv("TRIGGER_LLM_PROVIDER", "gemini")
 
 DEFAULT_MODELS = {
-    "gemini": "gemini-3.1-pro-preview",
+    # Flash tier by default. AI Studio's free tier covers the flash models;
+    # the pro-preview models return 429 RESOURCE_EXHAUSTED without billing, so
+    # they are deliberately not the default. This project never requires a paid
+    # tier -- the published compiler score was produced on the free tier.
+    "gemini": "gemini-3.5-flash",
     "anthropic": "claude-opus-5",
     "ollama": "llama3.1:8b",
 }
 
-#: Tried in order if the primary Gemini model is unavailable or rate-limited on
-#: the free tier. Ordered strongest-first.
+#: Tried in order when the chosen model is unavailable or rate-limited.
+#: Free-tier models only -- no pro/preview tier appears here, so a account
+#: without billing degrades to a smaller model rather than failing or billing.
 GEMINI_FALLBACKS = [
-    "gemini-3.1-pro-preview",
-    "gemini-2.5-pro",
-    "gemini-3.7-flash",
     "gemini-3.5-flash",
+    "gemini-3.7-flash",
     "gemini-2.5-flash",
+    "gemini-3.6-flash",
+    "gemini-2.5-flash-lite",
 ]
 
 
