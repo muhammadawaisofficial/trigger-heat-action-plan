@@ -76,6 +76,30 @@ Same AOI, single day 2025-07-15, `filter_type=3`:
 Under `filter_type=3`, `persistence` tracks `exceedance` and behaves exactly as
 documented.
 
+### Reproduced in three consecutive Julys
+
+`python verify_years.py` repeats the whole probe on 8-14 July of 2025, 2024 and
+2023. `filter_type=4` returns exactly **8.0 hours, zero variance, all 420
+tiles, in every year**.
+
+The cleanest way to state the defect needs no reference temperature at all. For
+the week of 8-14 July 2025 it reports a longest unbroken run of **8.0 hours**;
+for 15 July 2025, a single day *inside* a comparable window, it reports
+**16.0 hours**. A longest run measured over a superset window cannot be shorter
+than one measured inside it. The value is not merely wrong, it is inconsistent
+with itself.
+
+At `filter_type=3` the same analytic holds up under the same cross-check —
+total hours above threshold is never less than the longest unbroken run, and in
+two of the three years the two are *identical*, meaning every qualifying hour
+was contiguous:
+
+| Day | `exceedance` | `persistence` | |
+|---|---|---|---|
+| 2025-07-15 | 16.86–18.21 h | 16.00 h | consistent |
+| 2024-07-15 | 13.78–15.17 h | 13.78–15.17 h | identical — one unbroken run |
+| 2023-07-15 | 24.00 h | 24.00 h | identical — the whole day qualified |
+
 **Consequence for TRIGGER.** Duration clauses are never driven from
 `persistence` under `filter_type=4`. TRIGGER evaluates day by day with
 `filter_type=3` — which it needs to do regardless, because a single 7-day
@@ -207,12 +231,51 @@ agreement to 7.8 × 10⁻¹⁴ (`python test_aggregate.py`).
 
 ---
 
+---
+
+## 8. A fixed threshold can be blind, and it goes blind exactly when it matters
+
+This one is not a defect. It is a property of thresholds, and it is the sharpest
+argument in the project for why heat plans should not be written the way they are.
+
+Same 420 tiles, same day, same analytic. Only the threshold moves:
+
+| Threshold | `exceedance` result | Distinct values across 420 tiles |
+|---|---|---|
+| 20 °C (68 °F) | 24.00 h everywhere | **1** |
+| 35 °C (95 °F) | 16.86–18.21 h | **394** |
+| 40 °C (104 °F) | 2.00 h everywhere | **1** |
+
+That day ran 32.7–40.3 °C (91–105 °F). A threshold below the whole range is
+cleared by every tile for all 24 hours; a threshold at the very top is cleared
+by every tile for the same 2 hours. Only a threshold *inside* the distribution
+can separate one neighbourhood from another. Perfect data at 100 m resolution
+buys nothing if the rule reading it sits outside the range.
+
+### And the same threshold loses resolution in an extreme year
+
+The 95 °F threshold that resolves 394 distinct values on 2025-07-15 returns a
+flat 24.00 h on **2023-07-15** — in that record July the entire day sat above
+95 °F across every tile. Both analytics agree on it, so this is the real
+measurement, not an artefact.
+
+The consequence is uncomfortable for a heat plan: a fixed numeric trigger has
+the *least* discriminating power in precisely the conditions that make it most
+consequential. During a record heatwave, a 95 °F rule says only "everywhere,
+all day" — which is the same thing as saying nothing about where to send help
+first. Distribution-relative thresholds (a percentile of the local climatology)
+would not degrade this way. TRIGGER reports this rather than fixing it: rewriting
+the City's thresholds is a policy act, not an engineering one.
+
+---
+
 ## Summary of consequences for the pipeline
 
 | Finding | Design consequence |
 |---|---|
 | `tcm` is °C | One conversion, in `schema.f_to_c`, nowhere else |
-| `persistence` saturates at `filter_type=4` | Evaluate day by day with `filter_type=3` |
+| `persistence` saturates at `filter_type=4` (3 of 3 Julys) | Evaluate day by day with `filter_type=3` |
+| A threshold outside the day's range resolves nothing | Report it; choosing thresholds is the City's call, not ours |
 | Per-day evaluation needed for lead time | A week-long aggregate cannot answer "when" |
 | 1,053 mi² in one call | One call per (day, threshold), not one per village |
 | Flat credit cost | No incentive to shrink requests |

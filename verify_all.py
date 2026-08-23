@@ -28,6 +28,7 @@ STRIP = ("FORTYGUARD_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY",
 CHECKS = [
     ("build_golden.py", "every clause quote appears verbatim on its cited page"),
     ("verify_api.py", "measured FortyGuard API behaviour"),
+    ("verify_years.py", "the same probe across three Julys (2025/2024/2023)"),
     ("test_aggregate.py", "tile-to-zone aggregation vs brute force"),
     ("test_claim.py", "the plan's own 10 degF spatial claim"),
     ("test_brief_guard.py", "generated prose cannot state an uncomputed number"),
