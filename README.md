@@ -25,7 +25,8 @@ Reproduce it in one command, offline, with no API key:
 
 ```bash
 pip install -r requirements.txt
-python run_analysis.py
+python run_analysis.py     # the headline number
+python verify_all.py       # or: run every check and assert the headline
 ```
 
 ---
@@ -343,7 +344,8 @@ peak temperature is ranking noise.
 ```bash
 pip install -r requirements.txt
 
-python run_analysis.py       # the headline number, offline, ~1 minute
+python verify_all.py         # runs everything below and asserts the headline
+python run_analysis.py       # the headline number, offline
 python verify_api.py         # every API claim we make, offline
 python test_aggregate.py     # aggregation correctness (vs brute force)
 python test_claim.py         # the plan's 10 F claim vs measurement
