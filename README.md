@@ -1,32 +1,33 @@
 # TRIGGER — the Heat Action Plan Compiler
 
-**Phoenix's Heat Response Plan is a legal instrument with named officers, named
+> ## 1,184,971 people
+>
+> **72% of Phoenix live in urban villages that met the City's own overnight-heat
+> benchmark on days the citywide reading never fired.**
+>
+> On **8 August 2025** the citywide average overnight low read **89.9 °F** — one
+> tenth of a degree below Phoenix's own 90 °F benchmark. Nothing fired. **Ten of
+> fifteen urban villages were above it**, the hottest by 3.9 °F.
+>
+> Across the seven-day window: **20 zone-days of silent exposure** on **3 of 7
+> days**, with a **median lead of 4 days** between a village meeting the
+> condition and the citywide number doing so.
+>
+> Re-run on **live 2026 data a year later**: the same pattern — 9 villages,
+> 958,205 people, 3 of 7 days.
+
+Phoenix's Heat Response Plan is a legal instrument with named officers, named
 actions and numeric temperature thresholds. It is executed against one reading
 from one airport. We compiled the plan into executable rules, re-ran every
 clause against FortyGuard's 2-metre data across all 15 urban villages, and
-measured what that single reading misses.**
-
-> ### The number
->
-> **1,184,971 people — 72% of Phoenix — live in urban villages that met the
-> City's own overnight-heat benchmark on days the citywide reading never
-> fired.**
->
-> On **8 August 2025** the citywide average overnight low read **89.9 °F** —
-> one tenth of a degree below the City's own 90 °F benchmark. Nothing fired.
-> **Ten of Phoenix's fifteen urban villages were above it**, the hottest by
-> **3.9 °F**.
->
-> Across the seven-day window: **20 zone-days of silent exposure** on **3 of 7
-> days**, with a **median lead of 4 days** between when a village first met the
-> condition and when the citywide number did.
+measured what that single reading misses.
 
 Reproduce it in one command, offline, with no API key:
 
 ```bash
 pip install -r requirements.txt
-python run_analysis.py     # the headline number
-python verify_all.py       # or: run every check and assert the headline
+python run_demo.py         # the headline, in seconds
+python verify_all.py       # re-derive everything and assert it
 ```
 
 ---

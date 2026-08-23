@@ -53,14 +53,14 @@ comment it out of `requirements.txt` for the deployment and the app still runs.
 | Public repository | push required | GitHub |
 | Live demo, no key needed | deploy required | Streamlit Cloud |
 | README against the four criteria | ✅ | `README.md` |
-| Headline number reproducible offline in one command | ✅ | `python run_analysis.py` |
+| Headline number reproducible offline in one command | ✅ | `python run_demo.py` |
 | Compiler accuracy measured, not asserted | ✅ | `python eval_compiler.py` — F1 0.962 |
 | Standalone research report | ✅ | `docs/trigger_divergence_report.md` |
 | Action brief with clause/page/owner citations | ✅ | `docs/action_brief.md` |
 | Measured API findings | ✅ | `docs/api_findings.md` |
 | Baseline labelled a proxy everywhere | ✅ | code, README, report, UI |
 | Limitations written honestly | ✅ | README §5, report §5 |
-| Video under three minutes | to record | see §3 |
+| Video under three minutes | to record | `VIDEO_SCRIPT.md` |
 
 ### Tracks to claim
 
@@ -78,7 +78,11 @@ is the map. Confirm the live track list before submitting.
 
 ---
 
-## 3. Video script — 2 min 50 s
+## 3. Video script
+
+The shot-by-shot script lives in [`VIDEO_SCRIPT.md`](../VIDEO_SCRIPT.md) at the repo root, timed to 2:30 with the number landing in the first twenty seconds.
+
+### Older 2:50 variant, kept for reference
 
 Record the app already loaded. **Never call the API live**: polling takes
 minutes and will look broken.
