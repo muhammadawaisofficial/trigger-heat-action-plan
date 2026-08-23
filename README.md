@@ -1,20 +1,85 @@
 # TRIGGER — the Heat Action Plan Compiler
 
-> ## 1,184,971 people
+> ## One flaw, two failure modes
 >
-> **72% of Phoenix live in urban villages that met the City's own overnight-heat
-> benchmark on days the citywide reading never fired.**
+> A heat trigger keyed to a single fixed number fails in **both** directions,
+> and which way it fails depends on how severe the day is.
 >
-> On **8 August 2025** the citywide average overnight low read **89.9 °F** — one
-> tenth of a degree below Phoenix's own 90 °F benchmark. Nothing fired. **Ten of
-> fifteen urban villages were above it**, the hottest by 3.9 °F.
+> **It under-fires** where the citywide reading sits below the threshold while
+> neighbourhoods sit above it — **1,184,971 people, 72% of Phoenix**, live in
+> urban villages that met the City's own overnight-heat benchmark on days the
+> citywide reading never fired.
 >
-> Across the seven-day window: **20 zone-days of silent exposure** on **3 of 7
-> days**, with a **median lead of 4 days** between a village meeting the
-> condition and the citywide number doing so.
+> **It over-fires** where severity clears the threshold everywhere at once. On
+> **27 of 35 clause-days (77%)** the plan gave no basis for choosing where to
+> send anyone: it fired either almost everywhere or almost nowhere.
 >
-> Re-run on **live 2026 data a year later**: the same pattern — 9 villages,
-> 958,205 people, 3 of 7 days.
+> These are not two findings. **Saturation is the mechanism; lost coverage is the
+> consequence.** A threshold can only resolve variation it sits inside.
+
+---
+
+### A. Under-trigger — the coverage failure
+
+On **8 August 2025** the citywide average overnight low read **89.9 °F** — one
+tenth of a degree below Phoenix's own 90 °F benchmark. Nothing fired. **Ten of
+fifteen urban villages were above it**, the hottest by 3.9 °F.
+
+Across the seven-day window: **20 zone-days of silent exposure** on **3 of 7
+days**, with a **median lead of 4 days** between a village meeting the condition
+and the citywide number doing so.
+
+### B. Over-trigger — the targeting failure
+
+The same rules, measured on all 272,917 tiles before any aggregation. A clause is
+**actionable** only if it fires on between 5% and 95% of tiles — an emergency
+manager cannot send crews to the whole city, and cannot send them nowhere.
+
+| | of 35 clause-days |
+|---|---|
+| Actionable | **8** (23%) |
+| Over-triggered — fired on >95% of tiles | **11** |
+| Under-triggered — fired on <5% of tiles | **16** |
+
+We measure this in **bits**. A trigger emits one bit per tile — fire or don't —
+and the information that bit carries is the binary entropy of the firing share:
+1 bit on an even split, **0 bits when it says the same thing everywhere**,
+whether that is *everywhere* or *nowhere*. Unlike a count of distinct values it
+does not depend on tile count or AOI size, so days and cities are comparable.
+
+On **7 August 2025**, the hottest day of the window, Action 1.1's own rule —
+*"above 105 °F"*, with no dwell requirement — extracted **0.090 of a possible
+1.0 bits**. It flagged all 15 villages. That is not a warning, it is a weather
+report.
+
+### C. Recovery — the same data, a better rule
+
+Add a dwell requirement to the *same threshold* on the *same cached data*:
+
+| Action 1.1 on 2025-08-07 | saturation | bits | villages flagged |
+|---|---|---|---|
+| above 105 °F — **as written** | 0.989 | **0.090** | 15 |
+| above 105 °F for >1 h | 0.981 | 0.135 | 15 |
+| above 105 °F for >6 h | 0.959 | 0.248 | 15 |
+| **above 105 °F for >9 h** | 0.405 | **0.974** | **8** |
+| above 105 °F for >12 h | 0.000 | 0.000 | 0 |
+
+**0.090 → 0.974 bits.** No new sensor, no new API call, no percentile — a clause
+edit. This is the one change in this repository that a city could adopt tomorrow.
+
+A percentile rule recovers the tcm-backed clauses too, in both directions:
+
+| clause | as written | p90 of that day | villages recovered |
+|---|---|---|---|
+| `BENCH-LOW90` | 90 °F, saturation **0.955** | 94.3 °F, 0.100 | **3** |
+| `BENCH-HIGH100` | 100 °F, saturation **1.000** | 109.3 °F, 0.100 | **2** |
+| `BENCH-HIGH110` | 110 °F, saturation **0.000** | 107.6 °F, 0.100 | **2** |
+
+A same-day percentile is **post hoc** — today's p90 is not knowable before today
+ends. It shows the signal survives, not that the City should adopt that rule.
+The dwell requirement carries no such caveat.
+
+---
 
 Phoenix's Heat Response Plan is a legal instrument with named officers, named
 actions and numeric temperature thresholds. It is executed against one reading
@@ -40,6 +105,7 @@ python verify_all.py       # re-derive everything and assert it
 | [2. Technical execution](#2-technical-execution-35) | How it works, and what we measured about the API |
 | [3. Innovation](#3-innovation-15) | Why compiling the document is the whole point |
 | [4. Communication](#4-communication-10) | Reproducing every number here |
+| [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
 | [5. Limitations](#5-limitations) | What this does not show |
 
 ---
@@ -140,7 +206,45 @@ communities as carrying a disproportionate share of the heat burden; the
 spatial pattern here is consistent with that, though we have not joined
 demographic data and do not claim to have measured it.
 
-### Replication on live 2026 data
+### Saturation, measured on tiles rather than zones
+
+The over-trigger metrics are computed on all **272,917 tiles before any
+aggregation**. Fifteen zone averages say nothing about whether the underlying
+field had structure, so aggregating first would hide exactly what this measures.
+
+Full per-clause, per-day figures are in `data/results/divergence.json` under
+`saturation`, the sweep is in `data/results/severity_sweep.json`, and the
+citywide threshold sweep is in `data/results/threshold_sweep.json`.
+
+One limit worth stating plainly: the published window was **selected for
+severity**, so it samples only the hot end and spans 3.34 °C of mean temperature.
+That is narrow. The sweep file reports its own span so a reader can judge whether
+the inverted-U claim is testable on this data, rather than taking our word for it.
+
+### We tested the plan's own 10 °F claim
+
+Page 4 asserts neighbourhood differences of "10°F or more". Measured at 100 m
+across the study window:
+
+| Metric | Mean tile-level spread | Village-level spread |
+|---|---|---|
+| **Overnight low** | **21.2 °F** | 7.4 °F |
+| Daily mean | 14.4 °F | 4.0 °F |
+| Daily high | 10.2 °F | 2.2 °F |
+
+The claim holds and is conservative — the measured spread reaches or exceeds
+10 °F on 18 of 21 day-metric combinations. **The variability is largest
+overnight**, which is when heat is most lethal and when the urban heat island
+is strongest, and smallest at the daily peak — the metric heat plans usually
+trigger on.
+
+```bash
+python test_claim.py
+```
+
+---
+
+## Replication on live 2026 data
 
 The published result is one week of 2025. To test whether it is a property of
 the city or an artefact of that week, we re-ran the identical pipeline on
@@ -173,26 +277,9 @@ as readily as on last.
 What it is *not* is a continuously running monitor: there is no scheduler and no
 alerting loop. It runs on demand over any window.
 
-### We tested the plan's own 10 °F claim
-
-Page 4 asserts neighbourhood differences of "10°F or more". Measured at 100 m
-across the study window:
-
-| Metric | Mean tile-level spread | Village-level spread |
-|---|---|---|
-| **Overnight low** | **21.2 °F** | 7.4 °F |
-| Daily mean | 14.4 °F | 4.0 °F |
-| Daily high | 10.2 °F | 2.2 °F |
-
-The claim holds and is conservative — the measured spread reaches or exceeds
-10 °F on 18 of 21 day-metric combinations. **The variability is largest
-overnight**, which is when heat is most lethal and when the urban heat island
-is strongest, and smallest at the daily peak — the metric heat plans usually
-trigger on.
-
-```bash
-python test_claim.py
-```
+An independently reproduced finding is a research artefact rather than a demo
+result, which is why it gets its own section rather than a footnote. The
+over-trigger half replicates too: `verify_all.py` asserts both windows.
 
 ---
 

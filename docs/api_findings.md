@@ -280,83 +280,130 @@ agreement to 7.8 × 10⁻¹⁴ (`python test_aggregate.py`).
 
 ---
 
-## 8. PRIMARY FINDING — a fixed trigger loses discriminating power exactly when severity peaks
+## 8. PRIMARY FINDING — a fixed trigger fails in both directions, and the failure is severity-dependent
 
-Not a defect, and not an aside. This is the project's headline result. It is a
-property of how the rule is written, and it is measurable.
+Not a defect, and not an aside. This is the project's headline result.
 
-### The mechanism: a threshold only resolves what it sits inside
+### Correction to an earlier draft of this section
 
-Same 420 tiles, same day (2025-07-15), same analytic. Only the threshold moves:
+An earlier version of this section measured the effect on a **2 km downtown box
+(420 tiles)** and reported that a threshold outside the day's range collapses
+discrimination from 394 distinct values to 1. That measurement was real but it
+was **about the box, not about thresholds**. Over 4 km² the spatial spread in
+overnight low is 0.08–0.47 °C, so almost every threshold falls outside it and the
+API returns a single quantised integer. Over the full 1,053 mi² AOI:
 
-| Threshold | `exceedance` result | Distinct values across 420 tiles |
+| | 2 km box (420 tiles) | Citywide (272,917 tiles) |
 |---|---|---|
-| 20 °C (68 °F) | 24.00 h everywhere | **1** |
-| 35 °C (95 °F) | 16.86–18.21 h | **394** |
-| 40 °C (104 °F) | 2.00 h everywhere | **1** |
+| Flat days at 105 °F, study window | **6 of 7** | **0 of 7** |
+| Overnight-low spatial spread | 0.08 – 0.47 °C | **10.85 – 13.49 °C** |
+| Distinct values per day | 1 | **43,497 – 74,365** |
 
-That day ran 32.7–40.3 °C (91–105 °F). A threshold below the whole range is
-cleared by every tile for all 24 hours; one at the very top is cleared by every
-tile for the same 2 hours. Perfect data at 100 m buys nothing if the rule reading
-it sits outside the range.
+The mechanism survives; its magnitude is set by the **area being sensed**. The
+band of thresholds that can resolve anything is as wide as the spatial
+temperature range it has to sit inside — wide across a city, nearly nonexistent
+across a neighbourhood. Every figure below is citywide.
 
-### The failure: on Phoenix's record day the trigger returns nothing usable
+### Measuring it: bits, not distinct values
 
-**2023-07-15.** The same 95 °F trigger that resolved 394 distinct values in 2025
-returns **24.00 h across all 420 tiles — one distinct value, zero targeting
-information.** On the hottest day in the record, the City's rule cannot say which
-neighbourhood to reach first.
+A count of distinct values does not work at city scale. 272,917 floating-point
+tiles always carry tens of thousands of distinct values, so the measure never
+approaches zero however useless the trigger is.
 
-Two independent measurements explain why, and they compound:
+A trigger emits **one bit per tile**: fire or don't. The information that bit
+carries is the binary entropy of the firing share,
 
-*The trigger fell below the day's floor.* `tcm` for that day:
+    H(p) = -p log2 p - (1-p) log2 (1-p)
 
-| | across 420 tiles | |
+which is 1 bit when the trigger splits the city evenly and **0 bits when it says
+the same thing everywhere** — whether that is *everywhere* or *nowhere*. It
+collapses at both ends by construction, and unlike a distinct-value count it is
+independent of tile count and AOI size, so days and cities are comparable. It
+measures the trigger's *output*, not the underlying heat: a highly differentiated
+city can still yield 0 bits under a badly placed rule.
+
+### The result: two failure modes, one flaw
+
+Five clauses over the seven-day published window, evaluated on raw tiles:
+
+| | of 35 clause-days |
+|---|---|
+| Actionable (fires on 5–95% of tiles) | **8** (23%) |
+| Over-triggered (>95% of tiles) | **11** |
+| Under-triggered (<5% of tiles) | **16** |
+
+`BENCH-LOW90` traverses the whole arc within one week as severity rises:
+
+| mean tile temp | saturation | verdict |
 |---|---|---|
-| overnight low | 35.07 – 35.37 °C | 95.1 – 95.7 °F |
-| daily mean | 39.38 – 39.46 °C | σ = 0.023 °C |
-| daily peak | 42.49 – 42.56 °C | 108.5 – 108.6 °F |
+| 95.2 °F | 0.002 | under-trigger |
+| 96.4 °F | 0.000 | under-trigger |
+| 98.2 °F | 0.169 | actionable |
+| 98.9 °F | 0.178 | actionable |
+| 99.7 °F | 0.491 | actionable |
+| 100.3 °F | 0.501 | actionable |
+| 101.2 °F | 0.955 | over-trigger |
 
-The coolest hour anywhere was 95.1 °F. The 95 °F trigger sits **0.07 °C below
-it**, so every tile qualifies for all 24 hours by construction.
+### Threshold × dwell, on the hottest day
 
-*And the spatial variation itself collapsed.* Daily-mean spread across the box
-was **0.08 °C** (σ 0.023). Extreme heat is more spatially uniform than ordinary
-heat — so there is both less signal to find and a rule positioned to miss what
-remains.
+2025-08-07 citywide. The day spanned 80.7–109.6 °F. Targeting information in
+bits, for every combination of threshold and dwell requirement:
 
-### The recovery: discrimination is retrievable from the same data
+| threshold | >0 h | >1 h | >3 h | >6 h | >9 h | >12 h | >18 h |
+|---|---|---|---|---|---|---|---|
+| 68 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| 77 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| 86 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.017 |
+| 95 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.027 | **0.998** |
+| **105 °F** | **0.090** | 0.135 | 0.154 | 0.248 | **0.974** | 0.000 | 0.000 |
+| 113 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 
-Re-evaluating that day against the 90th percentile of its own tile distribution
-(39.44 °C / 103.0 °F) instead of a fixed number:
+Of 42 combinations, **two** carry near-complete targeting information. Action
+1.1's own rule — *"above 105 °F"*, no dwell requirement — sits at **0.090 bits**
+and flags all 15 villages.
 
-| Threshold on 2023-07-15 | `exceedance` | Distinct values |
-|---|---|---|
-| 35.00 °C — the City's 95 °F trigger | 24.000 h flat | **1** |
-| 39.44 °C — p90 of that day | 13.816 – 14.101 h | **251** |
+### Recovery costs nothing
 
-**1 → 251.** The information was present in the data the whole time; the fixed
-threshold was discarding it. A rank ordering of neighbourhoods is recoverable on
-the record day, which is precisely the day a heat plan most needs one.
+Holding the threshold fixed and adding a dwell requirement moves Action 1.1 from
+**0.090 bits to 0.974** (saturation 0.989 → 0.405, 15 villages → 8). No new
+sensor, no new API call, no percentile: the hours are already in the cached
+response. It is a clause edit.
 
-### What this result does not license
+A percentile rule recovers the tcm-backed clauses in both directions — the
+saturated 100 °F benchmark and the never-firing 110 °F one alike — but a
+same-day percentile is **post hoc**, since today's p90 is not knowable before
+today ends. A deployable version would fit the percentile on historical
+climatology. The dwell requirement carries no such caveat, which is why it is the
+recommendation we actually make.
 
-Three limits, and they matter:
+TRIGGER reports all of this rather than rewriting the plan. Changing a legal
+threshold is a policy act.
 
-1. **The magnitude is modest.** 0.285 h of spread is about 17 minutes. What is
-   recovered is a *rank ordering* — which is what targeting needs — not a large
-   difference in absolute exposure. Do not state it as hours.
-2. **A same-day percentile is post hoc.** You cannot compute today's p90 before
-   today ends. An operational trigger would use a percentile of the local
-   *historical climatology*; this probe demonstrates that the signal survives,
-   not that the City should adopt this exact rule.
-3. **This is a 2 km box, not a city.** A 0.08 °C daily-mean spread is a
-   *within-2 km* figure and will be far larger across Phoenix's 15 urban
-   villages. Any headline number must be computed on the full-city AOI. Nothing
-   here should be generalised to the city from this box.
+---
 
-TRIGGER reports this rather than fixing it. Rewriting a legal threshold is a
-policy act, not an engineering one.
+## 9. `exceedance` is a smoothed field, not a count of hours
+
+Citywide, `exceedance` returns **negative values**:
+
+| Day (2025) | min hours above 105 °F |
+|---|---|
+| 08-02 | −1.05 |
+| 08-05 | −1.58 |
+| 08-07 | −2.51 |
+
+Hours above a threshold cannot be negative. The field is interpolated or
+smoothed rather than counted, so:
+
+- A near-zero `exceedance` value is **not** a literal hour count and should not
+  be reported as one.
+- Any "did it fire" test must be an explicit comparison (`value > 0`), never an
+  assumption that the value is a non-negative integer.
+- Differences of a few tenths of an hour between tiles are within the smoothing,
+  not resolved measurements. Rankings across many tiles are still informative;
+  individual tile-to-tile gaps are not.
+
+TRIGGER defines firing as `value > duration_hours` (with `duration_hours = 0`
+where the clause states none), which is well-defined regardless.
 
 ---
 
@@ -367,7 +414,8 @@ policy act, not an engineering one.
 | `tcm` is °C | One conversion, in `schema.f_to_c`, nowhere else |
 | `persistence` saturates at `filter_type=4` (3 of 3 Julys) | Evaluate day by day with `filter_type=3` |
 | A threshold outside the day's range resolves nothing | Report it; choosing thresholds is the City's call, not ours |
-| Fixed trigger returns 1 distinct value on the record day; p90 returns 251 | The primary finding — see section 8 |
+| A fixed trigger fails in BOTH directions, severity-dependent | The primary finding — see section 8 |
+| `exceedance` returns negative values | Treat it as smoothed, not counted; test `value > 0` explicitly |
 | Per-day evaluation needed for lead time | A week-long aggregate cannot answer "when" |
 | 1,053 mi² in one call | One call per (day, threshold), not one per village |
 | Flat credit cost | No incentive to shrink requests |

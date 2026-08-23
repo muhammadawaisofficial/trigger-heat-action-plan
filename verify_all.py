@@ -30,6 +30,7 @@ CHECKS = [
     ("build_golden.py", "every clause quote appears verbatim on its cited page"),
     ("verify_api.py", "measured FortyGuard API behaviour"),
     ("verify_years.py", "the same probe across three Julys (2025/2024/2023)"),
+    ("sweep_threshold.py", "citywide threshold sweep: the actionable band"),
     ("test_aggregate.py", "tile-to-zone aggregation vs brute force"),
     ("test_claim.py", "the plan's own 10 degF spatial claim"),
     ("test_brief_guard.py", "generated prose cannot state an uncomputed number"),
@@ -40,11 +41,19 @@ CHECKS = [
 ]
 
 #: The published result. Any drift here is a failure, not a curiosity.
+#: Two halves of one finding: a fixed trigger under-fires where the citywide
+#: mean sits below it, and over-fires where severity clears it everywhere.
 EXPECTED = {
+    # A. under-trigger -- coverage failure
     "silent_zones": 10,
     "silent_zone_days": 20,
     "median_lead_days": 4,
     "population_exposed": 1184971,
+    # B. over-trigger -- targeting failure
+    "clause_days": 35,
+    "actionable_clause_days": 8,
+    "over_triggered_clause_days": 11,
+    "under_triggered_clause_days": 16,
 }
 
 #: The live-2026 replication, asserted only if its results file is present.
@@ -104,11 +113,45 @@ def main() -> int:
                 drift.append(f"{k}: expected {want}, got {got}")
 
         pe, pt = s.get("population_exposed"), s.get("population_total")
+        n, act = s.get("clause_days"), s.get("actionable_clause_days")
+        print("\n  THE PAIRED HEADLINE")
+        print("  One flaw, two failure modes, severity-dependent. A trigger keyed")
+        print("  to a single fixed number under-fires where the citywide mean sits")
+        print("  below it and over-fires where severity clears it everywhere at")
+        print("  once. Saturation is the mechanism; lost coverage is the consequence.")
         if pe and pt:
-            print(f"\n  {pe:,} of {pt:,} people ({pe/pt:.0%} of Phoenix) live in "
-                  f"villages that met")
-            print(f"  the City's own overnight-heat benchmark on days the citywide "
-                  f"reading never fired.")
+            print(f"\n  A. UNDER-TRIGGER (coverage). {pe:,} of {pt:,} people "
+                  f"({pe/pt:.0%} of")
+            print(f"     Phoenix) live in villages that met the City's own")
+            print(f"     overnight-heat benchmark on days the citywide reading")
+            print(f"     never fired.")
+        if n and act is not None:
+            print(f"\n  B. OVER-TRIGGER (targeting). On {n - act} of {n} clause-days "
+                  f"({(n-act)/n:.0%}) the")
+            print(f"     plan gave no basis for choosing where to send anyone: it")
+            print(f"     fired either almost everywhere or almost nowhere.")
+
+    # --------------------------------------------- assert the recovery result
+    # The constructive half. Dwell recovery is asserted because it is the only
+    # design that is deployable as written -- same threshold, same data, one
+    # clause edit -- so a regression here would silently remove the one
+    # actionable recommendation the project makes.
+    if res_path.exists():
+        res = json.loads(res_path.read_text(encoding="utf-8"))
+        recs = res.get("recovery") or []
+        dwell = [r for r in recs if r.get("best_dwell")]
+        print("\n  C. RECOVERY. Same threshold or same data, a better rule:")
+        if not dwell and not recs:
+            drift.append("no recovery results were produced")
+            print("  DRIFT no recovery results")
+        for r in recs:
+            fixed = r.get("fixed", {})
+            best = r.get("best_dwell") or r.get("percentile") or {}
+            print(f"  OK   {fixed.get('clause_id','?'):<24s} "
+                  f"{fixed.get('targeting_bits', 0):.3f} -> "
+                  f"{best.get('targeting_bits', 0):.3f} bits "
+                  f"via {best.get('design','?')}, "
+                  f"{r.get('zones_recovered', 0)} zones recovered")
 
     # ------------------------------------------ assert the replication window
     rep_path = REPO / "data" / "results" / EXPECTED_REPLICATION["file"]

@@ -1,0 +1,85 @@
+{
+  "day": "2025-08-07",
+  "aoi_sq_mi": 1053.4,
+  "granularity_m": 100,
+  "day_range_c": [
+    27.0318,
+    43.0934
+  ],
+  "rows": [
+    {
+      "threshold_c": 20.0,
+      "threshold_f": 68.0,
+      "n_tiles": 272917,
+      "mean_hours": 24.0,
+      "min_hours": 24.0,
+      "max_hours": 24.0,
+      "spread_hours": 0.0,
+      "distinct_values": 1,
+      "distinct_share": 3.664117662146367e-06,
+      "saturation_index": 1.0
+    },
+    {
+      "threshold_c": 25.0,
+      "threshold_f": 77.0,
+      "n_tiles": 272917,
+      "mean_hours": 24.0,
+      "min_hours": 24.0,
+      "max_hours": 24.0,
+      "spread_hours": 0.0,
+      "distinct_values": 1,
+      "distinct_share": 3.664117662146367e-06,
+      "saturation_index": 1.0
+    },
+    {
+      "threshold_c": 30.0,
+      "threshold_f": 86.0,
+      "n_tiles": 272917,
+      "mean_hours": 23.977719010541072,
+      "min_hours": 16.5163,
+      "max_hours": 25.3726,
+      "spread_hours": 8.856299999999997,
+      "distinct_values": 3877,
+      "distinct_share": 0.014205784176141465,
+      "saturation_index": 1.0
+    },
+    {
+      "threshold_c": 35.0,
+      "threshold_f": 95.0,
+      "n_tiles": 272917,
+      "mean_hours": 18.54163572258145,
+      "min_hours": 10.3227,
+      "max_hours": 25.9228,
+      "spread_hours": 15.6001,
+      "distinct_values": 72251,
+      "distinct_share": 0.26473616520773713,
+      "saturation_index": 1.0
+    },
+    {
+      "threshold_c": 40.5556,
+      "threshold_f": 105.0,
+      "n_tiles": 272917,
+      "mean_hours": 8.473020437349444,
+      "min_hours": -2.5054,
+      "max_hours": 11.5659,
+      "spread_hours": 14.071299999999999,
+      "distinct_values": 40825,
+      "distinct_share": 0.14958760355712541,
+      "saturation_index": 0.9885496323057926
+    },
+    {
+      "threshold_c": 45.0,
+      "threshold_f": 113.0,
+      "n_tiles": 272917,
+      "mean_hours": 0.0,
+      "min_hours": 0.0,
+      "max_hours": 0.0,
+      "spread_hours": 0.0,
+      "distinct_values": 1,
+      "distinct_share": 3.664117662146367e-06,
+      "saturation_index": 0.0
+    }
+  ],
+  "actionable_thresholds_f": [],
+  "note": "Saturation index is the share of tiles where the condition holds at all. exceedance returns small negative values on some tiles, so it is a smoothed field rather than a raw hour count; 'fires' is therefore value > 0."
+}

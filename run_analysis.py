@@ -23,8 +23,11 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 import study  # noqa: E402
 from aggregate import ZoneAggregator, load_zones  # noqa: E402
 from cache import CachedFortyGuard, OfflineCacheMiss, cache_report, has_key  # noqa: E402
-from diverge import DivergenceReport, diverge_clause  # noqa: E402
-from evaluate import Evaluator, evaluable  # noqa: E402
+from diverge import (DivergenceReport, diverge_clause, saturation_clause,  # noqa: E402
+                     severity_sweep)
+from evaluate import METRIC_PRODUCT, Evaluator, evaluable  # noqa: E402
+from recover import (NotRecomputable, dwell_recovery,  # noqa: E402
+                     percentile_recovery, zones_recovered)
 from parse import parse_heatmap  # noqa: E402
 from schema import c_to_f, inventory, load_clauses  # noqa: E402
 
@@ -152,6 +155,7 @@ def main() -> int:
     report = DivergenceReport(window=days)
     for cid, results in per_clause.items():
         report.clauses.append(diverge_clause(results))
+        report.saturations.append(saturation_clause(results))
 
     cl = {c.clause_id: c for c in clauses}
     for d in report.clauses:
@@ -190,11 +194,126 @@ def main() -> int:
             print(f"    FALSE-CALM CLAUSE: never fired citywide, fired "
                   f"{d.zone_fired_day_count} zone-days hyperlocally")
 
+    # ------------------------------------------ over-trigger / saturation
+    rule("[C2] SATURATION - does the trigger fire selectively enough to act on?")
+    print("  Measured on raw tiles, before any aggregation: 15 zone averages")
+    print("  say nothing about whether the underlying field had structure.")
+    print("  A clause is ACTIONABLE only if it fires somewhere between 5% and")
+    print("  95% of tiles AND resolves more than 10 distinct values.\n")
+    for sat in report.saturations:
+        print(f"  {sat.clause_id}")
+        print(f"    {'day':<12s}{'severity':>10s}{'sat_idx':>9s}"
+              f"{'distinct':>10s}{'spread':>9s}  verdict")
+        for d in sat.per_day:
+            sev = (f"{d['severity_c'] * 9 / 5 + 32:.1f}F"
+                   if d.get("severity_c") is not None else "-")
+            print(f"    {d['day']:<12s}{sev:>10s}{d['saturation_index']:>9.3f}"
+                  f"{d['distinct_values']:>10,}{d['spread']:>9.2f}  "
+                  f"{d['failure_mode']}")
+        if sat.mean_saturation is not None:
+            print(f"    mean saturation {sat.mean_saturation:.3f}   "
+                  f"actionable on {len(sat.days_actionable)}/{len(sat.per_day)} days")
+
+    # -------------------------------------------------------- severity sweep
+    rule("[C3] SEVERITY SWEEP - discrimination against severity")
+    sweep = severity_sweep(report.saturations)
+    if sweep["n_points"]:
+        print(f"  {sweep['n_points']} clause-days   severity span "
+              f"{sweep['severity_span_c']:.2f} degC "
+              f"({sweep['severity_range_c'][0] * 9/5 + 32:.1f} - "
+              f"{sweep['severity_range_c'][1] * 9/5 + 32:.1f} degF)")
+        print(f"  actionable {sweep['actionable_points']}   "
+              f"over-triggered {sweep['over_triggered_points']}   "
+              f"under-triggered {sweep['under_triggered_points']}\n")
+        print(f"  mean targeting {sweep['mean_targeting_bits']:.4f} bits   "
+              f"zero-bit points {sweep['zero_bit_points']}/{sweep['n_points']}\n")
+        print(f"  {'severity':>10s}{'bits':>8s}{'sat_idx':>9s}{'discrim':>9s}  clause / day")
+        for r in sweep["rows"]:
+            bar = "#" * int(round(r["targeting_bits"] * 24))
+            print(f"  {r['severity_f']:>9.1f}F{r['targeting_bits']:>8.3f}"
+                  f"{r['saturation_index']:>9.3f}{r['discrimination']:>9.4f}  "
+                  f"{r['clause_id']} {r['day']} {bar}")
+        print(f"\n  {sweep['caveat']}")
+        sweep_path = study.results_path("severity_sweep.json")
+        sweep_path.parent.mkdir(parents=True, exist_ok=True)
+        sweep_path.write_text(json.dumps(sweep, indent=2), encoding="utf-8")
+        print(f"  -> {sweep_path.relative_to(study.REPO_ROOT)}")
+
+    # -------------------------------------------------------------- recovery
+    rule("[D] RECOVERY - would a different trigger design resolve more?")
+    print("  Same tiles, same day, same analytic. Only the rule changes.")
+    print("  No API call: the percentile arm is a recomputation over cached")
+    print("  tiles, which is why it is free.\n")
+    recoveries = []
+    for c in todo:
+        sat = next((s for s in report.saturations if s.clause_id == c.clause_id), None)
+        if sat is None or not sat.per_day:
+            continue
+        # The day this clause was least able to discriminate.
+        worst = max(sat.per_day, key=lambda d: d["saturation_index"])
+        day = worst["day"]
+        product, tcm_field = METRIC_PRODUCT[c.metric]
+        try:
+            hm, tf = ev._heatmap(c, day)
+        except OfflineCacheMiss:
+            continue
+        rows = (agg.aggregate_field(hm, tf) if tf else agg.aggregate(hm))
+        zvals = [(r.name, r.value) for r in rows]
+        try:
+            fixed, pct = percentile_recovery(c, hm, tf, day, 90.0, zvals)
+        except NotRecomputable:
+            # An exceedance clause cannot be re-thresholded for free, but its
+            # DWELL requirement can be changed at no cost: the hours are
+            # already in the cached response. This is the cheapest of the three
+            # designs and the only one deployable as written -- a clause edit,
+            # no new instrument and no percentile.
+            dwells = dwell_recovery(c, hm, day, zone_values=zvals)
+            as_written = dwells[0]
+            best = max(dwells, key=lambda r: r.targeting_bits)
+            recoveries.append({
+                "fixed": as_written.to_dict(),
+                "dwell_sweep": [r.to_dict() for r in dwells],
+                "best_dwell": best.to_dict(),
+                "zones_recovered": zones_recovered(as_written, best),
+            })
+            print(f"  {c.clause_id}  on {day} (its most saturated day)")
+            print(f"    threshold {as_written.threshold_f:.0f} degF held fixed; "
+                  f"only the dwell requirement changes.")
+            print(f"    {'design':<12s}{'sat_idx':>9s}{'bits':>8s}{'zones':>7s}")
+            for r in dwells:
+                mark = "  <- BEST" if r is best else ""
+                mark += "  <- the plan as written" if r is as_written else ""
+                print(f"    {r.design:<12s}{r.saturation_index:>9.3f}"
+                      f"{r.targeting_bits:>8.3f}{r.zones_fired:>7}{mark}")
+            print(f"    as written {as_written.targeting_bits:.3f} bits "
+                  f"-> best {best.targeting_bits:.3f} bits ({best.design})")
+            print(f"    zones_recovered {zones_recovered(as_written, best)}")
+            print(f"    {best.note}")
+            continue
+        except ValueError:
+            continue
+        rec = zones_recovered(fixed, pct)
+        recoveries.append({"fixed": fixed.to_dict(), "percentile": pct.to_dict(),
+                           "zones_recovered": rec})
+        print(f"  {c.clause_id}  on {day} (its most saturated day)")
+        for r in (fixed, pct):
+            print(f"    {r.design:<11s} thr {r.threshold_f:>6.1f} degF   "
+                  f"sat {r.saturation_index:>6.3f}   distinct {r.distinct_values:>7,}   "
+                  f"zones {r.zones_fired:>2}   "
+                  f"{'ACTIONABLE' if r.actionable else 'not actionable'}")
+        print(f"    zones_recovered {rec}")
+        if pct.zone_names_fired:
+            print(f"    would target: {', '.join(pct.zone_names_fired[:5])}"
+                  f"{' ...' if len(pct.zone_names_fired) > 5 else ''}")
+        print(f"    {pct.note}")
+
     # -------------------------------------------------------------- headline
-    rule("HEADLINE")
+    rule("HEADLINE - one flaw, two failure modes")
     s = report.summary()
+    print(f"  {s['framing']}\n")
     print(f"  Window                {s['window'][0]} .. {s['window'][1]} ({s['days']} days)")
     print(f"  Clauses evaluated     {s['clauses_evaluated']}")
+    print(f"\n  A. UNDER-TRIGGER (coverage failure)")
     print(f"  Silent zones          {s['silent_zones']} of {len(zones)} {study.ZONE_UNIT}s")
     if pop:
         exposed = sum(pop[z]["population"] for z in report.silent_zone_ids if z in pop)
@@ -208,6 +327,20 @@ def main() -> int:
           f"{'  ' + ', '.join(s['false_calm_clauses']) if s['false_calm_clauses'] else ''}")
     if s["median_lead_days"] is not None:
         print(f"  Median lead time      {s['median_lead_days']:.0f} day(s)")
+
+    print(f"\n  B. OVER-TRIGGER (targeting failure)")
+    print(f"  Clause-days           {s['clause_days']}")
+    if s["actionable_share"] is not None:
+        print(f"  Actionable            {s['actionable_clause_days']} of "
+              f"{s['clause_days']} ({s['actionable_share']:.0%})")
+    print(f"  Over-triggered        {s['over_triggered_clause_days']}"
+          f"   (fired on >95% of tiles: no basis for targeting)")
+    print(f"  Under-triggered       {s['under_triggered_clause_days']}"
+          f"   (fired on <5% of tiles: no coverage)")
+    if s["worst_saturation"]:
+        cid, day, si = s["worst_saturation"]
+        print(f"  Worst saturation      {si:.3f} - {cid} on {day}")
+
     print(f"\n  Baseline: {report.baseline_label}")
 
     # ----------------------------------------------------------------- write
@@ -271,6 +404,9 @@ def main() -> int:
                    "area_sq_mi": round(z.area_sq_mi, 1),
                    "population": pop.get(z.zone_id, {}).get("population")}
                   for z in zones],
+        "saturation": [s.summary() for s in report.saturations],
+        "severity_sweep": sweep,
+        "recovery": recoveries,
     }, indent=2), encoding="utf-8")
 
     rep = cache_report()

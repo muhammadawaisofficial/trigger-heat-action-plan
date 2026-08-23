@@ -40,19 +40,20 @@ WHAT IT ESTABLISHES
        t35 (95 degF)  -> 16.86-18.21 h, 394 distinct values    (SIGNAL)
        t40 (104 degF) -> 2.0 h everywhere, 1 distinct value    (peak barely reaches)
 
-4. THE PRIMARY FINDING. A fixed trigger loses discriminating power exactly when
-   severity peaks, and the power is recoverable. On 2023-07-15, in Phoenix's
-   record July, the City's 95 degF trigger returns 24.0 h across all 420 tiles
-   -- ONE distinct value, no information about where to send help first. Re-read
-   against the 90th percentile of that day's own distribution (103 degF), the
-   same data yields 251 distinct values. The signal was there; the threshold was
-   discarding it.
+4. A threshold resolves only the variation it sits INSIDE. On 2023-07-15 the
+   City's 95 degF trigger returns 24.0 h across all 420 tiles of this box -- one
+   distinct value -- because in that record July the whole day sat above it
+   everywhere. Re-read against the 90th percentile of the day's own
+   distribution, the same data yields 251 distinct values.
 
-   Bounded three ways, and these belong with the number every time it is quoted:
-   the recovered spread is 0.285 h (~17 minutes), so what returns is a rank
-   ordering rather than a large difference in exposure; a same-day percentile is
-   post hoc, since today's p90 is not knowable before today ends; and a 2 km box
-   is not a city, so the headline must be recomputed on the full-city AOI.
+   IMPORTANT SCOPE LIMIT. These are 2 km box figures, and the box is most of the
+   effect. Over 4 km2 the spatial spread in overnight low is 0.08-0.47 degC, so
+   almost any threshold falls outside it. Over the full 1,053 sq mi city AOI the
+   spread is 10.9-13.5 degC and no day in the study window is flat at all. The
+   published primary finding is measured citywide -- see
+   docs/api_findings.md section 8 and sweep_threshold.py. Do not quote the
+   numbers in this script as the headline; they demonstrate the mechanism on a
+   small area, nothing more.
 
 The 2025 requests replay from the committed cache. Other years are live on first
 run at 4,220 credits each, then cached like everything else.

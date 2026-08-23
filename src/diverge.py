@@ -149,12 +149,160 @@ def diverge_clause(results: Iterable[ClauseDayResult]) -> ClauseDivergence:
     return out
 
 
+# ==================================================================== over-trigger
+#
+# The same flaw, read from the other end. A trigger keyed to one fixed number
+# fails in two directions depending on severity:
+#
+#   under-trigger   the citywide reading sits below the threshold while
+#                   neighbourhoods sit above it. Coverage failure. Measured
+#                   above as silent zones, population missed, lead time.
+#
+#   over-trigger    the threshold is cleared almost everywhere at once, so the
+#                   rule fires but says nothing about where to go first.
+#                   Targeting failure. Measured here.
+#
+# These are not two findings. Saturation is the mechanism; coverage loss is the
+# consequence. A fixed threshold can only resolve variation it sits inside, and
+# how much variation exists depends on severity and on the area being sensed.
+
+
+@dataclass
+class ClauseSaturation:
+    """Over-trigger diagnostics for one clause across the window."""
+
+    clause_id: str
+    days: list[str] = field(default_factory=list)
+    #: day -> TileStats.to_dict(), plus "severity_c"
+    per_day: list[dict] = field(default_factory=list)
+
+    @property
+    def days_over_triggered(self) -> list[str]:
+        return [d["day"] for d in self.per_day if d["failure_mode"] == "over_trigger"]
+
+    @property
+    def days_under_triggered(self) -> list[str]:
+        return [d["day"] for d in self.per_day if d["failure_mode"] == "under_trigger"]
+
+    @property
+    def days_actionable(self) -> list[str]:
+        return [d["day"] for d in self.per_day if d["actionable"]]
+
+    @property
+    def max_saturation(self) -> tuple[str, float] | None:
+        if not self.per_day:
+            return None
+        w = max(self.per_day, key=lambda d: d["saturation_index"])
+        return (w["day"], w["saturation_index"])
+
+    @property
+    def mean_saturation(self) -> float | None:
+        v = [d["saturation_index"] for d in self.per_day]
+        return sum(v) / len(v) if v else None
+
+    def summary(self) -> dict:
+        return {
+            "clause_id": self.clause_id,
+            "days": len(self.per_day),
+            "days_actionable": len(self.days_actionable),
+            "days_over_triggered": len(self.days_over_triggered),
+            "days_under_triggered": len(self.days_under_triggered),
+            "mean_saturation_index": (round(self.mean_saturation, 4)
+                                      if self.mean_saturation is not None else None),
+            "max_saturation": self.max_saturation,
+            "per_day": self.per_day,
+        }
+
+
+def saturation_clause(results: Iterable[ClauseDayResult]) -> ClauseSaturation:
+    """Collect per-day tile diagnostics for one clause."""
+    results = sorted(results, key=lambda r: r.day)
+    if not results:
+        raise ValueError("no results to summarise")
+    out = ClauseSaturation(clause_id=results[0].clause_id,
+                           days=[r.day for r in results])
+    for r in results:
+        if r.tiles is None:
+            continue
+        row = r.tiles.to_dict()
+        row["day"] = r.day
+        row["severity_c"] = round(r.severity_c, 4) if r.severity_c is not None else None
+        out.per_day.append(row)
+    return out
+
+
+# ------------------------------------------------------------- severity sweep
+
+def severity_sweep(saturations: Iterable[ClauseSaturation]) -> dict:
+    """Discrimination against severity, one row per clause per day.
+
+    The expected shape is an inverted U: at low severity nothing clears the
+    threshold, at high severity everything does, and targeting value exists
+    only in between. Whether that shape actually appears in a given window is
+    an empirical question -- a window chosen FOR severity samples only the hot
+    end, and this function reports the range it actually covered so the reader
+    can see whether the claim is testable on this data.
+    """
+    rows = []
+    for sat in saturations:
+        for d in sat.per_day:
+            if d.get("severity_c") is None:
+                continue
+            rows.append({
+                "clause_id": sat.clause_id,
+                "day": d["day"],
+                "severity_c": d["severity_c"],
+                "severity_f": round(d["severity_c"] * 9 / 5 + 32, 2),
+                "saturation_index": d["saturation_index"],
+                "distinct_values": d["distinct_values"],
+                "discrimination": d["discrimination"],
+                "targeting_bits": d["targeting_bits"],
+                "spread": d["spread"],
+                "actionable": d["actionable"],
+                "failure_mode": d["failure_mode"],
+            })
+    rows.sort(key=lambda r: (r["clause_id"], r["severity_c"]))
+
+    sev = [r["severity_c"] for r in rows]
+    n_act = sum(1 for r in rows if r["actionable"])
+    bits = [r["targeting_bits"] for r in rows]
+    return {
+        "rows": rows,
+        "n_points": len(rows),
+        "severity_range_c": [min(sev), max(sev)] if sev else None,
+        "severity_span_c": round(max(sev) - min(sev), 3) if sev else None,
+        "actionable_points": n_act,
+        "mean_targeting_bits": round(sum(bits) / len(bits), 4) if bits else None,
+        "zero_bit_points": sum(1 for b in bits if b == 0.0),
+        "over_triggered_points": sum(1 for r in rows
+                                     if r["failure_mode"] == "over_trigger"),
+        "under_triggered_points": sum(1 for r in rows
+                                      if r["failure_mode"] == "under_trigger"),
+        "axes": {
+            "x": "severity_c - mean tile temperature over the AOI that day, degC",
+            "y": ("targeting_bits - binary entropy of the firing share, 0 to 1. "
+                  "1 bit when the trigger splits the city evenly, 0 bits when it "
+                  "says the same thing everywhere. This is the axis that "
+                  "collapses at BOTH ends of severity."),
+            "y_alt": ("discrimination - distinct values as a share of tiles. "
+                      "Weak at city scale: 272,917 floats always carry tens of "
+                      "thousands of distinct values, so it never reaches zero "
+                      "however useless the trigger is."),
+        },
+        "caveat": ("The published window was selected for severity, so it "
+                   "samples the hot end of the range only. A wide severity "
+                   "span is needed to observe both arms of the curve; the span "
+                   "actually covered is reported above."),
+    }
+
+
 @dataclass
 class DivergenceReport:
     """The headline result across every evaluated clause."""
 
     window: list[str]
     clauses: list[ClauseDivergence] = field(default_factory=list)
+    saturations: list[ClauseSaturation] = field(default_factory=list)
     baseline_label: str = BASELINE_LABEL
 
     # ------------------------------------------------------ headline numbers
@@ -187,17 +335,65 @@ class DivergenceReport:
             s |= set(c.false_calm_days)
         return s
 
+    # ------------------------------------------------- over-trigger headline
+
+    @property
+    def clause_day_pairs(self) -> int:
+        return sum(len(s.per_day) for s in self.saturations)
+
+    @property
+    def actionable_clause_days(self) -> int:
+        return sum(len(s.days_actionable) for s in self.saturations)
+
+    @property
+    def over_triggered_clause_days(self) -> int:
+        return sum(len(s.days_over_triggered) for s in self.saturations)
+
+    @property
+    def under_triggered_clause_days(self) -> int:
+        return sum(len(s.days_under_triggered) for s in self.saturations)
+
+    @property
+    def worst_saturation(self) -> tuple[str, str, float] | None:
+        """(clause_id, day, saturation_index) for the most saturated pairing."""
+        best = None
+        for s in self.saturations:
+            for d in s.per_day:
+                cand = (s.clause_id, d["day"], d["saturation_index"])
+                if best is None or cand[2] > best[2]:
+                    best = cand
+        return best
+
     def summary(self) -> dict:
+        n = self.clause_day_pairs
         return {
             "window": [self.window[0], self.window[-1]] if self.window else [],
             "days": len(self.window),
             "clauses_evaluated": len(self.clauses),
+
+            # ---- A. under-trigger: coverage failure (unchanged)
             "median_lead_days": self.median_lead_days,
             "silent_zones": len(self.silent_zone_ids),
             "silent_zone_days": self.total_silent_zone_days,
             "false_calm_clauses": [c.clause_id for c in self.false_calm_clauses],
             "false_calm_days": sorted(self.false_calm_days),
+
+            # ---- B. over-trigger: targeting failure
+            "clause_days": n,
+            "actionable_clause_days": self.actionable_clause_days,
+            "actionable_share": (round(self.actionable_clause_days / n, 4)
+                                 if n else None),
+            "over_triggered_clause_days": self.over_triggered_clause_days,
+            "under_triggered_clause_days": self.under_triggered_clause_days,
+            "worst_saturation": self.worst_saturation,
+
             "baseline": self.baseline_label,
+            "framing": ("One flaw, two failure modes, severity-dependent. A "
+                        "trigger keyed to a single fixed number under-fires "
+                        "where the citywide mean sits below it and over-fires "
+                        "where severity clears it everywhere at once. "
+                        "Saturation is the mechanism; lost coverage is the "
+                        "consequence."),
         }
 
 
