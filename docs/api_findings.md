@@ -76,6 +76,32 @@ Same AOI, single day 2025-07-15, `filter_type=3`:
 Under `filter_type=3`, `persistence` tracks `exceedance` and behaves exactly as
 documented.
 
+### On the reference sample, and why we do not compare against it
+
+`BUILD_PLAN.md` sets the gate against "FortyGuard's San Jose sample: 2.07 → 8.73
+hours across 329 tiles". We can no longer source that figure. It is not in the
+vendored client (`fortyguard/samples.py` carries the San Jose *polygon* but no
+statistics), and the quoted numbers come with no window, threshold or
+granularity — so there is nothing to normalise against. 8.73 − 2.07 = 6.66 h,
+and whether that is one day or seven is undetermined, which changes the per-day
+figure by a factor of seven.
+
+**We therefore make no comparability claim in either direction.** An earlier
+draft of ours said Phoenix was "comparable to the San Jose reference"; that was
+unsupported and has been removed. What we report instead is Phoenix's own
+measured spread, as an absolute figure:
+
+| Window | Spread across 420 tiles | Per day |
+|---|---|---|
+| 2025-07-15, one day, t35 | 1.345 h | 1.345 h |
+| 2024-07-15, one day, t35 | 1.393 h | 1.393 h |
+| 2025-07-08–14, seven days, t35 | 3.932 h | 0.56 h |
+
+Note the weekly spread is far less than seven times the daily one: tile rankings
+are stable but daily extremes partly cancel. **These are small numbers.** Over a
+2 km box the per-day spatial spread in hours-above-threshold is on the order of
+one hour, and nothing in this document should be read as claiming otherwise.
+
 ### Reproduced in three consecutive Julys
 
 `python verify_years.py` repeats the whole probe on 8-14 July of 2025, 2024 and
@@ -88,6 +114,27 @@ for 15 July 2025, a single day *inside* a comparable window, it reports
 **16.0 hours**. A longest run measured over a superset window cannot be shorter
 than one measured inside it. The value is not merely wrong, it is inconsistent
 with itself.
+
+### Only `persistence` is affected, and it is a clamp rather than a ceiling
+
+`exceedance` over the identical `filter_type=4` requests is well-behaved, which
+is what isolates the defect to the one analytic:
+
+| Threshold | `exceedance` (168 h window) | distinct | `persistence` | distinct |
+|---|---|---|---|---|
+| 20 °C | 168.00 flat | 1 | 8.00 | 1 |
+| 30 °C | 168.00 flat | 1 | 8.00 | 1 |
+| 35 °C | 135.54–139.47 | **419** | 8.00 | 1 |
+| 40 °C | 48.83–50.25 | **409** | 7.82–8.10 | 251 |
+| 45 °C | 0.00 | 1 | 0.00 | 1 |
+
+`exceedance` is monotone and saturates correctly at both ends, so the threshold
+parameter is being applied properly and the AOI is fine.
+
+"Saturates at 8.0" also undersells it. At 35 °C the true longest run is ~19 h and
+it returns 8.0; at 40 °C the true longest run is ~2 h (measured directly at
+`filter_type=3`) and it returns ~8.1. It is **clamped to roughly 8 hours
+regardless of the truth, erring in both directions** — not clipped at a ceiling.
 
 At `filter_type=3` the same analytic holds up under the same cross-check —
 total hours above threshold is never less than the longest unbroken run, and in
@@ -233,12 +280,14 @@ agreement to 7.8 × 10⁻¹⁴ (`python test_aggregate.py`).
 
 ---
 
-## 8. A fixed threshold can be blind, and it goes blind exactly when it matters
+## 8. PRIMARY FINDING — a fixed trigger loses discriminating power exactly when severity peaks
 
-This one is not a defect. It is a property of thresholds, and it is the sharpest
-argument in the project for why heat plans should not be written the way they are.
+Not a defect, and not an aside. This is the project's headline result. It is a
+property of how the rule is written, and it is measurable.
 
-Same 420 tiles, same day, same analytic. Only the threshold moves:
+### The mechanism: a threshold only resolves what it sits inside
+
+Same 420 tiles, same day (2025-07-15), same analytic. Only the threshold moves:
 
 | Threshold | `exceedance` result | Distinct values across 420 tiles |
 |---|---|---|
@@ -247,25 +296,67 @@ Same 420 tiles, same day, same analytic. Only the threshold moves:
 | 40 °C (104 °F) | 2.00 h everywhere | **1** |
 
 That day ran 32.7–40.3 °C (91–105 °F). A threshold below the whole range is
-cleared by every tile for all 24 hours; a threshold at the very top is cleared
-by every tile for the same 2 hours. Only a threshold *inside* the distribution
-can separate one neighbourhood from another. Perfect data at 100 m resolution
-buys nothing if the rule reading it sits outside the range.
+cleared by every tile for all 24 hours; one at the very top is cleared by every
+tile for the same 2 hours. Perfect data at 100 m buys nothing if the rule reading
+it sits outside the range.
 
-### And the same threshold loses resolution in an extreme year
+### The failure: on Phoenix's record day the trigger returns nothing usable
 
-The 95 °F threshold that resolves 394 distinct values on 2025-07-15 returns a
-flat 24.00 h on **2023-07-15** — in that record July the entire day sat above
-95 °F across every tile. Both analytics agree on it, so this is the real
-measurement, not an artefact.
+**2023-07-15.** The same 95 °F trigger that resolved 394 distinct values in 2025
+returns **24.00 h across all 420 tiles — one distinct value, zero targeting
+information.** On the hottest day in the record, the City's rule cannot say which
+neighbourhood to reach first.
 
-The consequence is uncomfortable for a heat plan: a fixed numeric trigger has
-the *least* discriminating power in precisely the conditions that make it most
-consequential. During a record heatwave, a 95 °F rule says only "everywhere,
-all day" — which is the same thing as saying nothing about where to send help
-first. Distribution-relative thresholds (a percentile of the local climatology)
-would not degrade this way. TRIGGER reports this rather than fixing it: rewriting
-the City's thresholds is a policy act, not an engineering one.
+Two independent measurements explain why, and they compound:
+
+*The trigger fell below the day's floor.* `tcm` for that day:
+
+| | across 420 tiles | |
+|---|---|---|
+| overnight low | 35.07 – 35.37 °C | 95.1 – 95.7 °F |
+| daily mean | 39.38 – 39.46 °C | σ = 0.023 °C |
+| daily peak | 42.49 – 42.56 °C | 108.5 – 108.6 °F |
+
+The coolest hour anywhere was 95.1 °F. The 95 °F trigger sits **0.07 °C below
+it**, so every tile qualifies for all 24 hours by construction.
+
+*And the spatial variation itself collapsed.* Daily-mean spread across the box
+was **0.08 °C** (σ 0.023). Extreme heat is more spatially uniform than ordinary
+heat — so there is both less signal to find and a rule positioned to miss what
+remains.
+
+### The recovery: discrimination is retrievable from the same data
+
+Re-evaluating that day against the 90th percentile of its own tile distribution
+(39.44 °C / 103.0 °F) instead of a fixed number:
+
+| Threshold on 2023-07-15 | `exceedance` | Distinct values |
+|---|---|---|
+| 35.00 °C — the City's 95 °F trigger | 24.000 h flat | **1** |
+| 39.44 °C — p90 of that day | 13.816 – 14.101 h | **251** |
+
+**1 → 251.** The information was present in the data the whole time; the fixed
+threshold was discarding it. A rank ordering of neighbourhoods is recoverable on
+the record day, which is precisely the day a heat plan most needs one.
+
+### What this result does not license
+
+Three limits, and they matter:
+
+1. **The magnitude is modest.** 0.285 h of spread is about 17 minutes. What is
+   recovered is a *rank ordering* — which is what targeting needs — not a large
+   difference in absolute exposure. Do not state it as hours.
+2. **A same-day percentile is post hoc.** You cannot compute today's p90 before
+   today ends. An operational trigger would use a percentile of the local
+   *historical climatology*; this probe demonstrates that the signal survives,
+   not that the City should adopt this exact rule.
+3. **This is a 2 km box, not a city.** A 0.08 °C daily-mean spread is a
+   *within-2 km* figure and will be far larger across Phoenix's 15 urban
+   villages. Any headline number must be computed on the full-city AOI. Nothing
+   here should be generalised to the city from this box.
+
+TRIGGER reports this rather than fixing it. Rewriting a legal threshold is a
+policy act, not an engineering one.
 
 ---
 
@@ -276,6 +367,7 @@ the City's thresholds is a policy act, not an engineering one.
 | `tcm` is °C | One conversion, in `schema.f_to_c`, nowhere else |
 | `persistence` saturates at `filter_type=4` (3 of 3 Julys) | Evaluate day by day with `filter_type=3` |
 | A threshold outside the day's range resolves nothing | Report it; choosing thresholds is the City's call, not ours |
+| Fixed trigger returns 1 distinct value on the record day; p90 returns 251 | The primary finding — see section 8 |
 | Per-day evaluation needed for lead time | A week-long aggregate cannot answer "when" |
 | 1,053 mi² in one call | One call per (day, threshold), not one per village |
 | Flat credit cost | No incentive to shrink requests |

@@ -4,12 +4,18 @@
 
 BUILD_PLAN Phase 0 asks for one ``persistence`` probe repeated over July 2025,
 2024 and 2023 on a small downtown Phoenix box, and sets the gate at "n_cells in
-the hundreds+ and a real spread between min and max", benchmarked against
-FortyGuard's own San Jose sample (2.07 -> 8.73 hours across 329 tiles).
+the hundreds+ and a real spread between min and max".
 
 Run as written, that gate fails -- and it fails for reasons that have nothing to
-do with Phoenix. This script reports the probe as specified and then the two
+do with Phoenix. This script reports the probe as specified and then the
 measurements needed to interpret it.
+
+On the reference: BUILD_PLAN benchmarks the gate against a San Jose sample
+(2.07-8.73 h across 329 tiles). That figure cannot be sourced -- it is not in the
+vendored client, and no window, threshold or granularity is given, so there is
+nothing to normalise against. **No comparison is drawn against it.** Phoenix's
+spreads are reported as absolute figures, and they are small: on the order of one
+hour per day over a 2 km box.
 
 WHAT IT ESTABLISHES
 
@@ -34,12 +40,19 @@ WHAT IT ESTABLISHES
        t35 (95 degF)  -> 16.86-18.21 h, 394 distinct values    (SIGNAL)
        t40 (104 degF) -> 2.0 h everywhere, 1 distinct value    (peak barely reaches)
 
-4. And the threshold that discriminates in one year can go blind in another. The
-   same 95 degF threshold that separates 394 distinct values on 2025-07-15
-   returns a flat 24.0 across every tile on 2023-07-15, because in that record
-   July the whole day sat above 95 degF everywhere. A fixed numeric threshold
-   loses resolution in precisely the conditions that make it matter most --
-   which is an argument about how heat plans are written, not about the API.
+4. THE PRIMARY FINDING. A fixed trigger loses discriminating power exactly when
+   severity peaks, and the power is recoverable. On 2023-07-15, in Phoenix's
+   record July, the City's 95 degF trigger returns 24.0 h across all 420 tiles
+   -- ONE distinct value, no information about where to send help first. Re-read
+   against the 90th percentile of that day's own distribution (103 degF), the
+   same data yields 251 distinct values. The signal was there; the threshold was
+   discarding it.
+
+   Bounded three ways, and these belong with the number every time it is quoted:
+   the recovered spread is 0.285 h (~17 minutes), so what returns is a rank
+   ordering rather than a large difference in exposure; a same-day percentile is
+   post hoc, since today's p90 is not knowable before today ends; and a 2 km box
+   is not a city, so the headline must be recomputed on the full-city AOI.
 
 The 2025 requests replay from the committed cache. Other years are live on first
 run at 4,220 credits each, then cached like everything else.
@@ -73,8 +86,12 @@ THRESHOLD_C = 35.0          # 95 degF, the classic heat-plan threshold
 WEEK = ("07-08", "07-14")   # the week BUILD_PLAN names
 SINGLE_DAY = "07-15"
 
-#: FortyGuard's published San Jose persistence sample, for scale.
-SAN_JOSE = {"n_cells": 329, "min": 2.07, "max": 8.73}
+#: BUILD_PLAN quotes a San Jose sample (2.07-8.73 h across 329 tiles) as the
+#: reference for this gate. We cannot source it -- it is not in the vendored
+#: client, and no window, threshold or granularity is given, so there is nothing
+#: to normalise against. We report Phoenix's absolute spread and make no
+#: comparability claim in either direction.
+SAN_JOSE_UNVERIFIED = {"n_cells": 329, "min": 2.07, "max": 8.73}
 
 fg = CachedFortyGuard(verbose=False)
 
@@ -139,9 +156,12 @@ def main() -> int:
     print(f"  threshold  {THRESHOLD_C} degC = {THRESHOLD_C * 9 / 5 + 32:.0f} degF, above")
     print(f"  gran       100 m")
     print(f"  API key    {'present' if has_key() else 'ABSENT -- cache only'}")
-    print(f"\n  Reference: FortyGuard's San Jose persistence sample spans "
-          f"{SAN_JOSE['min']} -> {SAN_JOSE['max']} h across "
-          f"{SAN_JOSE['n_cells']} tiles.")
+    print(f"\n  BUILD_PLAN's reference sample "
+          f"({SAN_JOSE_UNVERIFIED['min']}-{SAN_JOSE_UNVERIFIED['max']} h across "
+          f"{SAN_JOSE_UNVERIFIED['n_cells']} tiles) cannot be")
+    print(f"  sourced and carries no window or threshold, so no comparison is")
+    print(f"  drawn against it. The spreads below are absolute, and they are")
+    print(f"  SMALL -- around an hour per day over a 2 km box.")
 
     # ------------------------------------------------- A. the probe as written
     rule("A. persistence, filter_type=4 -- exactly what Phase 0 specifies")
@@ -230,13 +250,53 @@ def main() -> int:
         print(f"\n  GATE: n_cells in the hundreds+ and a real min-max spread.")
         print(f"        PASSED on exceedance -- {best['n_tiles']} tiles, "
               f"{best['distinct']} distinct")
-        print(f"        values, spread {best['spread']:.2f} h. Comparable to the")
-        print(f"        San Jose reference, on the analytic we depend on.")
+        print(f"        values, spread {best['spread']:.2f} h over one day. No claim is")
+        print(f"        made about how that compares to any other city.")
         print(f"\n  Study window was then chosen by measurement, not by this probe:")
         print(f"  scan_event.py found 57.8 hours above 105 degF in 2-8 Aug 2025")
         print(f"  against 46.7 for 6-12 July, so the published analysis uses August.")
     else:
         print(f"\n  GATE: NOT PASSED. Decide the study window before continuing.")
+
+    # ------------------------- E. is the ft4 defect scoped to one analytic?
+    rule("E. Is filter_type=4 broken, or only persistence at filter_type=4?")
+    print("  Same week, same AOI, both analytics, five thresholds.\n")
+    print(f"  {'thresh':>8s}  {'exceedance':>23s} {'dist':>5s}   "
+          f"{'persistence':>17s} {'dist':>5s}")
+    for thr in (20.0, 30.0, 35.0, 40.0, 45.0):
+        e, pp = probe("exceedance", 2025, 4, thr), probe("persistence", 2025, 4, thr)
+        if not (e and pp):
+            continue
+        print(f"  {thr:>6.0f}C  {e['min']:>11.2f}-{e['max']:<11.2f} "
+              f"{e['distinct']:>5d}   {pp['min']:>8.2f}-{pp['max']:<8.2f} "
+              f"{pp['distinct']:>5d}")
+    print("\n  exceedance is monotone and saturates correctly at both ends, so the")
+    print("  threshold parameter and the AOI are fine. The defect is persistence")
+    print("  alone -- and it is a CLAMP, not a ceiling: it returns ~8 h where the")
+    print("  truth is ~19 h (t35) and ~8.1 h where the truth is ~2 h (t40).")
+
+    # ------------------- F. the primary finding: saturation and its recovery
+    rule("F. PRIMARY FINDING -- discrimination collapses, and is recoverable")
+    fixed, p90 = probe("exceedance", 2023, 3, 35.0), probe("exceedance", 2023, 3, 39.44)
+    if fixed and p90:
+        print("  2023-07-15, Phoenix's record July. Same tiles, same analytic.\n")
+        row("t35.00 = 95 degF (City)", fixed)
+        row("t39.44 = 103 degF (p90)", p90)
+        print(f"\n  Distinct values: {fixed['distinct']} -> {p90['distinct']}.")
+        print(f"  The City's fixed trigger returns ONE value across all "
+              f"{fixed['n_tiles']} tiles on the")
+        print(f"  hottest day in the record: no information about where to go first.")
+        print(f"  Re-read against the 90th percentile of that day's own")
+        print(f"  distribution, a rank ordering reappears.")
+        print(f"\n  Three limits on that claim:")
+        print(f"    - spread is {p90['spread']:.3f} h, about {p90['spread'] * 60:.0f} "
+              f"minutes. What is recovered is a")
+        print(f"      RANK ORDERING, which is what targeting needs -- not big hours.")
+        print(f"    - a same-day p90 is post hoc; an operational rule would use a")
+        print(f"      percentile of historical climatology, not of the day itself.")
+        print(f"    - this is a 2 km box. Any headline must be computed citywide.")
+    else:
+        print("  not cached, and no API key set -- skipped")
 
     print(f"\n  cache/network this run: {fg.stats}")
     return 0
