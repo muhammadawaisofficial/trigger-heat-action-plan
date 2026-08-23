@@ -7,10 +7,29 @@ Everything needed to ship TRIGGER. Deadline **30 August 2026, 11:59 PM GST**.
 ## 1. Deploy the live demo (free, ~10 minutes)
 
 The app runs entirely from the committed cache, so **the deployment needs no
-secrets of any kind**. That is the whole reason it can be hosted for free and
-why a judge can never hit an authentication wall.
+secrets of any kind**. That is why it can be hosted free and why a judge can
+never hit an authentication wall.
 
-### Push to GitHub
+**Pre-flight, already verified:**
+
+| Check | Status |
+|---|---|
+| Largest tracked file | 10.9 MB — far under GitHub's 100 MB block |
+| Repository size | ~61 MB of git history, ~124 MB working tree |
+| `.env` tracked? | No. `.gitignore` covers `.env` and `.env.*` |
+| API keys anywhere in the tree? | None — grepped for all three before every commit |
+| `.python-version` | 3.11 |
+| `.streamlit/config.toml` | present, light theme, headless |
+| Fresh clone reproduces headline with no key? | Yes — `run_demo.py` and `verify_all.py` both pass |
+
+### Step 1 — create the repository and push
+
+`gh` is not installed on the build machine, so this step needs a human. Either
+install it (`winget install GitHub.cli`, then `gh auth login`) or create the repo
+in the browser at <https://github.com/new> — public, **no** README, **no**
+`.gitignore`, **no** licence, since the repo already has them.
+
+Then, from the repo root:
 
 ```bash
 git remote add origin https://github.com/<you>/trigger-heat-action-plan.git
@@ -18,33 +37,33 @@ git branch -M main
 git push -u origin main
 ```
 
-The repository is ~46 MB, well inside GitHub's limits. Confirm before pushing
-that `.env` is absent and `.gitignore` covers it:
+Confirm before pushing that no key is tracked:
 
 ```bash
-git ls-files | grep -i "\.env$"    # must return nothing
+git ls-files | grep -i "\.env$"     # must return nothing
 ```
 
-### Deploy on Streamlit Community Cloud
+### Step 2 — deploy on Streamlit Community Cloud
 
-1. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+This step is browser-OAuth only and cannot be automated.
+
+1. <https://share.streamlit.io> → sign in with GitHub.
 2. **New app** → pick the repo, branch `main`, main file `app.py`.
 3. Advanced settings → Python 3.11 (also pinned in `.python-version`).
 4. **Leave the secrets box empty.** The app needs none.
 5. Deploy. First build takes 3–5 minutes while dependencies install.
 
 If the build is slow, the only heavy dependency is `google-genai`, which the app
-itself does not import — it is needed solely to *re-*compile the plan. You can
-comment it out of `requirements.txt` for the deployment and the app still runs.
+never imports — it is needed solely to *re*-compile the plan. Commenting it out
+of `requirements.txt` for the deployment leaves the app fully working.
 
-### Verify the deployment
+### Step 3 — verify the deployment
 
-- The five headline metrics render at the top.
-- Mission 1 shows the 8 August false-calm banner.
-- The map draws 15 villages with heavy outlines on silent zones.
+- The hero number **1,184,971** renders at the top, above the map.
+- The silent-zones map shows **10 of 15** villages in alarm red.
+- The Sky Harbor marker is present and its tooltip reads.
+- The three secondary tabs open, including **What we retracted**.
 - Clicking through to the source PDF page works.
-
----
 
 ## 2. Submission checklist
 
@@ -54,13 +73,15 @@ comment it out of `requirements.txt` for the deployment and the app still runs.
 | Live demo, no key needed | deploy required | Streamlit Cloud |
 | README against the four criteria | ✅ | `README.md` |
 | Headline number reproducible offline in one command | ✅ | `python run_demo.py` |
+| Fresh-clone test (clean clone, all keys stripped) | ✅ | `run_demo.py` and `verify_all.py` both exit 0 |
+| Retraction stays reproducible | ✅ | `verify_all.py` asserts `sweep_dwell.py` keeps failing |
 | Compiler accuracy measured, not asserted | ✅ | `python eval_compiler.py` — F1 0.962 |
 | Standalone research report | ✅ | `docs/trigger_divergence_report.md` |
 | Action brief with clause/page/owner citations | ✅ | `docs/action_brief.md` |
 | Measured API findings | ✅ | `docs/api_findings.md` |
 | Baseline labelled a proxy everywhere | ✅ | code, README, report, UI |
 | Limitations written honestly | ✅ | README §5, report §5 |
-| Video under three minutes | to record | `VIDEO_SCRIPT.md` |
+| Video under three minutes | to record | `VIDEO_SCRIPT.md` — rewritten post-retraction |
 
 ### Tracks to claim
 
