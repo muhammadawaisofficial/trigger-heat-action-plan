@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "method": "areal interpolation of Census block-group population onto urban village boundaries, weighted by overlap area",
+    "assumption": "population is uniformly distributed within a block group; this is an approximation",
+    "population_source": "US Census ACS 5-year 2023, table B01003_001E",
+    "geometry_source": "US Census TIGERweb ACS2023, Census Block Groups",
+    "county": "Maricopa County, Arizona (FIPS 04013)",
+    "county_population": 4491987,
+    "assigned_to_villages": 1639502
+  },
+  "villages": {
+    "ahwatukee_foothills": {
+      "name": "Ahwatukee Foothills",
+      "population": 80249,
+      "area_sq_mi": 35.46,
+      "density_per_sq_mi": 2263,
+      "block_groups_touched": 63
+    },
+    "laveen": {
+      "name": "Laveen",
+      "population": 68819,
+      "area_sq_mi": 30.43,
+      "density_per_sq_mi": 2262,
+      "block_groups_touched": 39
+    },
+    "south_mountain": {
+      "name": "South Mountain",
+      "population": 125391,
+      "area_sq_mi": 39.62,
+      "density_per_sq_mi": 3165,
+      "block_groups_touched": 91
+    },
+    "estrella": {
+      "name": "Estrella",
+      "population": 101765,
+      "area_sq_mi": 41.22,
+      "density_per_sq_mi": 2469,
+      "block_groups_touched": 70
+    },
+    "central_city": {
+      "name": "Central City",
+      "population": 59945,
+      "area_sq_mi": 21.15,
+      "density_per_sq_mi": 2834,
+      "block_groups_touched": 80
+    },
+    "camelback_east": {
+      "name": "Camelback East",
+      "population": 147669,
+      "area_sq_mi": 36.18,
+      "density_per_sq_mi": 4082,
+      "block_groups_touched": 142
+    },
+    "maryvale": {
+      "name": "Maryvale",
+      "population": 226766,
+      "area_sq_mi": 32.4,
+      "density_per_sq_mi": 6999,
+      "block_groups_touched": 136
+    },
+    "encanto": {
+      "name": "Encanto",
+      "population": 57250,
+      "area_sq_mi": 10.44,
+      "density_per_sq_mi": 5486,
+      "block_groups_touched": 57
+    },
+    "alhambra": {
+      "name": "Alhambra",
+      "population": 143242,
+      "area_sq_mi": 19.17,
+      "density_per_sq_mi": 7471,
+      "block_groups_touched": 118
+    },
+    "north_mountain": {
+      "name": "North Mountain",
+      "population": 173875,
+      "area_sq_mi": 34.61,
+      "density_per_sq_mi": 5024,
+      "block_groups_touched": 147
+    },
+    "paradise_valley": {
+      "name": "Paradise Valley",
+      "population": 174515,
+      "area_sq_mi": 42.89,
+      "density_per_sq_mi": 4069,
+      "block_groups_touched": 152
+    },
+    "deer_valley": {
+      "name": "Deer Valley",
+      "population": 184258,
+      "area_sq_mi": 56.52,
+      "density_per_sq_mi": 3260,
+      "block_groups_touched": 151
+    },
+    "desert_view": {
+      "name": "Desert View",
+      "population": 65279,
+      "area_sq_mi": 67.75,
+      "density_per_sq_mi": 964,
+      "block_groups_touched": 60
+    },
+    "north_gateway": {
+      "name": "North Gateway",
+      "population": 24950,
+      "area_sq_mi": 44.73,
+      "density_per_sq_mi": 558,
+      "block_groups_touched": 25
+    },
+    "rio_vista": {
+      "name": "Rio Vista",
+      "population": 5528,
+      "area_sq_mi": 41.68,
+      "density_per_sq_mi": 133,
+      "block_groups_touched": 9
+    }
+  }
+}

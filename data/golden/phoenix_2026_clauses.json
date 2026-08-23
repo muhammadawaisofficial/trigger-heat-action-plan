@@ -1,0 +1,862 @@
+{
+  "meta": {
+    "source_document": "City of Phoenix 2026 Heat Response Plan DRAFT (2.13.2026)",
+    "source_url": "https://www.phoenix.gov/content/dam/phoenix/heatsite/documents/2026%20Heat%20Response%20Plan.pdf",
+    "source_pages": 23,
+    "compiled_by": "hand (golden reference set)",
+    "quote_verification": "every source_text verified verbatim against its stated page",
+    "claims": [
+      {
+        "claim_id": "PHX-2026-CLAIM-10F",
+        "source_page": 4,
+        "source_text": "Historical development patterns and varying topography across Phoenix lead to neighborhood-to-neighborhood air temperature differences of 10\u00b0F or more on summer days.",
+        "testable": true,
+        "test": "Measure the spread of daily mean 2 m temperature across the 15 urban villages on each day of the study window and compare with 10 degF."
+      },
+      {
+        "claim_id": "PHX-2026-CLAIM-63PCT",
+        "source_page": 9,
+        "source_text": "In 2025, 37% of heat-related deaths in Maricopa County occurred on days with the HeatRisk was designated by the National Weather Service as Major or Extreme, and 63% of deaths occurred on days when the HeatRisk was designated as Moderate, Minor, or None.",
+        "testable": false,
+        "test": "Not testable with temperature data alone. Recorded because it is the plan's own statement that most heat deaths fall outside warning conditions."
+      }
+    ]
+  },
+  "clauses": [
+    {
+      "clause_id": "PHX-2026-A1.1",
+      "source_text": "Protective directives are implemented when temperatures exceed 105\u00b0F, deploying additional resources and implementing enhanced rehabilitation measures.",
+      "source_page": 12,
+      "kind": "operative_trigger",
+      "metric": "air_temperature",
+      "action": "Activate summer heat protocols including cold immersion techniques",
+      "actor": [
+        "FIRE"
+      ],
+      "operator": "above",
+      "threshold_source": 105.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "1.1",
+      "strategy_id": "1",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "Explicit numeric trigger. Scope recorded as citywide: the plan attaches no geography to the condition.",
+      "evaluable": true,
+      "not_evaluable_reason": "",
+      "threshold_c": 40.55555555555556,
+      "actor_full": [
+        "Fire Department"
+      ],
+      "strategy": "Equip first responders for effective heat response",
+      "is_conditional": true
+    },
+    {
+      "clause_id": "PHX-2026-A1.2",
+      "source_text": "During the heat season, outreach teams are equipped with heat relief kits to distribute to community members in need, including water, hats, cooling towels, and other essential supplies.",
+      "source_page": 12,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Equip Homeless Outreach Teams with Cooling Resources",
+      "actor": [
+        "OHS",
+        "OHRM",
+        "OPH"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "1.2",
+      "strategy_id": "1",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Activated for the heat season; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Homeless Solutions",
+        "Office of Heat Response and Mitigation",
+        "Public Health"
+      ],
+      "strategy": "Equip first responders for effective heat response",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.1",
+      "source_text": "17 City of Phoenix Library locations served as Cooling Centers throughout the 2025 Heat Season and the City will continue this commitment in 2025.",
+      "source_page": 13,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Designate City facilities as Heat Relief Network Cooling Centers",
+      "actor": [
+        "LIB",
+        "OHRM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.1",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Operates throughout the heat season; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Library",
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.2",
+      "source_text": "the City of Phoenix will extend the hours of one Cooling Center-Cholla Library-to 9pm each day of the week and add capacity from noon to 9pm on Sundays throughout the heat season.",
+      "source_page": 13,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Offer Extended Hours at City of Phoenix Cooling Centers",
+      "actor": [
+        "LIB",
+        "OHS",
+        "OEM",
+        "OHRM",
+        "OPH"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.2",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Fixed hours for the whole season. Notably, the site was chosen by a stated geographic heat-health rationale, but its operation is not conditioned on temperature.",
+      "threshold_c": null,
+      "actor_full": [
+        "Library",
+        "Office of Homeless Solutions",
+        "Office of Emergency Management",
+        "Office of Heat Response and Mitigation",
+        "Public Health"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.3",
+      "source_text": "the City of Phoenix will operate one 24/7 Heat Respite and Navigation Center for the entire heat season as well as a second site with afternoon and evening hours.",
+      "source_page": 14,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Operate a 24/7 Respite and Navigation Center",
+      "actor": [
+        "OHS",
+        "OEM",
+        "OHRM",
+        "OPH"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.3",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Runs continuously for the season; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Homeless Solutions",
+        "Office of Emergency Management",
+        "Office of Heat Response and Mitigation",
+        "Public Health"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.4",
+      "source_text": "All City of Phoenix senior centers, community centers, and swimming pools served as Hydration Stations during the 2025 Heat Season and the City will continue this commitment in 2026.",
+      "source_page": 14,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Designate City Facilities as Heat Relief Network Hydration Stations",
+      "actor": [
+        "PRD",
+        "HSD",
+        "OHRM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.4",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Season-long designation; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Parks and Recreation Department",
+        "Human Services",
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.5",
+      "source_text": "The unique property offers both outdoor and cooled indoor spaces.",
+      "source_page": 14,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Operate the Safe Outdoor Space",
+      "actor": [
+        "OHS"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.5",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Continuous operation; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Homeless Solutions"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.6",
+      "source_text": "These investments include shade structures and evaporative coolers that are activated on the Campus during the heat season.",
+      "source_page": 15,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Provide Shade and Cooled Rest areas at The Key Campus",
+      "actor": [
+        "OHS"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.6",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Activated 'during the heat season' -- a calendar condition, not a thermal one.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Homeless Solutions"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.7",
+      "source_text": "This project expands access to chilled drinking water in high-density areas of the city, with locations near public transportation stops and hubs, City buildings, and public spaces.",
+      "source_page": 15,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Expand Smart Drinking Water in Public Spaces Initiative",
+      "actor": [
+        "INNOV"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.7",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Capital deployment; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Innovation"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.8",
+      "source_text": "A pilot version of the training program will be launched for the 2026 heat season, with feedback from the pilot used to enhance the program for widespread implementation in 2027.",
+      "source_page": 15,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Improve Heat Response Educational Resources for City Employees",
+      "actor": [
+        "OHRM",
+        "HR"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.8",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Training programme; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Heat Response and Mitigation",
+        "Human Resources"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A2.9",
+      "source_text": "In 2026, the heat relief assistance program is being restructured with new formal contracts for a heat relief supply provider and distribution manager to improve program efficiency.",
+      "source_page": 16,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Provide Heat Relief Grants to Community Partners",
+      "actor": [
+        "OHRM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "2.9",
+      "strategy_id": "2",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Grant programme; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "Provide publicly accessible cool space and drinking water",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A3.1-EVAP",
+      "source_text": "Each unit must be able to safely cool all livable rooms to 86\u00b0F when using evaporative cooling and 82\u00b0F when using air conditioning.",
+      "source_page": 17,
+      "kind": "indoor_standard",
+      "metric": "indoor_air_temperature",
+      "action": "Promote and Enforce Cooling Ordinance for Rental Housing Units (evaporative cooling standard)",
+      "actor": [
+        "NSD",
+        "HSD",
+        "COMMS"
+      ],
+      "operator": "above",
+      "threshold_source": 86.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "indoor",
+      "action_id": "3.1",
+      "strategy_id": "3",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "One sentence carries two thresholds; split into two clauses.",
+      "evaluable": false,
+      "not_evaluable_reason": "Indoor habitability standard. FortyGuard measures 2 m outdoor air, so this cannot be evaluated directly without an indoor model.",
+      "threshold_c": 30.0,
+      "actor_full": [
+        "Neighborhood Services",
+        "Human Services",
+        "Communications"
+      ],
+      "strategy": "Support cool and safe home environments",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A3.1-AC",
+      "source_text": "Each unit must be able to safely cool all livable rooms to 86\u00b0F when using evaporative cooling and 82\u00b0F when using air conditioning.",
+      "source_page": 17,
+      "kind": "indoor_standard",
+      "metric": "indoor_air_temperature",
+      "action": "Promote and Enforce Cooling Ordinance for Rental Housing Units (air conditioning standard)",
+      "actor": [
+        "NSD",
+        "HSD",
+        "COMMS"
+      ],
+      "operator": "above",
+      "threshold_source": 82.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "indoor",
+      "action_id": "3.1",
+      "strategy_id": "3",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "Second threshold from the same sentence.",
+      "evaluable": false,
+      "not_evaluable_reason": "Indoor habitability standard; not an outdoor trigger.",
+      "threshold_c": 27.77777777777778,
+      "actor_full": [
+        "Neighborhood Services",
+        "Human Services",
+        "Communications"
+      ],
+      "strategy": "Support cool and safe home environments",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A3.2",
+      "source_text": "The utility assistance program operates year-round and is promoted as a heat response strategy during the heat season.",
+      "source_page": 17,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Provide Emergency Utility Assistance",
+      "actor": [
+        "HSD"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "3.2",
+      "strategy_id": "3",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Year-round programme; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Human Services"
+      ],
+      "strategy": "Support cool and safe home environments",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A3.3",
+      "source_text": "This program provides a vital lifeline for customers experiencing difficulty paying their water bills, offering essential water services for up to three months.",
+      "source_page": 18,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Offer Low-Flow Water Service Program",
+      "actor": [
+        "WSD"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "3.3",
+      "strategy_id": "3",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Financial hardship programme; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Water Services Department"
+      ],
+      "strategy": "Support cool and safe home environments",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A3.4",
+      "source_text": "The City will partner with the Red Cross and the Arizona Mobile and Manufactured Homeowners Association to coordinate a volunteer-led outreach program for residents of mobile and manufactured homes as well as seniors.",
+      "source_page": 18,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Deploy Heat Outreach Teams to Mobile Home and Senior Communities",
+      "actor": [
+        "OHRM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "3.4",
+      "strategy_id": "3",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Outreach campaign. Targets a heat-vulnerable population but is not conditioned on temperature.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "Support cool and safe home environments",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A4.1",
+      "source_text": "Volunteers from the Community Emergency Response Team (CERT) and Park Stewards are stationed every Saturday and Sunday from 7-10 a.m. at entrances to trails that have higher rates of heat-related illnesses and/or those where rescue operations are more technically complex, including trails at Camelback Mountain, Piestewa Peak, and South Mountain.",
+      "source_page": 19,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Deploy Outreach Teams to Select Trailheads",
+      "actor": [
+        "PRD",
+        "OHRM",
+        "FIRE"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "site",
+      "action_id": "4.1",
+      "strategy_id": "4",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Fixed weekend schedule, 7-10 a.m., May through September. The deployment window is a clock, not a condition.",
+      "threshold_c": null,
+      "actor_full": [
+        "Parks and Recreation Department",
+        "Office of Heat Response and Mitigation",
+        "Fire Department"
+      ],
+      "strategy": "Support cool and safe mobility and recreation",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A4.2",
+      "source_text": "The program restricts access to select trails when the National Weather Service issues an Extreme Heat Warning.",
+      "source_page": 19,
+      "kind": "external_trigger",
+      "metric": "daily_high",
+      "action": "Close Select Trailheads on Extreme Heat Warning Days",
+      "actor": [
+        "PRD"
+      ],
+      "operator": "above",
+      "threshold_source": 110.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "4.2",
+      "strategy_id": "4",
+      "lead_time_req_h": null,
+      "extraction_conf": 0.7,
+      "extraction_note": "The plan states no temperature for this trigger; the condition is defined by another agency and issued for a whole forecast zone. A 110 degF proxy is used, anchored to the plan's own pairing on page 6: 'hit at least 110\u00b0F on 37 days and there were 31 days with National Weather Service Extreme Heat Warnings in effect'. 37 vs 31 days means the mapping is close but not exact, hence reduced confidence. Treat results for this clause as indicative.",
+      "evaluable": true,
+      "not_evaluable_reason": "",
+      "threshold_c": 43.333333333333336,
+      "actor_full": [
+        "Parks and Recreation Department"
+      ],
+      "strategy": "Support cool and safe mobility and recreation",
+      "is_conditional": true
+    },
+    {
+      "clause_id": "PHX-2026-A4.3",
+      "source_text": "The Office of Heat Response and Mitigation will help raise awareness of heat response initiatives by supporting requests to participate in community gatherings and outreach events throughout the heat season.",
+      "source_page": 19,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Attend Community Events to Share Heat Safety Resources",
+      "actor": [
+        "OHRM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "4.3",
+      "strategy_id": "4",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Event attendance on request; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "Support cool and safe mobility and recreation",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A5.1",
+      "source_text": "The Human Resources Safety & Worker's Compensation Division has developed written Heat Injury and Illness Prevention Plans with departments whose employees face heat safety dangers during their work duties.",
+      "source_page": 20,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Annually Update Heat Safety Plans in City Departments",
+      "actor": [
+        "HR"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "5.1",
+      "strategy_id": "5",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Annual administrative update; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Human Resources"
+      ],
+      "strategy": "Implement heat safety measures for workers",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A5.2",
+      "source_text": "The ordinance requires these businesses to have compliant heat safety plans that ensure appropriate measures to protect employees are in place.",
+      "source_page": 20,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Promote and Enforce Heat Safety Ordinance for City Contractors",
+      "actor": [
+        "FIN",
+        "LAW",
+        "HR",
+        "OHRM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "5.2",
+      "strategy_id": "5",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Requires contractors to hold a plan; the ordinance text is not reproduced here, so no threshold is available from this document.",
+      "threshold_c": null,
+      "actor_full": [
+        "Finance Department",
+        "Law Department",
+        "Human Resources",
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "Implement heat safety measures for workers",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A6.1",
+      "source_text": "The City will continue to increase the reach of public messaging related to heat response in 2026 through a comprehensive multimedia public education campaign.",
+      "source_page": 21,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Operate a Comprehensive Heat Response Public Education Campaign",
+      "actor": [
+        "COMMS"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "6.1",
+      "strategy_id": "6",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Campaign runs through the season; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Communications"
+      ],
+      "strategy": "Educate the community and engage with partners",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A6.2",
+      "source_text": "Efforts in 2026 will include the continuation of heat outreach and expanding education on the risks of substance use and heat as well as overdose signs, symptoms, and response.",
+      "source_page": 21,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Improve Engagement Strategies for People Who Use Substances",
+      "actor": [
+        "OPH",
+        "OHRM",
+        "OHS",
+        "COMMS"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "6.2",
+      "strategy_id": "6",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Ongoing engagement programme; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Public Health",
+        "Office of Heat Response and Mitigation",
+        "Office of Homeless Solutions",
+        "Communications"
+      ],
+      "strategy": "Educate the community and engage with partners",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-A6.3",
+      "source_text": "The City will continue to participate in and lead heat response initiatives across a wide range of governance scales to ensure that resources are deployed as effectively as possible.",
+      "source_page": 22,
+      "kind": "scheduled",
+      "metric": "none",
+      "action": "Participate in Cross-Agency Work Groups and Research Initiatives",
+      "actor": [
+        "OHRM",
+        "OEM"
+      ],
+      "operator": null,
+      "threshold_source": null,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": "6.3",
+      "strategy_id": "6",
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "",
+      "evaluable": false,
+      "not_evaluable_reason": "Inter-agency coordination; no thermal condition stated.",
+      "threshold_c": null,
+      "actor_full": [
+        "Office of Heat Response and Mitigation",
+        "Office of Emergency Management"
+      ],
+      "strategy": "Educate the community and engage with partners",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-BENCH-HIGH110",
+      "source_text": "Temperatures at Phoenix Sky Harbor Airport hit at least 110\u00b0F on 37 days and there were 31 days with National Weather Service Extreme Heat Warnings in effect.",
+      "source_page": 6,
+      "kind": "planning_benchmark",
+      "metric": "daily_high",
+      "action": "Season-severity benchmark: daily high at or above 110 degF",
+      "actor": [
+        "OHRM"
+      ],
+      "operator": "above",
+      "threshold_source": 110.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": null,
+      "strategy_id": null,
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "The plan measures season severity from one station, named in the sentence. This is the citywide-sensing assumption, stated explicitly.",
+      "evaluable": true,
+      "not_evaluable_reason": "",
+      "threshold_c": 43.333333333333336,
+      "actor_full": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-BENCH-LOW90",
+      "source_text": "Nighttime temperatures failed to drop below 90\u00b0F at Sky Harbor on 23 days, including a seasonal high overnight low of 95\u00b0F on July 10.",
+      "source_page": 6,
+      "kind": "planning_benchmark",
+      "metric": "daily_low",
+      "action": "Season-severity benchmark: overnight low at or above 90 degF",
+      "actor": [
+        "OHRM"
+      ],
+      "operator": "above",
+      "threshold_source": 90.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": null,
+      "strategy_id": null,
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "Overnight heat is where the urban heat island is strongest, so this benchmark is the most spatially variable one in the document.",
+      "evaluable": true,
+      "not_evaluable_reason": "",
+      "threshold_c": 32.22222222222222,
+      "actor_full": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "",
+      "is_conditional": false
+    },
+    {
+      "clause_id": "PHX-2026-BENCH-HIGH100",
+      "source_text": "The table below presents weekly averages, ranges, and probabilities of exceedance based on 2016-2025 observations from Phoenix Sky Harbor Airport.",
+      "source_page": 7,
+      "kind": "planning_benchmark",
+      "metric": "daily_high",
+      "action": "Planning benchmark: daily high at or above 100 degF",
+      "actor": [
+        "OHRM"
+      ],
+      "operator": "above",
+      "threshold_source": 100.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action_id": null,
+      "strategy_id": null,
+      "lead_time_req_h": null,
+      "extraction_conf": 0.8,
+      "extraction_note": "Threshold read from the column header '100\u00b0F or above' of the page 7 planning table; the quoted sentence establishes the table's source and station. Confidence reduced because the number is tabular, not prose.",
+      "evaluable": true,
+      "not_evaluable_reason": "",
+      "threshold_c": 37.77777777777778,
+      "actor_full": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "strategy": "",
+      "is_conditional": false
+    }
+  ]
+}

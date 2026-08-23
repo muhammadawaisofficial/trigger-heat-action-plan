@@ -1,0 +1,5630 @@
+{
+  "study": {
+    "city": "Phoenix, Arizona",
+    "plan": "City of Phoenix 2026 Heat Response Plan DRAFT (2.13.2026)",
+    "plan_url": "https://www.phoenix.gov/content/dam/phoenix/heatsite/documents/2026%20Heat%20Response%20Plan.pdf",
+    "zones_source": "City of Phoenix Open Data, 'Villages' (https://www.phoenixopendata.com/dataset/villages)",
+    "zone_unit": "urban village",
+    "aoi_sq_mi": 1053.4,
+    "granularity_m": 100,
+    "timezone_note": "Arizona is UTC-7 year-round; the state does not observe DST."
+  },
+  "inventory": {
+    "total": 27,
+    "by_kind": {
+      "operative_trigger": 1,
+      "scheduled": 20,
+      "indoor_standard": 2,
+      "external_trigger": 1,
+      "planning_benchmark": 3
+    },
+    "conditional": 2,
+    "scheduled": 20,
+    "evaluable": 5,
+    "citywide_scope": 2
+  },
+  "summary": {
+    "window": [
+      "2025-08-02",
+      "2025-08-08"
+    ],
+    "days": 7,
+    "clauses_evaluated": 5,
+    "median_lead_days": 4.0,
+    "silent_zones": 10,
+    "silent_zone_days": 20,
+    "false_calm_clauses": [],
+    "false_calm_days": [
+      "2025-08-02",
+      "2025-08-05",
+      "2025-08-08"
+    ],
+    "baseline": "citywide proxy (area-weighted AOI mean) - a stand-in for station-based sensing, not a station feed",
+    "population_exposed": 1184971,
+    "population_total": 1639501
+  },
+  "population_source": "US Census ACS 5-year 2023 block groups, areally interpolated onto village boundaries",
+  "clauses": [
+    {
+      "clause_id": "PHX-2026-A1.1",
+      "action": "Activate summer heat protocols including cold immersion techniques",
+      "source_page": 12,
+      "source_text": "Protective directives are implemented when temperatures exceed 105\u00b0F, deploying additional resources and implementing enhanced rehabilitation measures.",
+      "actor": [
+        "Fire Department"
+      ],
+      "threshold_f": 105.0,
+      "threshold_c": 40.55555555555556,
+      "proxy_fired_days": [
+        "2025-08-02",
+        "2025-08-03",
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08"
+      ],
+      "zone_fired_day_count": 103,
+      "silent_zones": [],
+      "silent_zone_days": 0,
+      "median_lead_days": null,
+      "is_false_calm": false,
+      "false_calm_days": [],
+      "worst_false_calm": null,
+      "zone_leads": [
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "ahwatukee_foothills",
+          "zone_name": "Ahwatukee Foothills",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "alhambra",
+          "zone_name": "Alhambra",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "camelback_east",
+          "zone_name": "Camelback East",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "central_city",
+          "zone_name": "Central City",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "deer_valley",
+          "zone_name": "Deer Valley",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "desert_view",
+          "zone_name": "Desert View",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "encanto",
+          "zone_name": "Encanto",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "estrella",
+          "zone_name": "Estrella",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "laveen",
+          "zone_name": "Laveen",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "maryvale",
+          "zone_name": "Maryvale",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "north_gateway",
+          "zone_name": "North Gateway",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 6,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "north_mountain",
+          "zone_name": "North Mountain",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "paradise_valley",
+          "zone_name": "Paradise Valley",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "rio_vista",
+          "zone_name": "Rio Vista",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 6,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-A1.1",
+          "zone_id": "south_mountain",
+          "zone_name": "South Mountain",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        }
+      ],
+      "determinations": [
+        {
+          "day": "2025-08-02",
+          "proxy": {
+            "value": 5.015204542400823,
+            "fired": true,
+            "units": "hours",
+            "margin": 5.015204542400823
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 5.83930747977232,
+              "fired": true,
+              "margin": 5.83930747977232,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 6.9008373163397945,
+              "fired": true,
+              "margin": 6.9008373163397945,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 6.587067615459473,
+              "fired": true,
+              "margin": 6.587067615459473,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 7.075884716851583,
+              "fired": true,
+              "margin": 7.075884716851583,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 7.300090456594081,
+              "fired": true,
+              "margin": 7.300090456594081,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 6.8594898077182656,
+              "fired": true,
+              "margin": 6.8594898077182656,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 6.899899303968364,
+              "fired": true,
+              "margin": 6.899899303968364,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 7.1674397365788725,
+              "fired": true,
+              "margin": 7.1674397365788725,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 6.999821870095005,
+              "fired": true,
+              "margin": 6.999821870095005,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 6.885375331366627,
+              "fired": true,
+              "margin": 6.885375331366627,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 6.571259975071788,
+              "fired": true,
+              "margin": 6.571259975071788,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 6.179329201423449,
+              "fired": true,
+              "margin": 6.179329201423449,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 3.4551158356195257,
+              "fired": true,
+              "margin": 3.4551158356195257,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 3.9567876288104538,
+              "fired": true,
+              "margin": 3.9567876288104538,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 1.4127683208121824,
+              "fired": true,
+              "margin": 1.4127683208121824,
+              "units": "hours"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-03",
+          "proxy": {
+            "value": 3.7056745444649253,
+            "fired": true,
+            "units": "hours",
+            "margin": 3.7056745444649253
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 3.789491024768542,
+              "fired": true,
+              "margin": 3.789491024768542,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 5.2858961250424885,
+              "fired": true,
+              "margin": 5.2858961250424885,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 4.955321616619098,
+              "fired": true,
+              "margin": 4.955321616619098,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 6.063411920239745,
+              "fired": true,
+              "margin": 6.063411920239745,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 6.991116781822987,
+              "fired": true,
+              "margin": 6.991116781822987,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 6.046271857457435,
+              "fired": true,
+              "margin": 6.046271857457435,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 6.56140948814866,
+              "fired": true,
+              "margin": 6.56140948814866,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 6.999989515930569,
+              "fired": true,
+              "margin": 6.999989515930569,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 7.002164738896824,
+              "fired": true,
+              "margin": 7.002164738896824,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 5.774745363435666,
+              "fired": true,
+              "margin": 5.774745363435666,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 4.707612941572918,
+              "fired": true,
+              "margin": 4.707612941572918,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 4.246949082787131,
+              "fired": true,
+              "margin": 4.246949082787131,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 0.48861089836653354,
+              "fired": true,
+              "margin": 0.48861089836653354,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 1.4147456830084115,
+              "fired": true,
+              "margin": 1.4147456830084115,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 0.2040950886402054,
+              "fired": true,
+              "margin": 0.2040950886402054,
+              "units": "hours"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-04",
+          "proxy": {
+            "value": 3.0231959949939817,
+            "fired": true,
+            "units": "hours",
+            "margin": 3.0231959949939817
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 3.2938830540601334,
+              "fired": true,
+              "margin": 3.2938830540601334,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 4.994127100027227,
+              "fired": true,
+              "margin": 4.994127100027227,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 4.78944946301017,
+              "fired": true,
+              "margin": 4.78944946301017,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 5.769857757745456,
+              "fired": true,
+              "margin": 5.769857757745456,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 6.992823898672237,
+              "fired": true,
+              "margin": 6.992823898672237,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 5.13005479062762,
+              "fired": true,
+              "margin": 5.13005479062762,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 6.1349081233186435,
+              "fired": true,
+              "margin": 6.1349081233186435,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 6.987232624471658,
+              "fired": true,
+              "margin": 6.987232624471658,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 6.902608760568594,
+              "fired": true,
+              "margin": 6.902608760568594,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 4.957766076562183,
+              "fired": true,
+              "margin": 4.957766076562183,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 3.0966161544846393,
+              "fired": true,
+              "margin": 3.0966161544846393,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 2.8557848627695335,
+              "fired": true,
+              "margin": 2.8557848627695335,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 0.07761244480692013,
+              "fired": true,
+              "margin": 0.07761244480692013,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": -8.726663967497999e-05,
+              "fired": false,
+              "margin": -8.726663967497999e-05,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 0.0,
+              "fired": false,
+              "margin": 0.0,
+              "units": "hours"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-05",
+          "proxy": {
+            "value": 6.061555035031897,
+            "fired": true,
+            "units": "hours",
+            "margin": 6.061555035031897
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 6.215528778702684,
+              "fired": true,
+              "margin": 6.215528778702684,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 7.964804045054978,
+              "fired": true,
+              "margin": 7.964804045054978,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 7.3857302670722085,
+              "fired": true,
+              "margin": 7.3857302670722085,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 8.112322138766443,
+              "fired": true,
+              "margin": 8.112322138766443,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 8.93308957001722,
+              "fired": true,
+              "margin": 8.93308957001722,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 7.796284146008479,
+              "fired": true,
+              "margin": 7.796284146008479,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 8.263301597264027,
+              "fired": true,
+              "margin": 8.263301597264027,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 8.999959625234636,
+              "fired": true,
+              "margin": 8.999959625234636,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 8.859527598144906,
+              "fired": true,
+              "margin": 8.859527598144906,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 7.627990634241223,
+              "fired": true,
+              "margin": 7.627990634241223,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 6.962789678946706,
+              "fired": true,
+              "margin": 6.962789678946706,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 7.078643972939665,
+              "fired": true,
+              "margin": 7.078643972939665,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 5.027216074937224,
+              "fired": true,
+              "margin": 5.027216074937224,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 5.798033996933271,
+              "fired": true,
+              "margin": 5.798033996933271,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 3.258792574162107,
+              "fired": true,
+              "margin": 3.258792574162107,
+              "units": "hours"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-06",
+          "proxy": {
+            "value": 7.610761303785271,
+            "fired": true,
+            "units": "hours",
+            "margin": 7.610761303785271
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 8.02287138253962,
+              "fired": true,
+              "margin": 8.02287138253962,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 8.796970226251624,
+              "fired": true,
+              "margin": 8.796970226251624,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 8.482976637811397,
+              "fired": true,
+              "margin": 8.482976637811397,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 9.000000156901741,
+              "fired": true,
+              "margin": 9.000000156901741,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 9.00000128646622,
+              "fired": true,
+              "margin": 9.00000128646622,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 8.623073912658585,
+              "fired": true,
+              "margin": 8.623073912658585,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 8.999999999999977,
+              "fired": true,
+              "margin": 8.999999999999977,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 9.000000611868588,
+              "fired": true,
+              "margin": 9.000000611868588,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 9.001069926480177,
+              "fired": true,
+              "margin": 9.001069926480177,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 8.342707033035586,
+              "fired": true,
+              "margin": 8.342707033035586,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 7.8172878887870585,
+              "fired": true,
+              "margin": 7.8172878887870585,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 8.297464052627353,
+              "fired": true,
+              "margin": 8.297464052627353,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 6.956847843262356,
+              "fired": true,
+              "margin": 6.956847843262356,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 7.047632079775745,
+              "fired": true,
+              "margin": 7.047632079775745,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 6.356398677574976,
+              "fired": true,
+              "margin": 6.356398677574976,
+              "units": "hours"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-07",
+          "proxy": {
+            "value": 8.47094228549579,
+            "fired": true,
+            "units": "hours",
+            "margin": 8.47094228549579
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 8.715239618487828,
+              "fired": true,
+              "margin": 8.715239618487828,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 8.899374180090648,
+              "fired": true,
+              "margin": 8.899374180090648,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 9.084666627551188,
+              "fired": true,
+              "margin": 9.084666627551188,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 9.322574842052193,
+              "fired": true,
+              "margin": 9.322574842052193,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 9.991097881333603,
+              "fired": true,
+              "margin": 9.991097881333603,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 9.715245030351515,
+              "fired": true,
+              "margin": 9.715245030351515,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 9.296720959415302,
+              "fired": true,
+              "margin": 9.296720959415302,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 9.999995329736537,
+              "fired": true,
+              "margin": 9.999995329736537,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 9.985859994276545,
+              "fired": true,
+              "margin": 9.985859994276545,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 9.46956163187602,
+              "fired": true,
+              "margin": 9.46956163187602,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 8.900296375770305,
+              "fired": true,
+              "margin": 8.900296375770305,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 8.808109919375413,
+              "fired": true,
+              "margin": 8.808109919375413,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 7.347053191607495,
+              "fired": true,
+              "margin": 7.347053191607495,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 8.227377706916007,
+              "fired": true,
+              "margin": 8.227377706916007,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 7.758536256493394,
+              "fired": true,
+              "margin": 7.758536256493394,
+              "units": "hours"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-08",
+          "proxy": {
+            "value": 5.672655852018845,
+            "fired": true,
+            "units": "hours",
+            "margin": 5.672655852018845
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 5.158911885689296,
+              "fired": true,
+              "margin": 5.158911885689296,
+              "units": "hours"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 6.492671635137529,
+              "fired": true,
+              "margin": 6.492671635137529,
+              "units": "hours"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 6.2492234885719,
+              "fired": true,
+              "margin": 6.2492234885719,
+              "units": "hours"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 7.144426995578251,
+              "fired": true,
+              "margin": 7.144426995578251,
+              "units": "hours"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 7.875033822161572,
+              "fired": true,
+              "margin": 7.875033822161572,
+              "units": "hours"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 6.312052635609731,
+              "fired": true,
+              "margin": 6.312052635609731,
+              "units": "hours"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 7.145638409063315,
+              "fired": true,
+              "margin": 7.145638409063315,
+              "units": "hours"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 7.5629278859866345,
+              "fired": true,
+              "margin": 7.5629278859866345,
+              "units": "hours"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 7.071791137207785,
+              "fired": true,
+              "margin": 7.071791137207785,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 6.127360480134644,
+              "fired": true,
+              "margin": 6.127360480134644,
+              "units": "hours"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 5.33670392007969,
+              "fired": true,
+              "margin": 5.33670392007969,
+              "units": "hours"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 5.769371782262905,
+              "fired": true,
+              "margin": 5.769371782262905,
+              "units": "hours"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 4.867331089227491,
+              "fired": true,
+              "margin": 4.867331089227491,
+              "units": "hours"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 5.04797082020864,
+              "fired": true,
+              "margin": 5.04797082020864,
+              "units": "hours"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 4.963465144814402,
+              "fired": true,
+              "margin": 4.963465144814402,
+              "units": "hours"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "clause_id": "PHX-2026-A4.2",
+      "action": "Close Select Trailheads on Extreme Heat Warning Days",
+      "source_page": 19,
+      "source_text": "The program restricts access to select trails when the National Weather Service issues an Extreme Heat Warning.",
+      "actor": [
+        "Parks and Recreation Department"
+      ],
+      "threshold_f": 110.0,
+      "threshold_c": 43.333333333333336,
+      "proxy_fired_days": [],
+      "zone_fired_day_count": 0,
+      "silent_zones": [],
+      "silent_zone_days": 0,
+      "median_lead_days": null,
+      "is_false_calm": false,
+      "false_calm_days": [],
+      "worst_false_calm": null,
+      "zone_leads": [
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "ahwatukee_foothills",
+          "zone_name": "Ahwatukee Foothills",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "alhambra",
+          "zone_name": "Alhambra",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "camelback_east",
+          "zone_name": "Camelback East",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "central_city",
+          "zone_name": "Central City",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "deer_valley",
+          "zone_name": "Deer Valley",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "desert_view",
+          "zone_name": "Desert View",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "encanto",
+          "zone_name": "Encanto",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "estrella",
+          "zone_name": "Estrella",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "laveen",
+          "zone_name": "Laveen",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "maryvale",
+          "zone_name": "Maryvale",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "north_gateway",
+          "zone_name": "North Gateway",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "north_mountain",
+          "zone_name": "North Mountain",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "paradise_valley",
+          "zone_name": "Paradise Valley",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "rio_vista",
+          "zone_name": "Rio Vista",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-A4.2",
+          "zone_id": "south_mountain",
+          "zone_name": "South Mountain",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        }
+      ],
+      "determinations": [
+        {
+          "day": "2025-08-02",
+          "proxy": {
+            "value": 41.291055720475185,
+            "fired": false,
+            "units": "degC",
+            "margin": -2.0422776128581503
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.605039263986605,
+              "fired": false,
+              "margin": -1.728294069346731,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.854337665915295,
+              "fired": false,
+              "margin": -1.4789956674180402,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.7914080463699,
+              "fired": false,
+              "margin": -1.5419252869634335,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.95821995722685,
+              "fired": false,
+              "margin": -1.3751133761064835,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.08062318195325,
+              "fired": false,
+              "margin": -1.2527101513800858,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.841034806700854,
+              "fired": false,
+              "margin": -1.4922985266324815,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.969496850415574,
+              "fired": false,
+              "margin": -1.3638364829177618,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.04330698494712,
+              "fired": false,
+              "margin": -1.2900263483862133,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.97328949081705,
+              "fired": false,
+              "margin": -1.3600438425162835,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.74231993115314,
+              "fired": false,
+              "margin": -1.5910134021801952,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.49898043853199,
+              "fired": false,
+              "margin": -1.8343528948013486,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.484935225716974,
+              "fired": false,
+              "margin": -1.8483981076163616,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.945465627448215,
+              "fired": false,
+              "margin": -2.387867705885121,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.99566752727979,
+              "fired": false,
+              "margin": -2.3376658060535433,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.584104293211404,
+              "fired": false,
+              "margin": -2.749229040121932,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-03",
+          "proxy": {
+            "value": 40.79635586688172,
+            "fired": false,
+            "units": "degC",
+            "margin": -2.536977466451617
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 40.9935995769952,
+              "fired": false,
+              "margin": -2.339733756338134,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.31563233770679,
+              "fired": false,
+              "margin": -2.017700995626548,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.23750481755085,
+              "fired": false,
+              "margin": -2.095828515782486,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.45914607152779,
+              "fired": false,
+              "margin": -1.8741872618055453,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.59896171576002,
+              "fired": false,
+              "margin": -1.7343716175733164,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.32837629597815,
+              "fired": false,
+              "margin": -2.004957037355183,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.42405771892857,
+              "fired": false,
+              "margin": -1.9092756144047627,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.551744844835476,
+              "fired": false,
+              "margin": -1.7815884884978601,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.44749534014995,
+              "fired": false,
+              "margin": -1.8858379931833866,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.21431831012744,
+              "fired": false,
+              "margin": -2.119015023205897,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.038840483066735,
+              "fired": false,
+              "margin": -2.2944928502666,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 40.99159178896732,
+              "fired": false,
+              "margin": -2.341741544366016,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.417086629139874,
+              "fired": false,
+              "margin": -2.916246704193462,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.64125570742645,
+              "fired": false,
+              "margin": -2.692077625906883,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.102117230207085,
+              "fired": false,
+              "margin": -3.2312161031262505,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-04",
+          "proxy": {
+            "value": 40.59740443663152,
+            "fired": false,
+            "units": "degC",
+            "margin": -2.7359288967018145
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 40.8556213094781,
+              "fired": false,
+              "margin": -2.477712023855233,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.24949161875022,
+              "fired": false,
+              "margin": -2.083841714583116,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.014696739136376,
+              "fired": false,
+              "margin": -2.3186365941969598,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.33885937937489,
+              "fired": false,
+              "margin": -1.9944739539584475,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.38572341019664,
+              "fired": false,
+              "margin": -1.947609923136696,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.14171067997589,
+              "fired": false,
+              "margin": -2.1916226533574488,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.32283923275578,
+              "fired": false,
+              "margin": -2.010494100577553,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.34468962692679,
+              "fired": false,
+              "margin": -1.988643706406549,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.28784767640517,
+              "fired": false,
+              "margin": -2.0454856569281645,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.00426459886072,
+              "fired": false,
+              "margin": -2.3290687344726138,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 40.88602982274169,
+              "fired": false,
+              "margin": -2.447303510591645,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 40.75602463653354,
+              "fired": false,
+              "margin": -2.577308696799797,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.19817545933877,
+              "fired": false,
+              "margin": -3.135157873994565,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.257803954835865,
+              "fired": false,
+              "margin": -3.075529378497471,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 39.847397331910045,
+              "fired": false,
+              "margin": -3.4859360014232905,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-05",
+          "proxy": {
+            "value": 41.36336234227768,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.9699709910556535
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.516675074387074,
+              "fired": false,
+              "margin": -1.816658258946262,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.826089578162474,
+              "fired": false,
+              "margin": -1.5072437551708617,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.67985314665659,
+              "fired": false,
+              "margin": -1.6534801866767452,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.93316970859244,
+              "fired": false,
+              "margin": -1.4001636247408982,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.0494984594812,
+              "fired": false,
+              "margin": -1.2838348738521361,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.825066868939224,
+              "fired": false,
+              "margin": -1.5082664643941115,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.95482293563314,
+              "fired": false,
+              "margin": -1.3785103977001967,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.02426406914966,
+              "fired": false,
+              "margin": -1.3090692641836768,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 42.00884471592391,
+              "fired": false,
+              "margin": -1.324488617409429,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.81528926348787,
+              "fired": false,
+              "margin": -1.518044069845466,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.59877148700755,
+              "fired": false,
+              "margin": -1.7345618463257892,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.5800607189738,
+              "fired": false,
+              "margin": -1.7532726143595383,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.03176374378435,
+              "fired": false,
+              "margin": -2.3015695895489827,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.13983349375228,
+              "fired": false,
+              "margin": -2.193499839581058,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.75035718457429,
+              "fired": false,
+              "margin": -2.5829761487590446,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-06",
+          "proxy": {
+            "value": 41.88476154777165,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.4485717855616826
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 42.07546245646261,
+              "fired": false,
+              "margin": -1.2578708768707259,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 42.31108374464243,
+              "fired": false,
+              "margin": -1.0222495886909044,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 42.19307559469673,
+              "fired": false,
+              "margin": -1.1402577386366062,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 42.4408496276831,
+              "fired": false,
+              "margin": -0.8924837056502355,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.50423279974045,
+              "fired": false,
+              "margin": -0.8291005335928858,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 42.30397017935596,
+              "fired": false,
+              "margin": -1.0293631539773784,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 42.4537780082756,
+              "fired": false,
+              "margin": -0.879555325057737,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.487841061595404,
+              "fired": false,
+              "margin": -0.8454922717379318,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 42.41666777863164,
+              "fired": false,
+              "margin": -0.9166655547016944,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 42.210173991707634,
+              "fired": false,
+              "margin": -1.1231593416257013,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 42.072623443976326,
+              "fired": false,
+              "margin": -1.2607098893570097,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 42.040386183943184,
+              "fired": false,
+              "margin": -1.2929471493901517,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.54923581321338,
+              "fired": false,
+              "margin": -1.784097520119957,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.677044133785294,
+              "fired": false,
+              "margin": -1.6562891995480413,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 41.370591621696285,
+              "fired": false,
+              "margin": -1.962741711637051,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-07",
+          "proxy": {
+            "value": 42.43257136744022,
+            "fired": false,
+            "units": "degC",
+            "margin": -0.9007619658931176
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 42.3673397941631,
+              "fired": false,
+              "margin": -0.9659935391702348,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 42.588820752040604,
+              "fired": false,
+              "margin": -0.7445125812927316,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 42.56451479404589,
+              "fired": false,
+              "margin": -0.7688185392874445,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 42.77206436899482,
+              "fired": false,
+              "margin": -0.5612689643385167,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.95503189297898,
+              "fired": false,
+              "margin": -0.3783014403543561,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 42.80544446021335,
+              "fired": false,
+              "margin": -0.5278888731199842,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 42.91219433146906,
+              "fired": false,
+              "margin": -0.421139001864276,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 43.01274131666263,
+              "fired": false,
+              "margin": -0.3205920166707088,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 43.03676987036687,
+              "fired": false,
+              "margin": -0.29656346296646774,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 42.809338119934814,
+              "fired": false,
+              "margin": -0.5239952133985213,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 42.6347866839503,
+              "fired": false,
+              "margin": -0.698546649383033,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 42.63001512638867,
+              "fired": false,
+              "margin": -0.7033182069446653,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 42.16419226562574,
+              "fired": false,
+              "margin": -1.1691410677075922,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 42.297658400852946,
+              "fired": false,
+              "margin": -1.03567493248039,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 42.13558956426153,
+              "fired": false,
+              "margin": -1.1977437690718062,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-08",
+          "proxy": {
+            "value": 41.62784895828253,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.7054843750508084
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.55299813181825,
+              "fired": false,
+              "margin": -1.7803352015150864,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.92808476695065,
+              "fired": false,
+              "margin": -1.4052485663826886,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.670639540651784,
+              "fired": false,
+              "margin": -1.6626937926815515,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.8862876887318,
+              "fired": false,
+              "margin": -1.4470456446015376,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.93683227684856,
+              "fired": false,
+              "margin": -1.396501056484773,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.73353640529091,
+              "fired": false,
+              "margin": -1.599796928042423,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.91308542357912,
+              "fired": false,
+              "margin": -1.4202479097542167,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.966677398655406,
+              "fired": false,
+              "margin": -1.3666559346779295,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.95795022756205,
+              "fired": false,
+              "margin": -1.3753831057712844,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.810118014847056,
+              "fired": false,
+              "margin": -1.5232153184862796,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.58240030754039,
+              "fired": false,
+              "margin": -1.7509330257929463,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.745661072531334,
+              "fired": false,
+              "margin": -1.5876722608020017,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.24858216104287,
+              "fired": false,
+              "margin": -2.084751172290467,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.64496491855618,
+              "fired": false,
+              "margin": -1.688368414777159,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 41.46652150467881,
+              "fired": false,
+              "margin": -1.8668118286545266,
+              "units": "degC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "clause_id": "PHX-2026-BENCH-HIGH110",
+      "action": "Season-severity benchmark: daily high at or above 110 degF",
+      "source_page": 6,
+      "source_text": "Temperatures at Phoenix Sky Harbor Airport hit at least 110\u00b0F on 37 days and there were 31 days with National Weather Service Extreme Heat Warnings in effect.",
+      "actor": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "threshold_f": 110.0,
+      "threshold_c": 43.333333333333336,
+      "proxy_fired_days": [],
+      "zone_fired_day_count": 0,
+      "silent_zones": [],
+      "silent_zone_days": 0,
+      "median_lead_days": null,
+      "is_false_calm": false,
+      "false_calm_days": [],
+      "worst_false_calm": null,
+      "zone_leads": [
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "ahwatukee_foothills",
+          "zone_name": "Ahwatukee Foothills",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "alhambra",
+          "zone_name": "Alhambra",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "camelback_east",
+          "zone_name": "Camelback East",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "central_city",
+          "zone_name": "Central City",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "deer_valley",
+          "zone_name": "Deer Valley",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "desert_view",
+          "zone_name": "Desert View",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "encanto",
+          "zone_name": "Encanto",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "estrella",
+          "zone_name": "Estrella",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "laveen",
+          "zone_name": "Laveen",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "maryvale",
+          "zone_name": "Maryvale",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "north_gateway",
+          "zone_name": "North Gateway",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "north_mountain",
+          "zone_name": "North Mountain",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "paradise_valley",
+          "zone_name": "Paradise Valley",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "rio_vista",
+          "zone_name": "Rio Vista",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH110",
+          "zone_id": "south_mountain",
+          "zone_name": "South Mountain",
+          "first_met_day": null,
+          "proxy_first_day": null,
+          "lead_days": null,
+          "days_met": 0,
+          "days_proxy_met": 0
+        }
+      ],
+      "determinations": [
+        {
+          "day": "2025-08-02",
+          "proxy": {
+            "value": 41.291055720475185,
+            "fired": false,
+            "units": "degC",
+            "margin": -2.0422776128581503
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.605039263986605,
+              "fired": false,
+              "margin": -1.728294069346731,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.854337665915295,
+              "fired": false,
+              "margin": -1.4789956674180402,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.7914080463699,
+              "fired": false,
+              "margin": -1.5419252869634335,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.95821995722685,
+              "fired": false,
+              "margin": -1.3751133761064835,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.08062318195325,
+              "fired": false,
+              "margin": -1.2527101513800858,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.841034806700854,
+              "fired": false,
+              "margin": -1.4922985266324815,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.969496850415574,
+              "fired": false,
+              "margin": -1.3638364829177618,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.04330698494712,
+              "fired": false,
+              "margin": -1.2900263483862133,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.97328949081705,
+              "fired": false,
+              "margin": -1.3600438425162835,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.74231993115314,
+              "fired": false,
+              "margin": -1.5910134021801952,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.49898043853199,
+              "fired": false,
+              "margin": -1.8343528948013486,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.484935225716974,
+              "fired": false,
+              "margin": -1.8483981076163616,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.945465627448215,
+              "fired": false,
+              "margin": -2.387867705885121,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.99566752727979,
+              "fired": false,
+              "margin": -2.3376658060535433,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.584104293211404,
+              "fired": false,
+              "margin": -2.749229040121932,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-03",
+          "proxy": {
+            "value": 40.79635586688172,
+            "fired": false,
+            "units": "degC",
+            "margin": -2.536977466451617
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 40.9935995769952,
+              "fired": false,
+              "margin": -2.339733756338134,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.31563233770679,
+              "fired": false,
+              "margin": -2.017700995626548,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.23750481755085,
+              "fired": false,
+              "margin": -2.095828515782486,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.45914607152779,
+              "fired": false,
+              "margin": -1.8741872618055453,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.59896171576002,
+              "fired": false,
+              "margin": -1.7343716175733164,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.32837629597815,
+              "fired": false,
+              "margin": -2.004957037355183,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.42405771892857,
+              "fired": false,
+              "margin": -1.9092756144047627,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.551744844835476,
+              "fired": false,
+              "margin": -1.7815884884978601,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.44749534014995,
+              "fired": false,
+              "margin": -1.8858379931833866,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.21431831012744,
+              "fired": false,
+              "margin": -2.119015023205897,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.038840483066735,
+              "fired": false,
+              "margin": -2.2944928502666,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 40.99159178896732,
+              "fired": false,
+              "margin": -2.341741544366016,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.417086629139874,
+              "fired": false,
+              "margin": -2.916246704193462,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.64125570742645,
+              "fired": false,
+              "margin": -2.692077625906883,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.102117230207085,
+              "fired": false,
+              "margin": -3.2312161031262505,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-04",
+          "proxy": {
+            "value": 40.59740443663152,
+            "fired": false,
+            "units": "degC",
+            "margin": -2.7359288967018145
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 40.8556213094781,
+              "fired": false,
+              "margin": -2.477712023855233,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.24949161875022,
+              "fired": false,
+              "margin": -2.083841714583116,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.014696739136376,
+              "fired": false,
+              "margin": -2.3186365941969598,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.33885937937489,
+              "fired": false,
+              "margin": -1.9944739539584475,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.38572341019664,
+              "fired": false,
+              "margin": -1.947609923136696,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.14171067997589,
+              "fired": false,
+              "margin": -2.1916226533574488,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.32283923275578,
+              "fired": false,
+              "margin": -2.010494100577553,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.34468962692679,
+              "fired": false,
+              "margin": -1.988643706406549,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.28784767640517,
+              "fired": false,
+              "margin": -2.0454856569281645,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.00426459886072,
+              "fired": false,
+              "margin": -2.3290687344726138,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 40.88602982274169,
+              "fired": false,
+              "margin": -2.447303510591645,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 40.75602463653354,
+              "fired": false,
+              "margin": -2.577308696799797,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.19817545933877,
+              "fired": false,
+              "margin": -3.135157873994565,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.257803954835865,
+              "fired": false,
+              "margin": -3.075529378497471,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 39.847397331910045,
+              "fired": false,
+              "margin": -3.4859360014232905,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-05",
+          "proxy": {
+            "value": 41.36336234227768,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.9699709910556535
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.516675074387074,
+              "fired": false,
+              "margin": -1.816658258946262,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.826089578162474,
+              "fired": false,
+              "margin": -1.5072437551708617,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.67985314665659,
+              "fired": false,
+              "margin": -1.6534801866767452,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.93316970859244,
+              "fired": false,
+              "margin": -1.4001636247408982,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.0494984594812,
+              "fired": false,
+              "margin": -1.2838348738521361,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.825066868939224,
+              "fired": false,
+              "margin": -1.5082664643941115,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.95482293563314,
+              "fired": false,
+              "margin": -1.3785103977001967,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.02426406914966,
+              "fired": false,
+              "margin": -1.3090692641836768,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 42.00884471592391,
+              "fired": false,
+              "margin": -1.324488617409429,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.81528926348787,
+              "fired": false,
+              "margin": -1.518044069845466,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.59877148700755,
+              "fired": false,
+              "margin": -1.7345618463257892,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.5800607189738,
+              "fired": false,
+              "margin": -1.7532726143595383,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.03176374378435,
+              "fired": false,
+              "margin": -2.3015695895489827,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.13983349375228,
+              "fired": false,
+              "margin": -2.193499839581058,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.75035718457429,
+              "fired": false,
+              "margin": -2.5829761487590446,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-06",
+          "proxy": {
+            "value": 41.88476154777165,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.4485717855616826
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 42.07546245646261,
+              "fired": false,
+              "margin": -1.2578708768707259,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 42.31108374464243,
+              "fired": false,
+              "margin": -1.0222495886909044,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 42.19307559469673,
+              "fired": false,
+              "margin": -1.1402577386366062,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 42.4408496276831,
+              "fired": false,
+              "margin": -0.8924837056502355,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.50423279974045,
+              "fired": false,
+              "margin": -0.8291005335928858,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 42.30397017935596,
+              "fired": false,
+              "margin": -1.0293631539773784,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 42.4537780082756,
+              "fired": false,
+              "margin": -0.879555325057737,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.487841061595404,
+              "fired": false,
+              "margin": -0.8454922717379318,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 42.41666777863164,
+              "fired": false,
+              "margin": -0.9166655547016944,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 42.210173991707634,
+              "fired": false,
+              "margin": -1.1231593416257013,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 42.072623443976326,
+              "fired": false,
+              "margin": -1.2607098893570097,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 42.040386183943184,
+              "fired": false,
+              "margin": -1.2929471493901517,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.54923581321338,
+              "fired": false,
+              "margin": -1.784097520119957,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.677044133785294,
+              "fired": false,
+              "margin": -1.6562891995480413,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 41.370591621696285,
+              "fired": false,
+              "margin": -1.962741711637051,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-07",
+          "proxy": {
+            "value": 42.43257136744022,
+            "fired": false,
+            "units": "degC",
+            "margin": -0.9007619658931176
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 42.3673397941631,
+              "fired": false,
+              "margin": -0.9659935391702348,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 42.588820752040604,
+              "fired": false,
+              "margin": -0.7445125812927316,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 42.56451479404589,
+              "fired": false,
+              "margin": -0.7688185392874445,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 42.77206436899482,
+              "fired": false,
+              "margin": -0.5612689643385167,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.95503189297898,
+              "fired": false,
+              "margin": -0.3783014403543561,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 42.80544446021335,
+              "fired": false,
+              "margin": -0.5278888731199842,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 42.91219433146906,
+              "fired": false,
+              "margin": -0.421139001864276,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 43.01274131666263,
+              "fired": false,
+              "margin": -0.3205920166707088,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 43.03676987036687,
+              "fired": false,
+              "margin": -0.29656346296646774,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 42.809338119934814,
+              "fired": false,
+              "margin": -0.5239952133985213,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 42.6347866839503,
+              "fired": false,
+              "margin": -0.698546649383033,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 42.63001512638867,
+              "fired": false,
+              "margin": -0.7033182069446653,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 42.16419226562574,
+              "fired": false,
+              "margin": -1.1691410677075922,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 42.297658400852946,
+              "fired": false,
+              "margin": -1.03567493248039,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 42.13558956426153,
+              "fired": false,
+              "margin": -1.1977437690718062,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-08",
+          "proxy": {
+            "value": 41.62784895828253,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.7054843750508084
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.55299813181825,
+              "fired": false,
+              "margin": -1.7803352015150864,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.92808476695065,
+              "fired": false,
+              "margin": -1.4052485663826886,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.670639540651784,
+              "fired": false,
+              "margin": -1.6626937926815515,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.8862876887318,
+              "fired": false,
+              "margin": -1.4470456446015376,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.93683227684856,
+              "fired": false,
+              "margin": -1.396501056484773,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.73353640529091,
+              "fired": false,
+              "margin": -1.599796928042423,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.91308542357912,
+              "fired": false,
+              "margin": -1.4202479097542167,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.966677398655406,
+              "fired": false,
+              "margin": -1.3666559346779295,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.95795022756205,
+              "fired": false,
+              "margin": -1.3753831057712844,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.810118014847056,
+              "fired": false,
+              "margin": -1.5232153184862796,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.58240030754039,
+              "fired": false,
+              "margin": -1.7509330257929463,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.745661072531334,
+              "fired": false,
+              "margin": -1.5876722608020017,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.24858216104287,
+              "fired": false,
+              "margin": -2.084751172290467,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.64496491855618,
+              "fired": false,
+              "margin": -1.688368414777159,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 41.46652150467881,
+              "fired": false,
+              "margin": -1.8668118286545266,
+              "units": "degC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "clause_id": "PHX-2026-BENCH-LOW90",
+      "action": "Season-severity benchmark: overnight low at or above 90 degF",
+      "source_page": 6,
+      "source_text": "Nighttime temperatures failed to drop below 90\u00b0F at Sky Harbor on 23 days, including a seasonal high overnight low of 95\u00b0F on July 10.",
+      "actor": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "threshold_f": 90.0,
+      "threshold_c": 32.22222222222222,
+      "proxy_fired_days": [
+        "2025-08-06",
+        "2025-08-07"
+      ],
+      "zone_fired_day_count": 45,
+      "silent_zones": [
+        "ahwatukee_foothills",
+        "alhambra",
+        "camelback_east",
+        "central_city",
+        "encanto",
+        "estrella",
+        "laveen",
+        "maryvale",
+        "north_mountain",
+        "south_mountain"
+      ],
+      "silent_zone_days": 20,
+      "median_lead_days": 4.0,
+      "is_false_calm": false,
+      "false_calm_days": [
+        "2025-08-02",
+        "2025-08-05",
+        "2025-08-08"
+      ],
+      "worst_false_calm": [
+        "2025-08-08",
+        32.14196975006862,
+        10,
+        34.36976632641599
+      ],
+      "zone_leads": [
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "ahwatukee_foothills",
+          "zone_name": "Ahwatukee Foothills",
+          "first_met_day": "2025-08-05",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 1,
+          "days_met": 4,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "alhambra",
+          "zone_name": "Alhambra",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 4,
+          "days_met": 4,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "camelback_east",
+          "zone_name": "Camelback East",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 4,
+          "days_met": 4,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "central_city",
+          "zone_name": "Central City",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 4,
+          "days_met": 5,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "deer_valley",
+          "zone_name": "Deer Valley",
+          "first_met_day": "2025-08-07",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": -1,
+          "days_met": 1,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "desert_view",
+          "zone_name": "Desert View",
+          "first_met_day": "2025-08-07",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": -1,
+          "days_met": 1,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "encanto",
+          "zone_name": "Encanto",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 4,
+          "days_met": 4,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "estrella",
+          "zone_name": "Estrella",
+          "first_met_day": "2025-08-06",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 0,
+          "days_met": 3,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "laveen",
+          "zone_name": "Laveen",
+          "first_met_day": "2025-08-05",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 1,
+          "days_met": 4,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "maryvale",
+          "zone_name": "Maryvale",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 4,
+          "days_met": 4,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "north_gateway",
+          "zone_name": "North Gateway",
+          "first_met_day": "2025-08-07",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": -1,
+          "days_met": 1,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "north_mountain",
+          "zone_name": "North Mountain",
+          "first_met_day": "2025-08-06",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 0,
+          "days_met": 3,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "paradise_valley",
+          "zone_name": "Paradise Valley",
+          "first_met_day": "2025-08-07",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": -1,
+          "days_met": 1,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "rio_vista",
+          "zone_name": "Rio Vista",
+          "first_met_day": "2025-08-07",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": -1,
+          "days_met": 1,
+          "days_proxy_met": 2
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-LOW90",
+          "zone_id": "south_mountain",
+          "zone_name": "South Mountain",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-06",
+          "lead_days": 4,
+          "days_met": 5,
+          "days_proxy_met": 2
+        }
+      ],
+      "determinations": [
+        {
+          "day": "2025-08-02",
+          "proxy": {
+            "value": 30.70996785663635,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.5122543655858713
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 31.432238474376664,
+              "fired": false,
+              "margin": -0.7899837478455574,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 31.92014185083203,
+              "fired": false,
+              "margin": -0.30208037139018984,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 32.593361663685144,
+              "fired": true,
+              "margin": 0.37113944146292255,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 32.08252309038543,
+              "fired": false,
+              "margin": -0.1396991318367924,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 33.499528640866856,
+              "fired": true,
+              "margin": 1.2773064186446348,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 32.3419794130975,
+              "fired": true,
+              "margin": 0.11975719087527636,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 32.41795013303705,
+              "fired": true,
+              "margin": 0.19572791081483132,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 33.01226041767538,
+              "fired": true,
+              "margin": 0.7900381954531568,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 32.38285681363143,
+              "fired": true,
+              "margin": 0.160634591409206,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 31.39334732327138,
+              "fired": false,
+              "margin": -0.8288748989508399,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 31.24717504357465,
+              "fired": false,
+              "margin": -0.9750471786475714,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 30.31723090618245,
+              "fired": false,
+              "margin": -1.904991316039773,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 29.7963115958714,
+              "fired": false,
+              "margin": -2.42591062635082,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 29.81762587815109,
+              "fired": false,
+              "margin": -2.4045963440711304,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 29.212683478086138,
+              "fired": false,
+              "margin": -3.0095387441360835,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-03",
+          "proxy": {
+            "value": 25.607288700726322,
+            "fired": false,
+            "units": "degC",
+            "margin": -6.6149335214958995
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 27.394247389652,
+              "fired": false,
+              "margin": -4.82797483257022,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 28.519215334066242,
+              "fired": false,
+              "margin": -3.7030068881559792,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 28.32845134452409,
+              "fired": false,
+              "margin": -3.893770877698131,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 27.48576313888856,
+              "fired": false,
+              "margin": -4.73645908333366,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 29.21106007244153,
+              "fired": false,
+              "margin": -3.0111621497806915,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 27.06411910324983,
+              "fired": false,
+              "margin": -5.158103118972392,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 26.412267014219875,
+              "fired": false,
+              "margin": -5.809955208002346,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 27.7503994307503,
+              "fired": false,
+              "margin": -4.471822791471922,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 25.848860013636425,
+              "fired": false,
+              "margin": -6.373362208585796,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 25.114374589706372,
+              "fired": false,
+              "margin": -7.107847632515849,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 25.51625113090132,
+              "fired": false,
+              "margin": -6.705971091320901,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 23.739775224327715,
+              "fired": false,
+              "margin": -8.482446997894506,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 24.87488744993241,
+              "fired": false,
+              "margin": -7.347334772289813,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 23.839719683334767,
+              "fired": false,
+              "margin": -8.382502538887454,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 23.91830897342161,
+              "fired": false,
+              "margin": -8.303913248800612,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-04",
+          "proxy": {
+            "value": 27.98990361186122,
+            "fired": false,
+            "units": "degC",
+            "margin": -4.232318610361002
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 28.90053080823163,
+              "fired": false,
+              "margin": -3.3216914139905924,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 29.77837376980217,
+              "fired": false,
+              "margin": -2.4438484524200526,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 30.66355625407712,
+              "fired": false,
+              "margin": -1.5586659681451032,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 30.42215083212633,
+              "fired": false,
+              "margin": -1.8000713900958907,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 31.09669681711763,
+              "fired": false,
+              "margin": -1.125525405104593,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 29.71460317620636,
+              "fired": false,
+              "margin": -2.5076190460158614,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 30.259952615029984,
+              "fired": false,
+              "margin": -1.962269607192237,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 30.326663870846975,
+              "fired": false,
+              "margin": -1.8955583513752465,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 30.541410832865665,
+              "fired": false,
+              "margin": -1.6808113893565562,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 29.91088023925382,
+              "fired": false,
+              "margin": -2.3113419829684005,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 28.7038486630097,
+              "fired": false,
+              "margin": -3.5183735592125203,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 27.35099094747101,
+              "fired": false,
+              "margin": -4.87123127475121,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 27.58255347017752,
+              "fired": false,
+              "margin": -4.639668752044702,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 25.794150678946107,
+              "fired": false,
+              "margin": -6.428071543276115,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 25.150736534859508,
+              "fired": false,
+              "margin": -7.071485687362713,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-05",
+          "proxy": {
+            "value": 30.686788080120955,
+            "fired": false,
+            "units": "degC",
+            "margin": -1.5354341421012663
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 32.699588776468424,
+              "fired": true,
+              "margin": 0.47736655424620267,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 32.78661654977236,
+              "fired": true,
+              "margin": 0.56439432755014,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 33.36906832658299,
+              "fired": true,
+              "margin": 1.146846104360769,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 31.368883953397074,
+              "fired": false,
+              "margin": -0.8533382688251478,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 33.09160011447741,
+              "fired": true,
+              "margin": 0.8693778922551871,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 32.13485759444206,
+              "fired": false,
+              "margin": -0.08736462778016119,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 30.753003714917963,
+              "fired": false,
+              "margin": -1.4692185073042587,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 32.165358062296946,
+              "fired": false,
+              "margin": -0.056864159925275715,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 31.48427969648312,
+              "fired": false,
+              "margin": -0.7379425257391006,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 31.016777583875584,
+              "fired": false,
+              "margin": -1.2054446383466377,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 31.030986051729485,
+              "fired": false,
+              "margin": -1.1912361704927363,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 29.819628342734507,
+              "fired": false,
+              "margin": -2.402593879487714,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 30.25660553052705,
+              "fired": false,
+              "margin": -1.9656166916951712,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 29.25241817357194,
+              "fired": false,
+              "margin": -2.969804048650282,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 29.489233405278437,
+              "fired": false,
+              "margin": -2.7329888169437844,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-06",
+          "proxy": {
+            "value": 32.28570993483274,
+            "fired": true,
+            "units": "degC",
+            "margin": 0.06348771261051667
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 33.520405380017216,
+              "fired": true,
+              "margin": 1.2981831577949947,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 32.97123614079268,
+              "fired": true,
+              "margin": 0.7490139185704621,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 33.85026394966484,
+              "fired": true,
+              "margin": 1.6280417274426213,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 33.520480654448626,
+              "fired": true,
+              "margin": 1.2982584322264046,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 34.528737583824075,
+              "fired": true,
+              "margin": 2.3065153616018534,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 33.363404525553406,
+              "fired": true,
+              "margin": 1.1411823033311848,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 33.513203395034985,
+              "fired": true,
+              "margin": 1.2909811728127636,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 33.84981055930716,
+              "fired": true,
+              "margin": 1.627588337084937,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 33.01873567860409,
+              "fired": true,
+              "margin": 0.7965134563818665,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 32.28445585264043,
+              "fired": true,
+              "margin": 0.06223363041820562,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 32.189331303245865,
+              "fired": false,
+              "margin": -0.03289091897635643,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 31.40350129643408,
+              "fired": false,
+              "margin": -0.818720925788142,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 31.2909015492389,
+              "fired": false,
+              "margin": -0.9313206729833219,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 31.14097383509484,
+              "fired": false,
+              "margin": -1.0812483871273812,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 31.418985041659766,
+              "fired": false,
+              "margin": -0.803237180562455,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-07",
+          "proxy": {
+            "value": 33.55959198214824,
+            "fired": true,
+            "units": "degC",
+            "margin": 1.3373697599260197
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 34.6718994637406,
+              "fired": true,
+              "margin": 2.44967724151838,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 33.82606744288772,
+              "fired": true,
+              "margin": 1.603845220665498,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 34.953299279029736,
+              "fired": true,
+              "margin": 2.7310770568075142,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 33.62307906289751,
+              "fired": true,
+              "margin": 1.4008568406752886,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 34.679366709338574,
+              "fired": true,
+              "margin": 2.457144487116352,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 33.73451127985346,
+              "fired": true,
+              "margin": 1.5122890576312358,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 33.5701890997365,
+              "fired": true,
+              "margin": 1.3479668775142812,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 34.04186055555765,
+              "fired": true,
+              "margin": 1.8196383333354262,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 33.76064670664671,
+              "fired": true,
+              "margin": 1.538424484424489,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 33.33213967330335,
+              "fired": true,
+              "margin": 1.109917451081131,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 33.31998755068507,
+              "fired": true,
+              "margin": 1.0977653284628488,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 33.1627287314618,
+              "fired": true,
+              "margin": 0.9405065092395759,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 33.10271676862226,
+              "fired": true,
+              "margin": 0.8804945464000369,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 33.338263089213086,
+              "fired": true,
+              "margin": 1.1160408669908648,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 33.611824435096906,
+              "fired": true,
+              "margin": 1.389602212874685,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-08",
+          "proxy": {
+            "value": 32.14196975006862,
+            "fired": false,
+            "units": "degC",
+            "margin": -0.0802524721536031
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 33.831050166140464,
+              "fired": true,
+              "margin": 1.608827943918243,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 33.51848975961514,
+              "fired": true,
+              "margin": 1.2962675373929216,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 33.57296890055605,
+              "fired": true,
+              "margin": 1.3507466783338273,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 34.03159679936414,
+              "fired": true,
+              "margin": 1.8093745771419165,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 33.62863850595188,
+              "fired": true,
+              "margin": 1.406416283729662,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 33.36188470066563,
+              "fired": true,
+              "margin": 1.1396624784434053,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 34.36976632641599,
+              "fired": true,
+              "margin": 2.14754410419377,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 33.37163733121215,
+              "fired": true,
+              "margin": 1.1494151089899276,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 34.179759562041276,
+              "fired": true,
+              "margin": 1.957537339819055,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 32.41010245328403,
+              "fired": true,
+              "margin": 0.1878802310618113,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 32.007531353434906,
+              "fired": false,
+              "margin": -0.21469086878731503,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 30.94060281287346,
+              "fired": false,
+              "margin": -1.2816194093487603,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 30.870334952577707,
+              "fired": false,
+              "margin": -1.3518872696445143,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 30.51203151683123,
+              "fired": false,
+              "margin": -1.7101907053909926,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 31.428320728708396,
+              "fired": false,
+              "margin": -0.7939014935138253,
+              "units": "degC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "clause_id": "PHX-2026-BENCH-HIGH100",
+      "action": "Planning benchmark: daily high at or above 100 degF",
+      "source_page": 7,
+      "source_text": "The table below presents weekly averages, ranges, and probabilities of exceedance based on 2016-2025 observations from Phoenix Sky Harbor Airport.",
+      "actor": [
+        "Office of Heat Response and Mitigation"
+      ],
+      "threshold_f": 100.0,
+      "threshold_c": 37.77777777777778,
+      "proxy_fired_days": [
+        "2025-08-02",
+        "2025-08-03",
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08"
+      ],
+      "zone_fired_day_count": 105,
+      "silent_zones": [],
+      "silent_zone_days": 0,
+      "median_lead_days": null,
+      "is_false_calm": false,
+      "false_calm_days": [],
+      "worst_false_calm": null,
+      "zone_leads": [
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "ahwatukee_foothills",
+          "zone_name": "Ahwatukee Foothills",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "alhambra",
+          "zone_name": "Alhambra",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "camelback_east",
+          "zone_name": "Camelback East",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "central_city",
+          "zone_name": "Central City",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "deer_valley",
+          "zone_name": "Deer Valley",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "desert_view",
+          "zone_name": "Desert View",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "encanto",
+          "zone_name": "Encanto",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "estrella",
+          "zone_name": "Estrella",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "laveen",
+          "zone_name": "Laveen",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "maryvale",
+          "zone_name": "Maryvale",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "north_gateway",
+          "zone_name": "North Gateway",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "north_mountain",
+          "zone_name": "North Mountain",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "paradise_valley",
+          "zone_name": "Paradise Valley",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "rio_vista",
+          "zone_name": "Rio Vista",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        },
+        {
+          "clause_id": "PHX-2026-BENCH-HIGH100",
+          "zone_id": "south_mountain",
+          "zone_name": "South Mountain",
+          "first_met_day": "2025-08-02",
+          "proxy_first_day": "2025-08-02",
+          "lead_days": 0,
+          "days_met": 7,
+          "days_proxy_met": 7
+        }
+      ],
+      "determinations": [
+        {
+          "day": "2025-08-02",
+          "proxy": {
+            "value": 41.291055720475185,
+            "fired": true,
+            "units": "degC",
+            "margin": 3.513277942697407
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.605039263986605,
+              "fired": true,
+              "margin": 3.827261486208826,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.854337665915295,
+              "fired": true,
+              "margin": 4.076559888137517,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.7914080463699,
+              "fired": true,
+              "margin": 4.013630268592124,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.95821995722685,
+              "fired": true,
+              "margin": 4.180442179449074,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.08062318195325,
+              "fired": true,
+              "margin": 4.302845404175471,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.841034806700854,
+              "fired": true,
+              "margin": 4.063257028923076,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.969496850415574,
+              "fired": true,
+              "margin": 4.191719072637795,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.04330698494712,
+              "fired": true,
+              "margin": 4.265529207169344,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.97328949081705,
+              "fired": true,
+              "margin": 4.195511713039274,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.74231993115314,
+              "fired": true,
+              "margin": 3.964542153375362,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.49898043853199,
+              "fired": true,
+              "margin": 3.7212026607542086,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.484935225716974,
+              "fired": true,
+              "margin": 3.7071574479391955,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.945465627448215,
+              "fired": true,
+              "margin": 3.167687849670436,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.99566752727979,
+              "fired": true,
+              "margin": 3.217889749502014,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.584104293211404,
+              "fired": true,
+              "margin": 2.806326515433625,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-03",
+          "proxy": {
+            "value": 40.79635586688172,
+            "fired": true,
+            "units": "degC",
+            "margin": 3.01857808910394
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 40.9935995769952,
+              "fired": true,
+              "margin": 3.215821799217423,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.31563233770679,
+              "fired": true,
+              "margin": 3.537854559929009,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.23750481755085,
+              "fired": true,
+              "margin": 3.459727039773071,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.45914607152779,
+              "fired": true,
+              "margin": 3.681368293750012,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.59896171576002,
+              "fired": true,
+              "margin": 3.8211839379822408,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.32837629597815,
+              "fired": true,
+              "margin": 3.550598518200374,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.42405771892857,
+              "fired": true,
+              "margin": 3.6462799411507945,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.551744844835476,
+              "fired": true,
+              "margin": 3.773967067057697,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.44749534014995,
+              "fired": true,
+              "margin": 3.6697175623721705,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.21431831012744,
+              "fired": true,
+              "margin": 3.4365405323496603,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.038840483066735,
+              "fired": true,
+              "margin": 3.261062705288957,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 40.99159178896732,
+              "fired": true,
+              "margin": 3.213814011189541,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.417086629139874,
+              "fired": true,
+              "margin": 2.6393088513620953,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.64125570742645,
+              "fired": true,
+              "margin": 2.863477929648674,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.102117230207085,
+              "fired": true,
+              "margin": 2.3243394524293066,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-04",
+          "proxy": {
+            "value": 40.59740443663152,
+            "fired": true,
+            "units": "degC",
+            "margin": 2.8196266588537426
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 40.8556213094781,
+              "fired": true,
+              "margin": 3.0778435317003243,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.24949161875022,
+              "fired": true,
+              "margin": 3.4717138409724413,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.014696739136376,
+              "fired": true,
+              "margin": 3.2369189613585974,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.33885937937489,
+              "fired": true,
+              "margin": 3.5610816015971096,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.38572341019664,
+              "fired": true,
+              "margin": 3.6079456324188612,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.14171067997589,
+              "fired": true,
+              "margin": 3.3639329021981084,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.32283923275578,
+              "fired": true,
+              "margin": 3.545061454978004,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.34468962692679,
+              "fired": true,
+              "margin": 3.566911849149008,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.28784767640517,
+              "fired": true,
+              "margin": 3.5100698986273926,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.00426459886072,
+              "fired": true,
+              "margin": 3.2264868210829434,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 40.88602982274169,
+              "fired": true,
+              "margin": 3.108252044963912,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 40.75602463653354,
+              "fired": true,
+              "margin": 2.9782468587557602,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 40.19817545933877,
+              "fired": true,
+              "margin": 2.420397681560992,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 40.257803954835865,
+              "fired": true,
+              "margin": 2.480026177058086,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 39.847397331910045,
+              "fired": true,
+              "margin": 2.0696195541322666,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-05",
+          "proxy": {
+            "value": 41.36336234227768,
+            "fired": true,
+            "units": "degC",
+            "margin": 3.5855845644999036
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.516675074387074,
+              "fired": true,
+              "margin": 3.738897296609295,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.826089578162474,
+              "fired": true,
+              "margin": 4.048311800384695,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.67985314665659,
+              "fired": true,
+              "margin": 3.902075368878812,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.93316970859244,
+              "fired": true,
+              "margin": 4.155391930814659,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.0494984594812,
+              "fired": true,
+              "margin": 4.271720681703421,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.825066868939224,
+              "fired": true,
+              "margin": 4.047289091161446,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.95482293563314,
+              "fired": true,
+              "margin": 4.1770451578553605,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.02426406914966,
+              "fired": true,
+              "margin": 4.24648629137188,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 42.00884471592391,
+              "fired": true,
+              "margin": 4.231066938146128,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.81528926348787,
+              "fired": true,
+              "margin": 4.037511485710091,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.59877148700755,
+              "fired": true,
+              "margin": 3.820993709229768,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.5800607189738,
+              "fired": true,
+              "margin": 3.802282941196019,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.03176374378435,
+              "fired": true,
+              "margin": 3.2539859660065744,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.13983349375228,
+              "fired": true,
+              "margin": 3.362055715974499,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 40.75035718457429,
+              "fired": true,
+              "margin": 2.9725794067965126,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-06",
+          "proxy": {
+            "value": 41.88476154777165,
+            "fired": true,
+            "units": "degC",
+            "margin": 4.1069837699938745
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 42.07546245646261,
+              "fired": true,
+              "margin": 4.297684678684831,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 42.31108374464243,
+              "fired": true,
+              "margin": 4.533305966864653,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 42.19307559469673,
+              "fired": true,
+              "margin": 4.415297816918951,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 42.4408496276831,
+              "fired": true,
+              "margin": 4.663071849905322,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.50423279974045,
+              "fired": true,
+              "margin": 4.726455021962671,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 42.30397017935596,
+              "fired": true,
+              "margin": 4.526192401578179,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 42.4537780082756,
+              "fired": true,
+              "margin": 4.67600023049782,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 42.487841061595404,
+              "fired": true,
+              "margin": 4.710063283817625,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 42.41666777863164,
+              "fired": true,
+              "margin": 4.638890000853863,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 42.210173991707634,
+              "fired": true,
+              "margin": 4.432396213929856,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 42.072623443976326,
+              "fired": true,
+              "margin": 4.2948456661985475,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 42.040386183943184,
+              "fired": true,
+              "margin": 4.2626084061654055,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.54923581321338,
+              "fired": true,
+              "margin": 3.7714580354356,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.677044133785294,
+              "fired": true,
+              "margin": 3.899266356007516,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 41.370591621696285,
+              "fired": true,
+              "margin": 3.5928138439185062,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-07",
+          "proxy": {
+            "value": 42.43257136744022,
+            "fired": true,
+            "units": "degC",
+            "margin": 4.6547935896624395
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 42.3673397941631,
+              "fired": true,
+              "margin": 4.589562016385322,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 42.588820752040604,
+              "fired": true,
+              "margin": 4.811042974262826,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 42.56451479404589,
+              "fired": true,
+              "margin": 4.786737016268113,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 42.77206436899482,
+              "fired": true,
+              "margin": 4.99428659121704,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 42.95503189297898,
+              "fired": true,
+              "margin": 5.177254115201201,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 42.80544446021335,
+              "fired": true,
+              "margin": 5.027666682435573,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 42.91219433146906,
+              "fired": true,
+              "margin": 5.134416553691281,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 43.01274131666263,
+              "fired": true,
+              "margin": 5.234963538884848,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 43.03676987036687,
+              "fired": true,
+              "margin": 5.258992092589089,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 42.809338119934814,
+              "fired": true,
+              "margin": 5.031560342157036,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 42.6347866839503,
+              "fired": true,
+              "margin": 4.857008906172524,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 42.63001512638867,
+              "fired": true,
+              "margin": 4.852237348610892,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 42.16419226562574,
+              "fired": true,
+              "margin": 4.386414487847965,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 42.297658400852946,
+              "fired": true,
+              "margin": 4.519880623075167,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 42.13558956426153,
+              "fired": true,
+              "margin": 4.357811786483751,
+              "units": "degC"
+            }
+          ]
+        },
+        {
+          "day": "2025-08-08",
+          "proxy": {
+            "value": 41.62784895828253,
+            "fired": true,
+            "units": "degC",
+            "margin": 3.8500711805047487
+          },
+          "zones": [
+            {
+              "zone_id": "ahwatukee_foothills",
+              "name": "Ahwatukee Foothills",
+              "value": 41.55299813181825,
+              "fired": true,
+              "margin": 3.7752203540404707,
+              "units": "degC"
+            },
+            {
+              "zone_id": "laveen",
+              "name": "Laveen",
+              "value": 41.92808476695065,
+              "fired": true,
+              "margin": 4.1503069891728686,
+              "units": "degC"
+            },
+            {
+              "zone_id": "south_mountain",
+              "name": "South Mountain",
+              "value": 41.670639540651784,
+              "fired": true,
+              "margin": 3.8928617628740056,
+              "units": "degC"
+            },
+            {
+              "zone_id": "estrella",
+              "name": "Estrella",
+              "value": 41.8862876887318,
+              "fired": true,
+              "margin": 4.1085099109540195,
+              "units": "degC"
+            },
+            {
+              "zone_id": "central_city",
+              "name": "Central City",
+              "value": 41.93683227684856,
+              "fired": true,
+              "margin": 4.159054499070784,
+              "units": "degC"
+            },
+            {
+              "zone_id": "camelback_east",
+              "name": "Camelback East",
+              "value": 41.73353640529091,
+              "fired": true,
+              "margin": 3.9557586275131342,
+              "units": "degC"
+            },
+            {
+              "zone_id": "maryvale",
+              "name": "Maryvale",
+              "value": 41.91308542357912,
+              "fired": true,
+              "margin": 4.1353076458013405,
+              "units": "degC"
+            },
+            {
+              "zone_id": "encanto",
+              "name": "Encanto",
+              "value": 41.966677398655406,
+              "fired": true,
+              "margin": 4.188899620877628,
+              "units": "degC"
+            },
+            {
+              "zone_id": "alhambra",
+              "name": "Alhambra",
+              "value": 41.95795022756205,
+              "fired": true,
+              "margin": 4.180172449784273,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_mountain",
+              "name": "North Mountain",
+              "value": 41.810118014847056,
+              "fired": true,
+              "margin": 4.032340237069278,
+              "units": "degC"
+            },
+            {
+              "zone_id": "paradise_valley",
+              "name": "Paradise Valley",
+              "value": 41.58240030754039,
+              "fired": true,
+              "margin": 3.804622529762611,
+              "units": "degC"
+            },
+            {
+              "zone_id": "deer_valley",
+              "name": "Deer Valley",
+              "value": 41.745661072531334,
+              "fired": true,
+              "margin": 3.9678832947535554,
+              "units": "degC"
+            },
+            {
+              "zone_id": "desert_view",
+              "name": "Desert View",
+              "value": 41.24858216104287,
+              "fired": true,
+              "margin": 3.47080438326509,
+              "units": "degC"
+            },
+            {
+              "zone_id": "north_gateway",
+              "name": "North Gateway",
+              "value": 41.64496491855618,
+              "fired": true,
+              "margin": 3.867187140778398,
+              "units": "degC"
+            },
+            {
+              "zone_id": "rio_vista",
+              "name": "Rio Vista",
+              "value": 41.46652150467881,
+              "fired": true,
+              "margin": 3.6887437269010306,
+              "units": "degC"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone_id": "ahwatukee_foothills",
+      "name": "Ahwatukee Foothills",
+      "area_sq_mi": 35.5,
+      "population": 80249
+    },
+    {
+      "zone_id": "laveen",
+      "name": "Laveen",
+      "area_sq_mi": 30.4,
+      "population": 68819
+    },
+    {
+      "zone_id": "south_mountain",
+      "name": "South Mountain",
+      "area_sq_mi": 39.6,
+      "population": 125391
+    },
+    {
+      "zone_id": "estrella",
+      "name": "Estrella",
+      "area_sq_mi": 41.2,
+      "population": 101765
+    },
+    {
+      "zone_id": "central_city",
+      "name": "Central City",
+      "area_sq_mi": 21.2,
+      "population": 59945
+    },
+    {
+      "zone_id": "camelback_east",
+      "name": "Camelback East",
+      "area_sq_mi": 36.2,
+      "population": 147669
+    },
+    {
+      "zone_id": "maryvale",
+      "name": "Maryvale",
+      "area_sq_mi": 32.4,
+      "population": 226766
+    },
+    {
+      "zone_id": "encanto",
+      "name": "Encanto",
+      "area_sq_mi": 10.4,
+      "population": 57250
+    },
+    {
+      "zone_id": "alhambra",
+      "name": "Alhambra",
+      "area_sq_mi": 19.2,
+      "population": 143242
+    },
+    {
+      "zone_id": "north_mountain",
+      "name": "North Mountain",
+      "area_sq_mi": 34.6,
+      "population": 173875
+    },
+    {
+      "zone_id": "paradise_valley",
+      "name": "Paradise Valley",
+      "area_sq_mi": 42.9,
+      "population": 174515
+    },
+    {
+      "zone_id": "deer_valley",
+      "name": "Deer Valley",
+      "area_sq_mi": 56.5,
+      "population": 184258
+    },
+    {
+      "zone_id": "desert_view",
+      "name": "Desert View",
+      "area_sq_mi": 67.7,
+      "population": 65279
+    },
+    {
+      "zone_id": "north_gateway",
+      "name": "North Gateway",
+      "area_sq_mi": 44.7,
+      "population": 24950
+    },
+    {
+      "zone_id": "rio_vista",
+      "name": "Rio Vista",
+      "area_sq_mi": 41.7,
+      "population": 5528
+    }
+  ]
+}
