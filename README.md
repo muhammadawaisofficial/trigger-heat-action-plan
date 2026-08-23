@@ -48,36 +48,43 @@ whether that is *everywhere* or *nowhere*. Unlike a count of distinct values it
 does not depend on tile count or AOI size, so days and cities are comparable.
 
 On **7 August 2025**, the hottest day of the window, Action 1.1's own rule —
-*"above 105 °F"*, with no dwell requirement — extracted **0.090 of a possible
-1.0 bits**. It flagged all 15 villages. That is not a warning, it is a weather
-report.
+*"above 105 °F"* — fired on **98.9% of the city's tiles and all 15 urban
+villages**. That is not a warning, it is a weather report.
 
-### C. Recovery — the same data, a better rule
+> **Precision note.** For the two clauses measured through `exceedance`, the
+> underlying field is smoothed rather than counted (it returns small negative
+> values — [§9](docs/api_findings.md)), so saturation figures for those clauses
+> are approximate to about a percentage point. The **verdicts** are unaffected:
+> they are threshold comparisons that sit far from the 5% and 95% boundaries, so
+> no reasonable correction moves one. The three `tcm`-backed clauses carry
+> per-tile temperatures and are exact.
 
-Add a dwell requirement to the *same threshold* on the *same cached data*:
+### C. Recovery — a partial result, and one retraction
 
-| Action 1.1 on 2025-08-07 | saturation | bits | villages flagged |
-|---|---|---|---|
-| above 105 °F — **as written** | 0.989 | **0.090** | 15 |
-| above 105 °F for >1 h | 0.981 | 0.135 | 15 |
-| above 105 °F for >6 h | 0.959 | 0.248 | 15 |
-| **above 105 °F for >9 h** | 0.405 | **0.974** | **8** |
-| above 105 °F for >12 h | 0.000 | 0.000 | 0 |
+**Retracted: the dwell-time result.** We measured, and then withdrew, a finding
+that adding a duration requirement to Action 1.1's existing 105 °F threshold
+would restore targeting value. It does not survive validation, because
+**FortyGuard exposes no trustworthy duration analytic at city scale.** The full
+methodology and the failed checks are in
+[§8 of `docs/api_findings.md`](docs/api_findings.md) — we publish it as a
+negative result rather than deleting it, because the reason it failed is a
+reusable finding about the data.
 
-**0.090 → 0.974 bits.** No new sensor, no new API call, no percentile — a clause
-edit. This is the one change in this repository that a city could adopt tomorrow.
-
-A percentile rule recovers the tcm-backed clauses too, in both directions:
+**What does hold** is a percentile trigger, on the clauses backed by `tcm`
+temperatures rather than by duration. Replacing a fixed threshold with the 90th
+percentile of the day's own distribution restores a rankable ordering in *both*
+failure directions:
 
 | clause | as written | p90 of that day | villages recovered |
 |---|---|---|---|
-| `BENCH-LOW90` | 90 °F, saturation **0.955** | 94.3 °F, 0.100 | **3** |
-| `BENCH-HIGH100` | 100 °F, saturation **1.000** | 109.3 °F, 0.100 | **2** |
-| `BENCH-HIGH110` | 110 °F, saturation **0.000** | 107.6 °F, 0.100 | **2** |
+| `BENCH-LOW90` | 90 °F, saturation **0.955** — over-fires | 94.3 °F, 0.100 | **3** |
+| `BENCH-HIGH100` | 100 °F, saturation **1.000** — over-fires | 109.3 °F, 0.100 | **2** |
+| `BENCH-HIGH110` | 110 °F, saturation **0.000** — never fires | 107.6 °F, 0.100 | **2** |
 
 A same-day percentile is **post hoc** — today's p90 is not knowable before today
-ends. It shows the signal survives, not that the City should adopt that rule.
-The dwell requirement carries no such caveat.
+ends. It demonstrates that the signal survives in the data; it is not a rule a
+city could adopt as written. A deployable version would fit the percentile on
+historical climatology.
 
 ---
 
@@ -106,6 +113,7 @@ python verify_all.py       # re-derive everything and assert it
 | [3. Innovation](#3-innovation-15) | Why compiling the document is the whole point |
 | [4. Communication](#4-communication-10) | Reproducing every number here |
 | [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
+| [What we got wrong](#what-we-got-wrong) | Three corrections, and the mechanism that keeps them honest |
 | [5. Limitations](#5-limitations) | What this does not show |
 
 ---
@@ -373,6 +381,51 @@ numbers in action narratives. The published analysis therefore runs on the
 hand-verified golden set, not on raw compiler output, and we say so rather than
 implying the pipeline is fully autonomous.
 
+### The golden set, and what F1 0.962 does not mean
+
+The score above is only as good as the set it is measured against, so here is
+that set in full.
+
+**What it is.** 27 clauses, hand-compiled from the published PDF by us: the
+plan's 23 numbered actions (24 clause records — one action splits into two),
+3 planning benchmarks, and 2 indoor habitability standards. Every clause carries
+a verbatim quote and a page number, and `build_golden.py` mechanically asserts
+that all 29 quotes appear on their cited pages. It is committed at
+`data/golden/phoenix_2026_clauses.json`.
+
+**How it was selected.** Exhaustively, not by sampling. We took every numbered
+action in the document plus every numeric temperature stated anywhere in it.
+There is no held-out split, because the population *is* the document — 27 clauses
+is the whole plan, not a sample of it.
+
+**What the F1 supports.** That the compiler extracts narrative action clauses
+reliably and cites them verifiably: **24 of 24 actions recalled, 0 spurious
+clauses, 100% quote verification, and the conditional-versus-calendar
+classification correct on 25 of 25.** That last figure is the one that matters
+most, because that classification is what the headline finding rests on.
+
+**What it does not support.** Four things, and the first is the serious one:
+
+1. **The compiler missed the clause the headline depends on.** Recall failed on
+   exactly 2 of 27 clauses, and both were planning benchmarks: `BENCH-LOW90`
+   (page 6) and `BENCH-HIGH100` (page 7). `BENCH-LOW90` is the 90 °F overnight
+   benchmark that produces the 1,184,971 figure. **Benchmark recall is 1 of 3
+   (33%)** against 24 of 24 for actions — numbers embedded in tables and review
+   prose are the compiler's blind spot, and that is where the headline lives.
+   **The published analysis therefore runs on the hand-checked golden set, not on
+   compiler output.** We report the compiler's accuracy; we do not rely on it.
+2. **n = 27.** One clause is worth 3.7 points of recall. Treat 0.962 as "roughly
+   the right order of magnitude", not a precise figure, and do not compare it to
+   scores computed on larger sets.
+3. **The annotators wrote the compiler.** The same two people built the golden
+   set and the extraction prompt. That is not independent annotation, and there
+   is no second annotator, so we report no inter-annotator agreement. Where the
+   two disagree we list every case individually — including the ones where the
+   compiler is the more faithful reading and our reference set made the
+   editorial choice.
+4. **One document, one city, one plan format.** Nothing here establishes that the
+   compiler generalises to a differently structured heat plan.
+
 ### What we measured about the FortyGuard API
 
 Three findings contradict the documentation, and each fails silently. Full
@@ -515,6 +568,109 @@ DST**, so UTC hour 22 is 15:00 local. The conversion lives in
 
 ---
 
+## What we got wrong
+
+Three corrections, in the order they happened. Each is recorded rather than
+edited away, because in every case the *reason* it was wrong turned out to be a
+reusable finding about the data.
+
+### 1. A comparability claim with no source behind it
+
+**Claimed.** That Phoenix's measured spatial spread was "comparable to the San
+Jose reference sample" of 2.07–8.73 h across 329 tiles.
+
+**Wrong because.** That reference cannot be sourced. It is not in the vendored
+client — which ships the San Jose *polygon* but no statistics — and it carries no
+window, threshold or granularity, so there is nothing to normalise against.
+8.73 − 2.07 = 6.66 h, and whether that spans one day or seven changes the
+per-day figure sevenfold.
+
+**Caught by.** Being asked to state the comparison per-day, which surfaced that
+the denominator was unknown.
+
+**Now.** No comparability claim in either direction. Phoenix's spreads are
+reported as absolute figures — around **one hour per day over a 2 km box** — with
+the explicit note that these are small numbers.
+
+### 2. Publishing a 2 km box result as a citywide finding
+
+**Claimed.** That a threshold outside the day's range collapses discrimination
+from 394 distinct values to 1, offered as the project's primary finding.
+
+**Wrong because.** It measured the *box*, not the mechanism. Over 4 km² the
+spatial spread in overnight low is 0.08–0.47 °C, so almost any threshold falls
+outside it and the API returns a single quantised integer. Citywide, the same
+days show **10.85–13.49 °C** of spread and **43,497–74,365** distinct values,
+with **zero** flat days against 6 of 7 on the box.
+
+**Caught by.** Running the same measurement on the full AOI before writing the
+headline, prompted by a request to justify the magnitude.
+
+**Now.** The mechanism survives — a threshold resolves only variation it sits
+inside — but its magnitude is set by **the area being sensed**, and every figure
+in [§8](docs/api_findings.md) is citywide. `verify_years.py` carries an explicit
+*"do not quote these as the headline"* scope limit, since it is the file most
+likely to be read out of context.
+
+### 3. A hero result built on an analytic that cannot support it
+
+**Claimed.** That adding a dwell requirement to Action 1.1's existing 105 °F
+threshold restores targeting value, 0.090 → 0.974 bits — same threshold, same
+data, a clause edit.
+
+**Wrong because.** Two independent reasons, and the first is decisive on its own:
+
+- **Semantics.** The grid was derived from `exceedance`, which returns a
+  **total** of qualifying hours. A dwell clause describes a **continuous spell**.
+  Three separate three-hour spells total nine hours, pass the exceedance test,
+  and fail the clause. Wrong analytic for the question, regardless of data
+  quality.
+- **Data quality.** `exceedance` returns negative values citywide (to −2.51 h),
+  so it is smoothed rather than counted. This also inflated the baseline: a
+  saturation of 0.989 at `dwell>0h` implies 1.1% of tiles recorded ≤ 0 hours
+  above 105 °F on a day that peaked at 109.6 °F.
+
+**Then the replacement failed too.** `persistence` is the correct analytic and
+the only other one carrying duration information. Citywide it returns runs of
+**25.92 h** inside a single day, **3,110 negative** runs, and up to **39,329
+tiles** whose "longest run" exceeds that tile's own total qualifying hours. It is
+also not independent: **93.9% of tiles identical to `exceedance`** at 105 °F, and
+100% at four of six thresholds. `tcm` carries no time information at all.
+
+**Caught by.** Being asked to state the provenance of the hero number explicitly,
+then a validation harness written before the replacement numbers were trusted.
+
+**Now.** Retracted and published as a **negative finding**: FortyGuard exposes no
+trustworthy duration analytic at city scale. That is worth knowing, because a
+dwell requirement is the most natural fix for a saturating threshold and the
+first thing a reader will propose. Full methodology in
+[§8](docs/api_findings.md); the failing harness is `sweep_dwell.py`.
+
+It also forced a correction upstream: §2 had concluded that `filter_type=3`
+persistence "behaves exactly as documented" because it agreed with `exceedance`
+on the small box. **We read agreement as corroboration when it was evidence of
+non-independence.** No published number moved — the pipeline never used
+`persistence` — but the wording overstated what had been established.
+
+### How the retraction is kept from going stale
+
+`sweep_dwell.py` **exits non-zero on purpose**, and `verify_all.py` asserts that
+it *continues to fail*:
+
+```python
+ok_dwell, secs, _ = run("sweep_dwell.py", env)
+if ok_dwell:
+    drift.append("sweep_dwell.py PASSED validation; the retraction in "
+                 "api_findings.md section 8 may no longer hold")
+```
+
+The assertion is deliberately inverted. If FortyGuard fixes `persistence`, or if
+our validation harness breaks, the check reports drift and demands a human look —
+rather than a retracted claim quietly sitting in the repository as though it were
+still true.
+
+---
+
 ## 5. Limitations
 
 Written plainly, because these change how the result should be read.
@@ -561,6 +717,13 @@ uniform density within a block group. Block groups are small by design
 arterial grid, so the error is modest — but the figure is an estimate. The
 15-village total of 1,639,502 against Phoenix's ~1,608,000 at the 2020 census
 is the check that it is not badly wrong.
+
+**We did not test a heat-index trigger.** Replacing dry-bulb temperature with
+`heat_index_celsius` or `apparent_temperature_celsius` from `/v1/env_params` is
+the obvious third recovery design, and humidity is what makes Phoenix nights
+lethal. We did not do it: `env_params` is a per-point endpoint, so a gridded
+comparison means thousands of calls rather than one, and its credit cost is not
+documented. Left as future work rather than half-done.
 
 **Action 4.2 uses a proxy threshold.** The plan states no temperature for
 "when the National Weather Service issues an Extreme Heat Warning". We map it

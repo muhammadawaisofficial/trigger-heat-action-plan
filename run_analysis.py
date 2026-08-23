@@ -261,34 +261,30 @@ def main() -> int:
         zvals = [(r.name, r.value) for r in rows]
         try:
             fixed, pct = percentile_recovery(c, hm, tf, day, 90.0, zvals)
-        except NotRecomputable:
-            # An exceedance clause cannot be re-thresholded for free, but its
-            # DWELL requirement can be changed at no cost: the hours are
-            # already in the cached response. This is the cheapest of the three
-            # designs and the only one deployable as written -- a clause edit,
-            # no new instrument and no percentile.
-            dwells = dwell_recovery(c, hm, day, zone_values=zvals)
-            as_written = dwells[0]
-            best = max(dwells, key=lambda r: r.targeting_bits)
+        except NotRecomputable as exc:
+            # No recovery design is measurable for an exceedance-backed clause.
+            # Re-thresholding costs an API call, and the natural alternative --
+            # a dwell requirement on the existing threshold -- is unmeasurable
+            # on this data: there is no trustworthy duration analytic at city
+            # scale. We attempted it, it failed validation, and it is retracted.
+            # See docs/api_findings.md section 8 and sweep_dwell.py.
             recoveries.append({
-                "fixed": as_written.to_dict(),
-                "dwell_sweep": [r.to_dict() for r in dwells],
-                "best_dwell": best.to_dict(),
-                "zones_recovered": zones_recovered(as_written, best),
+                "clause_id": c.clause_id,
+                "day": day,
+                "recovery_available": False,
+                "reason": str(exc),
+                "dwell_retracted": (
+                    "A dwell requirement on the same threshold would be the "
+                    "natural fix, but persistence returns values identical to "
+                    "exceedance on 93.9% of tiles at this threshold, plus "
+                    "negative runs and runs longer than 24 h. Retracted; see "
+                    "docs/api_findings.md section 8."),
             })
-            print(f"  {c.clause_id}  on {day} (its most saturated day)")
-            print(f"    threshold {as_written.threshold_f:.0f} degF held fixed; "
-                  f"only the dwell requirement changes.")
-            print(f"    {'design':<12s}{'sat_idx':>9s}{'bits':>8s}{'zones':>7s}")
-            for r in dwells:
-                mark = "  <- BEST" if r is best else ""
-                mark += "  <- the plan as written" if r is as_written else ""
-                print(f"    {r.design:<12s}{r.saturation_index:>9.3f}"
-                      f"{r.targeting_bits:>8.3f}{r.zones_fired:>7}{mark}")
-            print(f"    as written {as_written.targeting_bits:.3f} bits "
-                  f"-> best {best.targeting_bits:.3f} bits ({best.design})")
-            print(f"    zones_recovered {zones_recovered(as_written, best)}")
-            print(f"    {best.note}")
+            print(f"  {c.clause_id}  on {day}: no measurable recovery design")
+            print(f"    {exc}")
+            print(f"    A dwell requirement is the natural alternative and is")
+            print(f"    UNMEASURABLE here -- no trustworthy duration analytic at")
+            print(f"    city scale. Retracted, see docs/api_findings.md section 8.")
             continue
         except ValueError:
             continue

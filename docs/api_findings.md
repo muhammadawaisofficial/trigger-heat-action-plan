@@ -73,8 +73,15 @@ Same AOI, single day 2025-07-15, `filter_type=3`:
 | 35 °C | 17.27 | **16.00** ✓ | one unbroken run |
 | 40 °C | 2.00 | **2.00** ✓ | short afternoon run |
 
-Under `filter_type=3`, `persistence` tracks `exceedance` and behaves exactly as
-documented.
+Under `filter_type=3`, `persistence` tracks `exceedance` on this small box.
+
+> **Superseded — read section 8 before relying on this.** We originally read that
+> agreement as corroboration that `filter_type=3` persistence is sound. At city
+> scale it is not: `persistence` returns values identical to `exceedance` on
+> 93.9%–100% of tiles depending on threshold, along with negative runs and runs
+> longer than 24 hours. The agreement below is evidence of **non-independence**,
+> not of correctness. Nothing in the pipeline uses `persistence` for a published
+> number.
 
 ### On the reference sample, and why we do not compare against it
 
@@ -344,37 +351,94 @@ Five clauses over the seven-day published window, evaluated on raw tiles:
 | 100.3 °F | 0.501 | actionable |
 | 101.2 °F | 0.955 | over-trigger |
 
-### Threshold × dwell, on the hottest day
+### RETRACTED — the threshold × dwell grid, and why it could not be salvaged
 
-2025-08-07 citywide. The day spanned 80.7–109.6 °F. Targeting information in
-bits, for every combination of threshold and dwell requirement:
+**An earlier version of this section published a threshold × dwell grid and a
+headline claim that adding a duration requirement to Action 1.1's existing
+105 °F threshold would restore targeting value (0.090 → 0.974 bits). That claim
+is withdrawn.** It is recorded here rather than deleted, because the reason it
+failed is itself a reusable finding.
 
-| threshold | >0 h | >1 h | >3 h | >6 h | >9 h | >12 h | >18 h |
-|---|---|---|---|---|---|---|---|
-| 68 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| 77 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| 86 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.017 |
-| 95 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.027 | **0.998** |
-| **105 °F** | **0.090** | 0.135 | 0.154 | 0.248 | **0.974** | 0.000 | 0.000 |
-| 113 °F | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+**Attempt 1 — `exceedance`. Rejected on semantics, before data quality.**
+`exceedance` returns a **total** of qualifying hours. A dwell clause — *"above
+105 °F for more than nine hours"* — describes a **continuous spell**. Three
+separate three-hour spells total nine hours and pass the exceedance test while
+failing the clause. The two quantities answer different questions and the clause
+asks the persistence question, so `exceedance` was disqualified for
+**correctness** regardless of its data quality. Section 9 below is corroborating:
+the field also returns negative values, which additionally made the baseline
+flatter than it deserved.
 
-Of 42 combinations, **two** carry near-complete targeting information. Action
-1.1's own rule — *"above 105 °F"*, no dwell requirement — sits at **0.090 bits**
-and flags all 15 villages.
+**Attempt 2 — `persistence` at `filter_type=3`. Failed validation.** This is the
+analytic that measures longest continuous run, and it is the only other one that
+carries duration information (`tcm` carries none — min, mean and max temperature
+per tile and nothing about time). Citywide on 2025-08-07:
 
-### Recovery costs nothing
+| threshold | min | max | negative | tiles > 24 h | run > own total |
+|---|---|---|---|---|---|
+| 68 °F | 24.00 | 24.00 | 0 | 0 | 0 |
+| 77 °F | 24.00 | 24.00 | 0 | 0 | 0 |
+| 86 °F | 15.59 | **25.51** | 0 | **8,758** | **9,242** |
+| 95 °F | 10.29 | **25.92** | 0 | **6,820** | **39,329** |
+| 105 °F | **−2.51** | 11.57 | **3,110** | 0 | **6,805** |
+| 113 °F | 0.00 | 0.00 | 0 | 0 | 0 |
 
-Holding the threshold fixed and adding a dwell requirement moves Action 1.1 from
-**0.090 bits to 0.974** (saturation 0.989 → 0.405, 15 villages → 8). No new
-sensor, no new API call, no percentile: the hours are already in the cached
-response. It is a clause edit.
+Three impossibilities, each sufficient on its own. A continuous run within a
+single day cannot last **25.92 hours**; cannot be **negative**; and cannot exceed
+the tile's own total qualifying hours, which it does on up to **39,329 tiles**.
 
-A percentile rule recovers the tcm-backed clauses in both directions — the
-saturated 100 °F benchmark and the never-firing 110 °F one alike — but a
-same-day percentile is **post hoc**, since today's p90 is not knowable before
-today ends. A deployable version would fit the percentile on historical
-climatology. The dwell requirement carries no such caveat, which is why it is the
-recommendation we actually make.
+**And it is not an independent measurement.** Compared tile by tile against
+`exceedance` on the same day and threshold:
+
+| threshold | tiles identical to `exceedance` | share |
+|---|---|---|
+| 68 °F | 272,917 / 272,917 | **100%** |
+| 77 °F | 272,917 / 272,917 | **100%** |
+| 86 °F | 257,538 / 272,917 | **94.4%** |
+| **105 °F** | 256,146 / 272,917 | **93.9%** |
+| 113 °F | 272,917 / 272,917 | **100%** |
+| 95 °F | 7,315 / 272,917 | 2.7% |
+
+At the threshold the retracted claim rested on, `persistence` returns the same
+value as `exceedance` for **93.9% of tiles**, including the same impossible
+−2.51 minimum. Whatever it is computing, it is not an independent longest-run.
+
+**Conclusion, stated as a finding.** **FortyGuard exposes no trustworthy duration
+analytic at city scale.** `exceedance` is a smoothed total, `persistence` is
+largely a copy of it and returns physically impossible values, and `tcm` carries
+no time information. Any dwell-based trigger design is therefore unmeasurable on
+this data — which is worth knowing, because a dwell requirement is the most
+natural fix for a saturating threshold and the one a reader will ask about first.
+
+The retracted derivation, its validation harness and the failure output all
+remain in `sweep_dwell.py` and `data/results/dwell_grid.json`. The script exits
+non-zero, so the failure is visible rather than inferred.
+
+### A correction this forced upstream
+
+Section 2 of this document previously concluded that at `filter_type=3`
+"`persistence` tracks `exceedance` and behaves exactly as documented." On the
+2 km box the two analytics agreed, and we read agreement as corroboration. **The
+better explanation is non-independence** — they largely return the same field —
+and the city-scale figures above make that explicit. `filter_type=3` persistence
+is *not* validated by agreeing with `exceedance`; that agreement is the problem.
+
+This changes nothing in the pipeline, which never used `persistence` for any
+published number, but the earlier wording overstated what had been established.
+
+### What recovery is left
+
+With dwell unmeasurable, the surviving alternative design is a **percentile
+threshold**, and it applies only to the three clauses backed by `tcm`
+temperatures. Replacing a fixed value with the 90th percentile of the day's own
+distribution restores a rankable ordering in both failure directions — the
+saturated 100 °F benchmark and the never-firing 110 °F one alike, each moving to
+a firing share of 0.100.
+
+A same-day percentile is **post hoc**: today's p90 is not knowable before today
+ends. It establishes that the signal survives in the data, not that a city should
+adopt that rule. A deployable version would fit the percentile on historical
+climatology, which this project has not done.
 
 TRIGGER reports all of this rather than rewriting the plan. Changing a legal
 threshold is a policy act.
@@ -415,6 +479,7 @@ where the clause states none), which is well-defined regardless.
 | `persistence` saturates at `filter_type=4` (3 of 3 Julys) | Evaluate day by day with `filter_type=3` |
 | A threshold outside the day's range resolves nothing | Report it; choosing thresholds is the City's call, not ours |
 | A fixed trigger fails in BOTH directions, severity-dependent | The primary finding — see section 8 |
+| No trustworthy duration analytic at city scale | Dwell-based trigger designs are unmeasurable here; retracted, see section 8 |
 | `exceedance` returns negative values | Treat it as smoothed, not counted; test `value > 0` explicitly |
 | Per-day evaluation needed for lead time | A week-long aggregate cannot answer "when" |
 | 1,053 mi² in one call | One call per (day, threshold), not one per village |
