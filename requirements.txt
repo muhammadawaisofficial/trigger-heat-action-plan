@@ -4,6 +4,9 @@ python-dotenv>=1.0.0
 shapely>=2.0.0          # area-weighted tile -> zone aggregation
 pdfplumber>=0.10.0      # PDF text + page anchors for quote verification
 
+# Tests — Phase 1 foundation suite (pytest tests/)
+pytest>=8.0.0
+
 # Interface
 streamlit>=1.30.0
 folium>=0.15.0

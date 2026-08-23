@@ -235,6 +235,33 @@ class Clause:
 
     # ------------------------------------------------------------ transport
 
+    def to_api_params(self, analytic_type: str = "exceedance") -> dict[str, Any]:
+        """The exact kwargs ``create_heatmap`` needs for this clause's condition.
+
+        Deliberately partial: it carries only what the *clause* determines --
+        the threshold, its direction, and which analytic answers the question
+        the clause asks. AOI, dates, granularity and filter_type belong to the
+        study window, not to the rule, and the caller supplies them.
+
+        The threshold leaves here in CELSIUS, converted by ``threshold_c`` and
+        nowhere else. A clause with no threshold raises rather than defaulting,
+        because the API's own default of 30 degC would silently answer a
+        question nobody asked.
+        """
+        if self.threshold_source is None:
+            raise ClauseValidationError(
+                f"{self.clause_id} has no threshold, so it has no API "
+                f"condition. Check `is_conditional` before calling this.")
+        if self.operator not in OPERATORS:
+            raise ClauseValidationError(
+                f"{self.clause_id} has threshold {self.threshold_source} but "
+                f"operator {self.operator!r}; expected one of {OPERATORS}.")
+        return {
+            "analytic_type": analytic_type,
+            "threshold": self.threshold_c,
+            "direction": self.operator,
+        }
+
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["threshold_c"] = self.threshold_c
