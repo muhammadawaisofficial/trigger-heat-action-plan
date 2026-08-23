@@ -204,7 +204,7 @@ python verify_api.py        # measured API behaviour
 python make_report.py       # regenerates this document
 ```
 
-The committed cache is 45 MB covering 93 API responses. **All thermal data comes from the FortyGuard Temperature API; no external weather or temperature service is used anywhere in the pipeline.**
+The committed cache is 58 MB covering 105 API responses. **All thermal data comes from the FortyGuard Temperature API; no external weather or temperature service is used anywhere in the pipeline.**
 
 ## Sources
 

@@ -45,6 +45,15 @@ EXPECTED = {
     "population_exposed": 1184971,
 }
 
+#: The live-2026 replication, asserted only if its results file is present.
+#: Checked because the value of a replication is that it stays reproducible.
+EXPECTED_REPLICATION = {
+    "file": "divergence_2026-08-16_2026-08-22.json",
+    "silent_zones": 9,
+    "silent_zone_days": 18,
+    "population_exposed": 958205,
+}
+
 
 def run(cmd: str, env: dict) -> tuple[bool, float, str]:
     t0 = time.time()
@@ -98,6 +107,24 @@ def main() -> int:
                   f"villages that met")
             print(f"  the City's own overnight-heat benchmark on days the citywide "
                   f"reading never fired.")
+
+    # ------------------------------------------ assert the replication window
+    rep_path = REPO / "data" / "results" / EXPECTED_REPLICATION["file"]
+    if rep_path.exists():
+        print("\n  Replication on live 2026 data:")
+        rs = json.loads(rep_path.read_text(encoding="utf-8"))["summary"]
+        for k in ("silent_zones", "silent_zone_days", "population_exposed"):
+            want, got = EXPECTED_REPLICATION[k], rs.get(k)
+            mark = "OK  " if got == want else "DRIFT"
+            print(f"  {mark} {k:<22s} expected {want:>10,}  got "
+                  f"{got if got is not None else 'missing':>10}")
+            if got != want:
+                drift.append(f"replication {k}: expected {want}, got {got}")
+        print("\n  The same structure appears a year later on data the pipeline")
+        print("  had never seen, which is what makes the finding a property of")
+        print("  the city rather than of one week.")
+    else:
+        print("\n  (replication window not present in this checkout - skipped)")
 
     print("\n" + "=" * 74)
     if failures or drift:

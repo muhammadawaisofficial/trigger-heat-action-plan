@@ -34,7 +34,16 @@ VALUE_FIELD = "value"
 #: Analytic types whose tiles carry ``properties.value``.
 ANALYSIS_TYPES = ("exceedance", "persistence", "time_of_measure")
 
-PHOENIX_UTC_OFFSET_H = -7  # Arizona does not observe DST, so this is year-round
+#: Default UTC offset. Arizona does not observe DST so a single constant is
+#: correct there year-round; ``set_utc_offset`` changes it for other cities.
+PHOENIX_UTC_OFFSET_H = -7
+_UTC_OFFSET_H = PHOENIX_UTC_OFFSET_H
+
+
+def set_utc_offset(hours: int) -> None:
+    """Point the local-time conversion at a different city."""
+    global _UTC_OFFSET_H
+    _UTC_OFFSET_H = hours
 
 
 @dataclass
@@ -166,12 +175,16 @@ def tcm_field(hm: Heatmap, field_name: str) -> list[float]:
     return out
 
 
-def utc_hour_to_phoenix(utc_hour: float) -> float:
-    """Convert a time_of_measure UTC hour to Phoenix local time.
+def utc_hour_to_local(utc_hour: float) -> float:
+    """Convert a time_of_measure UTC hour to the active city's local time.
 
-    Arizona is UTC-7 year-round (no DST), so UTC hour 22 is 15:00 local.
+    Arizona is UTC-7 year-round (no DST), so UTC hour 22 is 15:00 local there.
     """
-    return (utc_hour + PHOENIX_UTC_OFFSET_H) % 24
+    return (utc_hour + _UTC_OFFSET_H) % 24
+
+
+#: Retained name for the Phoenix-specific conversion.
+utc_hour_to_phoenix = utc_hour_to_local
 
 
 def summarize(hms: Iterable[Heatmap]) -> str:

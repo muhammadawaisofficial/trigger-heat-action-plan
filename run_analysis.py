@@ -67,6 +67,11 @@ def main() -> int:
     ap.add_argument("--end", default=DEFAULT_END)
     ap.add_argument("--refresh", action="store_true",
                     help="allow live API calls on cache miss")
+    ap.add_argument("--out", default=None,
+                    help="results filename (default divergence.json for the "
+                         "published window, divergence_<start>_<end>.json "
+                         "otherwise, so other windows never clobber the "
+                         "published result)")
     args = ap.parse_args()
 
     days = daterange(args.start, args.end)
@@ -206,8 +211,17 @@ def main() -> int:
     print(f"\n  Baseline: {report.baseline_label}")
 
     # ----------------------------------------------------------------- write
-    study.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    out = study.RESULTS_DIR / "divergence.json"
+    # The published window keeps the canonical filename; any other window gets
+    # its own, so an exploratory run cannot silently replace the headline that
+    # verify_all.py asserts against.
+    if args.out:
+        name = args.out
+    elif (args.start, args.end) == (DEFAULT_START, DEFAULT_END):
+        name = "divergence.json"
+    else:
+        name = f"divergence_{args.start}_{args.end}.json"
+    out = study.results_path(name)
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({
         "study": {
             "city": study.CITY, "plan": study.PLAN_TITLE, "plan_url": study.PLAN_URL,

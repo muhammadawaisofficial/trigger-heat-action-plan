@@ -78,8 +78,12 @@ METRICS = (
 OPERATORS = ("above", "below")
 SCOPES = ("citywide", "district", "site", "indoor")
 
-#: Department key, verbatim from the plan's own table on page 11. This is the
+#: Department key, verbatim from the plan's own table on page 11 -- the
 #: ``actor`` field pre-structured by the document itself.
+#:
+#: This is MUTATED IN PLACE by ``set_vocabulary`` when a city profile loads, so
+#: modules that did ``from schema import DEPARTMENT_KEY`` keep seeing the active
+#: city's departments. Rebinding it would silently leave them on Phoenix.
 DEPARTMENT_KEY = {
     "OHRM": "Office of Heat Response and Mitigation",
     "COMMS": "Communications",
@@ -112,6 +116,20 @@ STRATEGIES = {
     "5": "Implement heat safety measures for workers",
     "6": "Educate the community and engage with partners",
 }
+
+
+def set_vocabulary(department_key: dict[str, str] | None = None,
+                   strategies: dict[str, str] | None = None) -> None:
+    """Point the validator at a different city's departments and strategies.
+
+    Mutates in place rather than rebinding, so existing imports follow.
+    """
+    if department_key:
+        DEPARTMENT_KEY.clear()
+        DEPARTMENT_KEY.update(department_key)
+    if strategies:
+        STRATEGIES.clear()
+        STRATEGIES.update(strategies)
 
 
 class ClauseValidationError(ValueError):
@@ -203,9 +221,12 @@ class Clause:
         if not self.evaluable and not self.not_evaluable_reason:
             e.append("evaluable=False requires not_evaluable_reason")
 
-        for a in self.actor:
-            if a not in DEPARTMENT_KEY:
-                e.append(f"actor {a!r} is not in the plan's department key")
+        # Only enforced when the city profile actually supplies a key. A city
+        # whose plan prints no department list should not fail every clause.
+        if DEPARTMENT_KEY:
+            for a in self.actor:
+                if a not in DEPARTMENT_KEY:
+                    e.append(f"actor {a!r} is not in the plan's department key")
 
         if e:
             raise ClauseValidationError(

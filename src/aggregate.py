@@ -34,11 +34,20 @@ from parse import Heatmap, Tile
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WEIGHT_DIR = REPO_ROOT / "data" / "cache" / "zone_weights"
 
-# Local equal-area scaling about Phoenix. Constant over the AOI, so it cancels
-# in the weighted mean -- but it keeps reported areas in real square kilometres.
-_LAT0 = 33.5
-_KX = 111.320 * math.cos(math.radians(_LAT0))  # km per degree longitude
-_KY = 110.574                                   # km per degree latitude
+# Local equal-area scaling about the study area's own latitude. The constant
+# cancels in a weighted mean, but it keeps reported areas in real square
+# kilometres -- and it must follow the city, since a degree of longitude is
+# 92.9 km at Phoenix and 111 km at the equator.
+_LAT0 = 33.5                                    # replaced by set_projection()
+_KX = 111.320 * math.cos(math.radians(_LAT0))   # km per degree longitude
+_KY = 110.574                                    # km per degree latitude
+
+
+def set_projection(centre_lat: float) -> None:
+    """Re-centre the local projection on a different city."""
+    global _LAT0, _KX
+    _LAT0 = centre_lat
+    _KX = 111.320 * math.cos(math.radians(centre_lat))
 
 
 def _project(lon: float, lat: float) -> tuple[float, float]:

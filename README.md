@@ -139,6 +139,39 @@ communities as carrying a disproportionate share of the heat burden; the
 spatial pattern here is consistent with that, though we have not joined
 demographic data and do not claim to have measured it.
 
+### Replication on live 2026 data
+
+The published result is one week of 2025. To test whether it is a property of
+the city or an artefact of that week, we re-ran the identical pipeline on
+**16–22 August 2026 — fetched live from the API, data the analysis had never
+seen.**
+
+| | 2–8 Aug **2025** (published) | 16–22 Aug **2026** (live) |
+|---|---|---|
+| Silent zones | 10 of 15 | **9 of 15** |
+| Population exposed | 1,184,971 (72%) | **958,205 (58%)** |
+| Silent zone-days | 20 | **18** |
+| False-calm days | 3 of 7 | **3 of 7** |
+| Median lead time | 4 days | **5 days** |
+| Worst day | proxy 89.9 °F vs 90 °F, 10 villages over | proxy **89.4 °F** vs 90 °F, **9 villages over** |
+
+The same structure appears a year later, including the same near-miss signature:
+the citywide average landing a fraction of a degree below the City's own
+threshold while nine or ten neighbourhoods sit above it.
+
+```bash
+FORTYGUARD_API_KEY=... python run_analysis.py --start 2026-08-16 --end 2026-08-22
+```
+
+This also answers the obvious question about whether anything here is
+hardcoded. **The committed cache is a saved copy, not baked-in data** — request
+an uncached window and the pipeline calls the API for real. The API accepts any
+date from 2019-01-01 to twelve hours ahead of now, so this runs on next season
+as readily as on last.
+
+What it is *not* is a continuously running monitor: there is no scheduler and no
+alerting loop. It runs on demand over any window.
+
 ### We tested the plan's own 10 °F claim
 
 Page 4 asserts neighbourhood differences of "10°F or more". Measured at 100 m
