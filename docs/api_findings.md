@@ -471,6 +471,43 @@ where the clause states none), which is well-defined regardless.
 
 ---
 
+## 10. The area limit is about LAND, not square miles
+
+Finding 3 reports an accepted AOI of 1,053 mi² over Phoenix — far above the
+documented 50 mi² cap. Adding New York City showed that figure is not the real
+constraint.
+
+A size ladder over NYC on 2025-06-24, `tcm`, 100 m:
+
+| AOI | Coverage | Tiles | Result |
+|---|---|---|---|
+| 122 mi² — Manhattan + Bronx | land | 26,819 | ✅ 53 s |
+| 346 mi² — + Brooklyn + Queens | mostly land | 71,988 | ✅ 57 s |
+| **840 mi² — full five boroughs** | **~40% water** | — | ❌ **FortyGuardError** |
+
+The 840 mi² request is **smaller** than the 1,053 mi² Phoenix box that succeeds,
+and returns fewer tiles than Phoenix does — so neither area nor tile count is the
+binding limit. What distinguishes it is water: the full-borough bounding box
+spans the Atlantic, New York Harbor, Jamaica Bay and Long Island Sound, where a
+2 m urban temperature model has nothing to return.
+
+Note also the failure mode. Two earlier attempts at the same AOI **hung for 2,400
+seconds** and emitted 40 transient status errors before timing out; the ladder,
+which polls with a shorter deadline, got a clean `FortyGuardError` in 105 s. The
+same rejected request therefore presents either as a fast error or as a
+40-minute hang depending on how you poll — which is why our first two attempts
+looked like an outage rather than a rejection, and why we initially misdiagnosed
+`time_of_measure` the same way.
+
+**Consequence for TRIGGER.** A coastal city needs its AOI clipped to land before
+the first request, not after. NYC is analysed over the 346 mi² box that the API
+accepts, covering 51 of 59 community districts — all of Manhattan and the Bronx,
+15 of 18 in Brooklyn, 12 of 14 in Queens. Staten Island and five coastal
+districts are **excluded and reported as excluded**, rather than returned with no
+tile coverage and silently averaged into the result.
+
+---
+
 ## Summary of consequences for the pipeline
 
 | Finding | Design consequence |
@@ -479,6 +516,7 @@ where the clause states none), which is well-defined regardless.
 | `persistence` saturates at `filter_type=4` (3 of 3 Julys) | Evaluate day by day with `filter_type=3` |
 | A threshold outside the day's range resolves nothing | Report it; choosing thresholds is the City's call, not ours |
 | A fixed trigger fails in BOTH directions, severity-dependent | The primary finding — see section 8 |
+| The AOI limit is about land, not area | Clip a coastal city's AOI to land before the first call — see section 10 |
 | No trustworthy duration analytic at city scale | Dwell-based trigger designs are unmeasurable here; retracted, see section 8 |
 | `exceedance` returns negative values | Treat it as smoothed, not counted; test `value > 0` explicitly |
 | Per-day evaluation needed for lead time | A week-long aggregate cannot answer "when" |
