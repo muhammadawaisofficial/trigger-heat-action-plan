@@ -68,9 +68,22 @@ echo "==> pushing"
 git remote remove origin 2>/dev/null || true
 git remote add origin "https://github.com/$USER_NAME/$REPO.git"
 git branch -M main
-git -c credential.helper= \
-    -c "http.https://github.com/.extraheader=Authorization: Bearer $TOKEN" \
-    push -u origin main
+
+# Git over HTTPS authenticates with BASIC, not Bearer. The REST API accepts
+# "Authorization: Bearer <token>" but git-http-backend rejects it as invalid
+# credentials -- which is why repo creation can succeed and the push still fail.
+# This is the same header GitHub Actions uses.
+AUTH=$(printf 'x-access-token:%s' "$TOKEN" | base64 | tr -d '
+')
+
+if ! git -c credential.helper=         -c "http.https://github.com/.extraheader=Authorization: Basic $AUTH"         push -u origin main; then
+  echo >&2
+  echo "PUSH FAILED. Most likely causes:" >&2
+  echo "  - the token lacks the 'repo' scope (regenerate with it ticked)" >&2
+  echo "  - the token expired or was revoked" >&2
+  echo "  - the repository already has commits; try: git pull --rebase origin main" >&2
+  exit 1
+fi
 
 echo
 echo "==> pushed:  https://github.com/$USER_NAME/$REPO"
