@@ -1,8 +1,9 @@
 # TRIGGER — the Heat Action Plan Compiler
 
-**🔗 Live demo:** _add the Streamlit URL here once deployed_ &nbsp;·&nbsp;
-**▶ Video:** _add link_ &nbsp;·&nbsp;
-**Reproduce offline:** `python run_demo.py` (no API key)
+### **[▶ Open the live demo](https://trigger-heat.streamlit.app/)**  ·  [Repository](https://github.com/muhammadawaisofficial/trigger-heat-action-plan)  ·  Video: _link pending_
+
+The live app needs **no API key and no sign-in**. Everything reproduces offline
+too: `python run_demo.py`.
 
 
 > ## One flaw, two failure modes

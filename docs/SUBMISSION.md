@@ -85,8 +85,8 @@ of `requirements.txt` for the deployment leaves the app fully working.
 
 | Item | Status | Where |
 |---|---|---|
-| Public repository | push required | GitHub |
-| Live demo, no key needed | deploy required | Streamlit Cloud |
+| Public repository | ✅ | https://github.com/muhammadawaisofficial/trigger-heat-action-plan |
+| Live demo, no key needed | ✅ | https://trigger-heat.streamlit.app/ |
 | README against the four criteria | ✅ | `README.md` |
 | Headline number reproducible offline in one command | ✅ | `python run_demo.py` |
 | Fresh-clone test (clean clone, all keys stripped) | ✅ | `run_demo.py` and `verify_all.py` both exit 0 |
