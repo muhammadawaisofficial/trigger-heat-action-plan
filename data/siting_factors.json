@@ -1,0 +1,56 @@
+{
+  "_README": "Non-thermal siting factors, from published public sources. NOTHING HERE IS INVENTED, and nothing here is measured by us -- the distinction matters and is preserved everywhere these numbers surface. The thermal factors (free-cooling hours, wet-bulb, overnight low) are MEASURED by us from FortyGuard at 100 m. These are REFERENCE constants at state resolution, carried so the model can weigh cooling against the factors the industry actually ranks above it. A state-level constant cannot resolve within-metro differences; that is precisely the asymmetry this project exists to point at, and it runs the other way here.",
+
+  "sources": {
+    "electricity_cents_kwh": "US EIA, average commercial retail price by state. Order of magnitude; rates move and large loads negotiate bespoke tariffs far below retail.",
+    "water_stress": "WRI Aqueduct / USGS water-stress categories, coarsened to five bands. Data centre water use is a documented flashpoint for community opposition in Arizona and California.",
+    "disaster_risk": "FEMA National Risk Index composite, coarsened to five bands. Captures seismic, hurricane, flood, wildfire and tornado exposure.",
+    "grid_headroom": "Qualitative band from published interconnection-queue reporting. Power availability is ranked a top-three factor by 84% of site selectors, and delivery timeline -- not acreage -- is the binding constraint.",
+    "renewables": "Qualitative band for proximity to wind, solar or hydro generation."
+  },
+
+  "bands": {
+    "water_stress": ["very low", "low", "medium", "high", "extreme"],
+    "disaster_risk": ["very low", "low", "medium", "high", "very high"],
+    "grid_headroom": ["very tight", "tight", "moderate", "good", "excellent"],
+    "renewables": ["poor", "limited", "moderate", "good", "excellent"]
+  },
+
+  "states": {
+    "VA": {"electricity_cents_kwh": 9.1,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "very tight", "renewables": "moderate", "note": "Largest market on earth; Loudoun interconnection queue is the binding constraint, not land or climate."},
+    "OR": {"electricity_cents_kwh": 9.9,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "good",       "renewables": "excellent", "note": "Hydro-rich; Cascadia seismic exposure is the main risk."},
+    "WA": {"electricity_cents_kwh": 9.9,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "good",       "renewables": "excellent", "note": "Cheapest hydro in the country; seismic exposure west of the Cascades."},
+    "MN": {"electricity_cents_kwh": 11.6, "water_stress": "very low", "disaster_risk": "low",      "grid_headroom": "good",       "renewables": "good"},
+    "IL": {"electricity_cents_kwh": 10.8, "water_stress": "very low", "disaster_risk": "low",      "grid_headroom": "moderate",   "renewables": "good"},
+    "OH": {"electricity_cents_kwh": 10.4, "water_stress": "very low", "disaster_risk": "low",      "grid_headroom": "good",       "renewables": "moderate"},
+    "IA": {"electricity_cents_kwh": 9.8,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "excellent",  "renewables": "excellent", "note": "Wind-rich; already a hyperscale cluster."},
+    "NE": {"electricity_cents_kwh": 9.4,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "excellent",  "renewables": "excellent"},
+    "UT": {"electricity_cents_kwh": 9.5,  "water_stress": "high",     "disaster_risk": "medium",   "grid_headroom": "good",       "renewables": "good", "note": "Great Salt Lake decline has made water a live political issue."},
+    "CO": {"electricity_cents_kwh": 11.4, "water_stress": "high",     "disaster_risk": "medium",   "grid_headroom": "moderate",   "renewables": "good"},
+    "NV": {"electricity_cents_kwh": 9.6,  "water_stress": "extreme",  "disaster_risk": "medium",   "grid_headroom": "good",       "renewables": "excellent", "note": "Colorado River allocation makes evaporative cooling politically fraught."},
+    "ID": {"electricity_cents_kwh": 8.9,  "water_stress": "medium",   "disaster_risk": "low",      "grid_headroom": "good",       "renewables": "good"},
+    "NY": {"electricity_cents_kwh": 17.2, "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "tight",      "renewables": "moderate"},
+    "ME": {"electricity_cents_kwh": 15.1, "water_stress": "very low", "disaster_risk": "low",      "grid_headroom": "good",       "renewables": "good"},
+    "MA": {"electricity_cents_kwh": 19.8, "water_stress": "low",      "disaster_risk": "low",      "grid_headroom": "tight",      "renewables": "moderate"},
+    "PA": {"electricity_cents_kwh": 10.6, "water_stress": "very low", "disaster_risk": "low",      "grid_headroom": "good",       "renewables": "moderate"},
+    "MO": {"electricity_cents_kwh": 9.7,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "good",       "renewables": "moderate"},
+    "NC": {"electricity_cents_kwh": 9.3,  "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "moderate",   "renewables": "good"},
+    "TN": {"electricity_cents_kwh": 11.2, "water_stress": "very low", "disaster_risk": "medium",   "grid_headroom": "moderate",   "renewables": "moderate"},
+    "GA": {"electricity_cents_kwh": 10.9, "water_stress": "low",      "disaster_risk": "medium",   "grid_headroom": "moderate",   "renewables": "moderate"},
+    "TX": {"electricity_cents_kwh": 8.3,  "water_stress": "high",     "disaster_risk": "high",     "grid_headroom": "moderate",   "renewables": "excellent", "note": "Cheapest power and best renewables, but ERCOT is an isolated grid with documented winter failure."},
+    "AZ": {"electricity_cents_kwh": 11.8, "water_stress": "extreme",  "disaster_risk": "low",      "grid_headroom": "moderate",   "renewables": "excellent", "note": "Lowest disaster risk in the panel and superb solar, against the most severe water constraint."},
+    "CA": {"electricity_cents_kwh": 22.4, "water_stress": "extreme",  "disaster_risk": "very high","grid_headroom": "very tight", "renewables": "good", "note": "Most expensive power, highest seismic and wildfire exposure, extreme water stress."},
+    "FL": {"electricity_cents_kwh": 11.1, "water_stress": "medium",   "disaster_risk": "very high","grid_headroom": "moderate",   "renewables": "moderate", "note": "Hurricane exposure dominates the risk term."}
+  },
+
+  "metro_state": {
+    "ashburn": "VA", "hillsboro": "OR", "seattle": "WA", "minneapolis": "MN",
+    "chicago": "IL", "columbus": "OH", "desmoines": "IA", "omaha": "NE",
+    "saltlake": "UT", "denver": "CO", "reno": "NV", "boise": "ID",
+    "buffalo": "NY", "portlandme": "ME", "boston": "MA", "nyc": "NY",
+    "pittsburgh": "PA", "kansascity": "MO", "richmond": "VA",
+    "charlotte": "NC", "nashville": "TN", "atlanta": "GA", "dallas": "TX",
+    "sanantonio": "TX", "houston": "TX", "phoenix": "AZ", "lasvegas": "NV",
+    "sanjose": "CA", "losangeles": "CA", "miami": "FL"
+  }
+}
