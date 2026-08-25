@@ -26,7 +26,7 @@ STRIP = ("FORTYGUARD_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY",
          "CENSUS_API_KEY", "ANTHROPIC_API_KEY")
 
 CHECKS = [
-    ("-m pytest tests/ -q", "foundation unit tests (cache, unit chain, parsers)"),
+    ("-m pytest tests/ -q", "unit + UI tests (cache, units, parsers, rendered app)"),
     ("build_golden.py", "every clause quote appears verbatim on its cited page"),
     ("verify_api.py", "measured FortyGuard API behaviour"),
     ("verify_years.py", "the same probe across three Julys (2025/2024/2023)"),
