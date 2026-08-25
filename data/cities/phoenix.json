@@ -49,5 +49,6 @@
   "population_path": "data/zones/phoenix_villages_population.json",
   "granularity_m": 100,
   "default_start": "2025-08-02",
-  "default_end": "2025-08-08"
+  "default_end": "2025-08-08",
+  "label_prefix": "phx-city"
 }

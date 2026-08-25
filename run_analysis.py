@@ -124,7 +124,7 @@ def main() -> int:
         probe = parse_heatmap(fg.heatmap(
             polygon_aoi=aoi, start_date=days[0], filter_type=3,
             granularity=study.GRANULARITY_M, analytic_type="tcm",
-            label=f"phx-city tcm {days[0]}")["result"], "tcm")
+            label=f"{study.CITY_SLUG} tcm {days[0]}")["result"], "tcm")
     except OfflineCacheMiss as exc:
         print(f"\n  Cannot start: {exc}")
         return 2
@@ -133,7 +133,8 @@ def main() -> int:
     agg = ZoneAggregator(zones, probe.tiles, cache_key=study.ZONE_WEIGHT_KEY)
     print(f"  zones           {len(zones)} {study.ZONE_UNIT}s")
 
-    ev = Evaluator(fg, agg, aoi, granularity=study.GRANULARITY_M)
+    ev = Evaluator(fg, agg, aoi, granularity=study.GRANULARITY_M,
+               city_slug=study.CITY_SLUG)
 
     per_clause = {}
     for c in todo:

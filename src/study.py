@@ -37,6 +37,9 @@ parse.set_utc_offset(CITY_PROFILE.utc_offset_h)
 
 # ----------------------------------------------------- flat names, unchanged
 CITY = CITY_PROFILE.name
+#: Prefix used in cache labels. Read from the profile so Phoenix keeps the
+#: "phx-city" labels its committed cache was written with.
+CITY_SLUG = getattr(CITY_PROFILE, "label_prefix", None) or (CITY_PROFILE.slug + "-city")
 TIMEZONE_NOTE = CITY_PROFILE.timezone_note
 UTC_OFFSET_H = CITY_PROFILE.utc_offset_h
 

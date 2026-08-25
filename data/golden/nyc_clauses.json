@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "city": "New York City, New York",
+    "source": "NYC Heat Emergency Plan as published by NYC Emergency Management and DOHMH",
+    "source_files": [
+      "data/plan/nyc_heat_source.txt"
+    ],
+    "note": "New York's plan is published across NYCEM's Extreme Heat hazard page and its own press releases rather than as a single numbered PDF, so 'page' here indexes the saved source text rather than a printed page. Every quote below is verbatim from that saved text and is verified against it mechanically, exactly as the Phoenix clauses are verified against their PDF.",
+    "measurement_caveat": "NYC triggers on HEAT INDEX. FortyGuard's gridded products return dry-bulb air temperature. Heat index equals or exceeds air temperature whenever relative humidity is above roughly 40%, which is the normal condition for a New York summer. Evaluating these clauses against dry-bulb therefore UNDER-COUNTS the days the trigger would fire, and every divergence figure derived from them is a lower bound -- the same direction of conservatism as the citywide proxy itself."
+  },
+  "clauses": [
+    {
+      "clause_id": "NYC-HEAT-EXTREME-100",
+      "source_text": "New York City defines extreme heat events as periods when the heat index is 100°F or higher for one or more days, or 95°F or higher for two or more consecutive days.",
+      "source_page": 1,
+      "kind": "operative_trigger",
+      "metric": "daily_high",
+      "operator": "above",
+      "threshold_source": 100.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action": "Declare an extreme heat event and activate the Heat Emergency Plan: open cooling centres across the five boroughs, expand outreach to at-risk residents, and coordinate with healthcare providers and utilities.",
+      "action_id": "1.1",
+      "strategy_id": "1",
+      "actor": ["NYCEM", "DOHMH"],
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "Threshold and operator stated verbatim. Measured against dry-bulb daily maximum rather than heat index -- see meta.measurement_caveat; this makes the clause fire less often than it truly would, not more.",
+      "evaluable": true
+    },
+    {
+      "clause_id": "NYC-HEAT-EXTREME-95",
+      "source_text": "New York City defines extreme heat events as periods when the heat index is 100°F or higher for one or more days, or 95°F or higher for two or more consecutive days.",
+      "source_page": 1,
+      "kind": "operative_trigger",
+      "metric": "daily_high",
+      "operator": "above",
+      "threshold_source": 95.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action": "Declare an extreme heat event when the 95°F condition holds on two or more consecutive days, and activate the Heat Emergency Plan.",
+      "action_id": "1.2",
+      "strategy_id": "1",
+      "actor": ["NYCEM", "DOHMH"],
+      "lead_time_req_h": null,
+      "extraction_conf": 0.9,
+      "extraction_note": "The document attaches a TWO-CONSECUTIVE-DAY requirement to this threshold. The evaluator tests the daily condition; consecutive runs are reported separately in the divergence output rather than folded into the per-day determination. Confidence reduced from 1.0 for that reason, not because the threshold is uncertain.",
+      "evaluable": true
+    },
+    {
+      "clause_id": "NYC-HEAT-BENCH-95",
+      "source_text": "A heat index above 95°F is especially dangerous.",
+      "source_page": 1,
+      "kind": "planning_benchmark",
+      "metric": "daily_high",
+      "operator": "above",
+      "threshold_source": 95.0,
+      "threshold_unit_source": "F",
+      "duration_hours": null,
+      "scope": "citywide",
+      "action": "Public guidance benchmark: the level at which the City tells residents heat becomes especially dangerous.",
+      "action_id": null,
+      "strategy_id": "2",
+      "actor": ["NYCEM"],
+      "lead_time_req_h": null,
+      "extraction_conf": 1.0,
+      "extraction_note": "A benchmark rather than an operative trigger: it carries no action and no named deadline, but it is the number the City communicates to the public.",
+      "evaluable": true
+    }
+  ]
+}

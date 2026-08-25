@@ -70,6 +70,7 @@ class City:
     # ---- optional
     population_path: str | None = None
     granularity_m: int = 100
+    label_prefix: str | None = None
     default_start: str | None = None
     default_end: str | None = None
 

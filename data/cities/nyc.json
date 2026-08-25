@@ -1,0 +1,36 @@
+{
+  "name": "New York City, New York",
+  "plan_pdf": "data/plan/nyc_heat_source.txt",
+  "plan_title": "NYC Heat Emergency Plan (NYCEM / DOHMH), as published 2024-2026",
+  "plan_url": "https://home3.nyc.gov/site/em/ready/extreme-heat.page",
+  "clause_prefix": "NYC-HEAT",
+  "golden_clauses": "data/golden/nyc_clauses.json",
+  "aoi_west": -74.2556,
+  "aoi_south": 40.4961,
+  "aoi_east": -73.7,
+  "aoi_north": 40.9155,
+  "zones_path": "data/zones/nyc_cd.geojson",
+  "zone_name_field": "NAME",
+  "zone_unit": "community district",
+  "zones_source": "NYC Department of City Planning, Community Districts (59, excluding Joint Interest Areas such as parks and airports, which have no resident population)",
+  "utc_offset_h": -4,
+  "observes_dst": true,
+  "timezone_note": "New York is UTC-4 during Eastern Daylight Time, which covers the entire summer heat season. Unlike Arizona, New York does observe DST, so this offset is correct for the study window but not year-round.",
+  "department_key": {
+    "NYCEM": "New York City Emergency Management",
+    "DOHMH": "Department of Health and Mental Hygiene",
+    "DFTA": "Department for the Aging",
+    "NYCHA": "New York City Housing Authority",
+    "DPR": "Department of Parks and Recreation",
+    "DSS": "Department of Social Services"
+  },
+  "strategies": {
+    "1": "Declare a heat emergency and open cooling centres",
+    "2": "Outreach to residents at highest risk"
+  },
+  "population_path": "data/zones/nyc_cd_population.json",
+  "granularity_m": 100,
+  "default_start": "2025-07-14",
+  "default_end": "2025-07-20",
+  "label_prefix": "nyc-city"
+}

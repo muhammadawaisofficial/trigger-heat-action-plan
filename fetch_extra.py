@@ -94,8 +94,40 @@ def main() -> int:
             out["peak_hour_gap"] = round(d, 3)
             print(f"\n   Silent zones peak {abs(d):.2f} h "
                   f"{'LATER' if d > 0 else 'EARLIER'} than the rest, on average.")
-    except OfflineCacheMiss as exc:
-        print(f"   skipped: {str(exc).splitlines()[0]}")
+    except Exception as exc:  # noqa: BLE001
+        # time_of_measure did not complete at city scale: 2400 s and 40
+        # transient status errors on 272,917 tiles. Recorded as a measured API
+        # limit rather than retried forever, and it must not prevent env_params
+        # from running.
+        out["time_of_measure_error"] = f"{type(exc).__name__}: {exc}"
+        print(f"   FAILED at city scale: {type(exc).__name__}")
+        print(f"   {str(exc)[:150]}")
+        print("   Recorded as a measured limit. Retrying on the 2 km box instead.")
+        try:
+            from geo import feature_collection
+            RING = [(-112.08476617879987, 33.43938611862268),
+                    (-112.06323382120013, 33.43938611862268),
+                    (-112.06323382120013, 33.45741388137732),
+                    (-112.08476617879987, 33.45741388137732),
+                    (-112.08476617879987, 33.43938611862268)]
+            small = parse_heatmap(fg.heatmap(
+                polygon_aoi=feature_collection(RING), start_date=DAY,
+                filter_type=3, granularity=100, analytic_type="time_of_measure",
+                label=f"downtown-phx time_of_measure {DAY}")["result"],
+                "time_of_measure")
+            v = [t.value for t in small.tiles if t.value is not None]
+            loc = [utc_hour_to_local(x) for x in v]
+            out["time_of_measure_small_aoi"] = {
+                "n_tiles": len(v), "utc_min": min(v), "utc_max": max(v),
+                "local_min": min(loc), "local_max": max(loc),
+                "distinct": len(set(v)),
+                "note": "2 km downtown box. The city-scale request timed out.",
+            }
+            print(f"   2 km box OK: {len(v)} tiles, peak hour "
+                  f"{min(loc):.0f}-{max(loc):.0f} local, {len(set(v))} distinct")
+        except Exception as exc2:  # noqa: BLE001
+            print(f"   2 km box also failed: {type(exc2).__name__}")
+            out["time_of_measure_small_aoi_error"] = str(exc2)
 
     # ------------------------------------------------------ 2. env_params
     print("\n2. env_params -- heat index at each village centroid")

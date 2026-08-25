@@ -206,7 +206,14 @@ class Evaluator:
     """Deterministic clause evaluation over a fixed AOI and zone set."""
 
     def __init__(self, fg: CachedFortyGuard, aggregator: ZoneAggregator,
-                 aoi: dict, granularity: int = 100) -> None:
+                 aoi: dict, granularity: int = 100,
+                 city_slug: str = "phx-city") -> None:
+        # The label is what a human reads in the cache manifest. Hardcoding
+        # "phx-city" made every other city's responses claim to be Phoenix's --
+        # harmless to correctness, since the cache key hashes the request
+        # payload including the AOI, but actively misleading to anyone auditing
+        # the cache.
+        self.city_slug = city_slug
         self.fg = fg
         self.agg = aggregator
         self.aoi = aoi
@@ -224,7 +231,7 @@ class Evaluator:
             raw = self.fg.heatmap(
                 polygon_aoi=self.aoi, start_date=day, filter_type=3,
                 granularity=self.granularity, analytic_type="tcm",
-                label=f"phx-city tcm {day}",
+                label=f"{self.city_slug} tcm {day}",
             )["result"]
             return parse_heatmap(raw, "tcm"), tcm_field
 
@@ -233,7 +240,7 @@ class Evaluator:
             polygon_aoi=self.aoi, start_date=day, filter_type=3,
             granularity=self.granularity, analytic_type="exceedance",
             threshold=thr_c, direction=clause.operator or "above",
-            label=f"phx-city exceedance {day} t{thr_c:.4f}",
+            label=f"{self.city_slug} exceedance {day} t{thr_c:.4f}",
         )["result"]
         return parse_heatmap(raw, "exceedance"), None
 
@@ -283,7 +290,7 @@ class Evaluator:
             hm = parse_heatmap(self.fg.heatmap(
                 polygon_aoi=self.aoi, start_date=day, filter_type=3,
                 granularity=self.granularity, analytic_type="tcm",
-                label=f"phx-city tcm {day}")["result"], "tcm")
+                label=f"{self.city_slug} tcm {day}")["result"], "tcm")
         except Exception:  # noqa: BLE001 -- severity is diagnostic, never fatal
             self._severity_cache[day] = None
             return None
