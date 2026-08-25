@@ -2,11 +2,13 @@
 base = "light"
 primaryColor = "#b2182b"
 backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f4f4f5"
+secondaryBackgroundColor = "#f7f7f8"
 textColor = "#18181b"
+font = "sans serif"
 
 [server]
 headless = true
+maxUploadSize = 5
 
 [browser]
 gatherUsageStats = false
