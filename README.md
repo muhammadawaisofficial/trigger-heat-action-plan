@@ -162,6 +162,7 @@ quotes and narrates verified results. It decides nothing.
 | [2. Technical execution](#2-technical-execution-35) | How it works, and what we measured about the API |
 | [3. Innovation](#3-innovation-15) | Why compiling the document is the whole point |
 | [4. Communication](#4-communication-10) | Reproducing every number here |
+| [The precedent](#the-precedent-new-york-already-fixed-a-version-of-this) | A documented natural experiment: NYC changed its threshold and hospitalisations fell |
 | [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
 | [What we got wrong](#what-we-got-wrong) | Three corrections, and the mechanism that keeps them honest |
 | [5. Limitations](#5-limitations) | What this does not show |
@@ -299,6 +300,56 @@ trigger on.
 ```bash
 python test_claim.py
 ```
+
+---
+
+## The precedent: New York already fixed a version of this
+
+There is a documented natural experiment for exactly the kind of change this
+project argues for, and it is the reason we are confident the argument is not
+merely academic.
+
+From 2001 to 2007 New York City activated its heat emergency plan on **national**
+National Weather Service criteria: a heat index of **40.6 °C — 105 °F — for one
+day**. An evaluation found the system **was not preventing heat-related
+mortality**. The City replaced it with locally-derived thresholds — **37.8 °C
+(100 °F) for one day, or 35 °C (95 °F) for two consecutive days** — and the
+change had a measured health outcome:
+
+> *"The 40.6 °C threshold for one day was changed to a forecast maximum heat
+> index of 37.8 °C for one day or more, or 35 °C for at least two consecutive
+> days … The lower threshold reduced heat-related hospitalizations among older
+> adults."*
+> — Kotharkar & Ghosh, *Effective heat action plans: research to interventions*,
+> [Environmental Research Letters](https://iopscience.iop.org/article/10.1088/1748-9326/ab5ab0)
+
+Three things follow, and the third is the one that matters.
+
+**1. Trigger thresholds are not cosmetic.** Changing a number in a document
+changed a hospitalization rate. That is the mechanism this project measures.
+
+**2. One-size thresholds fail because they ignore local conditions.** New York's
+problem was that a national criterion did not describe New York. The paper's own
+conclusion is that *"one-size-fits-all approaches are less effective than
+solutions designed … with local stakeholders."*
+
+**3. New York fixed the *between-city* problem. Nobody has fixed the
+*within-city* one — and it survives the fix.** The clauses we evaluate for New
+York are its **post-change, epidemiologically-derived** thresholds. They are the
+improved rule, already validated against health outcomes. And they still leave
+**16 community districts and 2,453,713 people** meeting the condition on days the
+citywide reading never fired.
+
+**Lowering a citywide threshold is necessary but not sufficient. A better single
+number is still a single number.** The same reasoning that took New York from a
+national threshold to a city threshold, applied one level further down, takes a
+city threshold to a neighbourhood one — and that is the step 2 m data makes
+possible for the first time.
+
+> **What we do not claim.** New York's evidence is that 105 °F was too high *for
+> New York's climate*. It does not follow that Phoenix's 105 °F trigger is
+> wrong for Phoenix, which is a far hotter city, and we make no such claim. Our
+> finding is about spatial resolution, not about any particular number.
 
 ---
 

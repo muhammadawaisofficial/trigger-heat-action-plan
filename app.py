@@ -778,6 +778,39 @@ with tab_nyc:
              "New York City": f"{ns['actionable_clause_days']} of {ns['clause_days']}"
                               f" ({ns['actionable_share']:.0%})"},
         ]), hide_index=True, use_container_width=True)
+        st.markdown("#### And New York already fixed a version of this")
+        st.markdown(
+            "From 2001 to 2007 New York activated its heat plan on **national** "
+            "criteria: a heat index of **40.6 °C — 105 °F — for one day**. An "
+            "evaluation found the system *was not preventing heat-related "
+            "mortality*. The City replaced it with locally-derived thresholds, "
+            "and the change had a measured health outcome.")
+        st.markdown(
+            "> *“The 40.6 °C threshold for one day was changed to a forecast "
+            "maximum heat index of 37.8 °C for one day or more, or 35 °C for at "
+            "least two consecutive days … The lower threshold reduced "
+            "heat-related hospitalizations among older adults.”*\n\n"
+            "> — Kotharkar & Ghosh, *Effective heat action plans*, "
+            "[Environmental Research Letters]"
+            "(https://iopscience.iop.org/article/10.1088/1748-9326/ab5ab0)")
+        st.warning(
+            "**The clauses evaluated above are New York's post-change, "
+            "epidemiologically-derived thresholds** — the improved rule, already "
+            "validated against hospitalisation data. They still leave "
+            f"**{ns['silent_zones']} districts and "
+            f"{ns.get('population_exposed', 0):,} people** meeting the condition "
+            "on days the citywide reading never fired.\n\n"
+            "New York fixed the *between-city* problem: a national threshold did "
+            "not describe New York. **Nobody has fixed the *within-city* one, and "
+            "it survives the fix.** A better single number is still a single "
+            "number.", icon="⚠️")
+        st.caption(
+            "What we do NOT claim: New York's evidence is that 105 °F was too "
+            "high *for New York's climate*. It does not follow that Phoenix's "
+            "105 °F trigger is wrong for Phoenix, which is a far hotter city, "
+            "and we make no such claim. This finding is about spatial "
+            "resolution, not about any particular number.")
+
         _tot = _p["population_exposed"] + ns.get("population_exposed", 0)
         st.success(
             f"**Same near-miss signature. Near-identical actionable share — "
