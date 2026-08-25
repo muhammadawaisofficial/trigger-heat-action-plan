@@ -161,49 +161,73 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ------------------------------------------------------------------- loading
+# ------------------------------------------------------------------- cities
+# The pipeline is city-agnostic, so the interface is too. Switching cities here
+# re-renders every number on the page from that city's own committed results --
+# which is the portability claim demonstrated rather than asserted.
+
+CITIES = {
+    "Phoenix, Arizona": {
+        "results": REPO / "data" / "results" / "divergence.json",
+        "zones":   REPO / "data" / "zones" / "phoenix_villages_raw.geojson",
+        "pop":     REPO / "data" / "zones" / "phoenix_villages_population.json",
+        "unit": "urban village", "short": "Phoenix",
+        "trigger": "90 °F overnight low",
+        "plan_url": "https://www.phoenix.gov/content/dam/phoenix/heatsite/documents/2026%20Heat%20Response%20Plan.pdf",
+        "plan": "City of Phoenix 2026 Heat Response Plan",
+        "centre": [33.55, -112.09], "tiles": "272,917", "aoi": "1,053",
+        "note": "Arid. Heat index sits BELOW air temperature here, so Phoenix "
+                "triggers on dry-bulb — the right choice for its climate.",
+    },
+    "New York City": {
+        "results": REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json",
+        "zones":   REPO / "data" / "zones" / "nyc_cd.geojson",
+        "pop":     REPO / "data" / "zones" / "nyc_cd_population.json",
+        "unit": "community district", "short": "New York",
+        "trigger": "100 °F heat index",
+        "plan_url": "https://home3.nyc.gov/site/em/ready/extreme-heat.page",
+        "plan": "NYC Heat Emergency Plan (NYCEM / DOHMH)",
+        "centre": [40.75, -73.95], "tiles": "71,988", "aoi": "346",
+        "note": "Humid. Heat index sits ABOVE air temperature here, so New York "
+                "triggers on heat index — also the right choice for its climate.",
+    },
+}
+
 
 @st.cache_data
-def load_results() -> dict:
-    if not RESULTS.exists():
-        return {}
-    return json.loads(RESULTS.read_text(encoding="utf-8"))
-
-
-@st.cache_data
-def load_zone_geo() -> dict:
-    return json.loads(ZONES.read_text(encoding="utf-8"))
-
-
-@st.cache_data
-def load_second_city() -> dict:
-    """The New York run, if present. Optional -- Phoenix stands without it."""
-    f = REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json"
+def load_json(path_str: str) -> dict:
+    f = Path(path_str)
     return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
 
 
 @st.cache_data
 def load_api_usage() -> dict:
-    f = REPO / "data" / "results" / "api_usage.json"
-    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    return load_json(str(REPO / "data" / "results" / "api_usage.json"))
 
 
-@st.cache_data
-def load_pop() -> dict:
-    if not POP.exists():
-        return {}
-    return json.loads(POP.read_text(encoding="utf-8")).get("villages", {})
-
-
-res = load_results()
-if not res:
+AVAILABLE = {k: v for k, v in CITIES.items() if v["results"].exists()}
+if not AVAILABLE:
     st.error("No results found. Run `python run_analysis.py` first.")
     st.stop()
 
-geo = load_zone_geo()
-pop = load_pop()
+with st.sidebar:
+    st.markdown("### City")
+    city_name = st.radio(
+        "City", list(AVAILABLE.keys()), label_visibility="collapsed",
+        captions=[AVAILABLE[c]["trigger"] for c in AVAILABLE])
+    CITY = AVAILABLE[city_name]
+    st.caption(CITY["note"])
+    if len(AVAILABLE) > 1:
+        st.success("Switch cities to re-run every figure on this page. Same "
+                   "pipeline, no code changes — one profile file per city.",
+                   icon="🔀")
+    st.divider()
+
+res = load_json(str(CITY["results"]))
+geo = load_json(str(CITY["zones"]))
+pop = (load_json(str(CITY["pop"])) or {}).get("villages", {})
 api = load_api_usage()
-nyc = load_second_city()
+nyc = load_json(str(CITIES["New York City"]["results"]))
 clauses = {c["clause_id"]: c for c in res["clauses"]}
 summary = res["summary"]
 
@@ -216,10 +240,10 @@ st.markdown(
         TRIGGER</span>
       <span style="color:#71717a;font-size:1.02rem">the Heat Action Plan Compiler</span>
       <span style="flex:1"></span>
-      <span class="tg-pill">Phoenix, AZ</span>
-      <span class="tg-pill ghost">{len(res['zones'])} urban villages</span>
-      <span class="tg-pill ghost">272,917 tiles/day @ 100 m</span>
-      <span class="tg-pill ghost">no API key required</span>
+      <span class="tg-pill">{CITY['short']}</span>
+      <span class="tg-pill ghost">{len(res['zones'])} {CITY['unit']}s</span>
+      <span class="tg-pill ghost">{CITY['tiles']} tiles/day @ 100 m</span>
+      <span class="tg-pill ghost">{CITY['aoi']} sq mi</span>
     </div>""", unsafe_allow_html=True)
 
 
@@ -294,8 +318,8 @@ if exposed:
           <div class="tg-kicker">Measured, not modelled &middot; {summary['window'][0]} to {summary['window'][1]}</div>
           <div class="tg-num">{exposed:,}</div>
           <div class="tg-sub">
-            people &mdash; <b>{exposed/total_pop:.0%} of Phoenix</b> &mdash; live in the
-            <b>{len(SILENT)} of {len(res['zones'])}</b> urban villages that met the City's own
+            people &mdash; <b>{exposed/total_pop:.0%} of {CITY['short']}</b> &mdash; live in the
+            <b>{len(SILENT)} of {len(res['zones'])}</b> {CITY['unit']}s that met the City's own
             overnight-heat benchmark<br>on nights the citywide reading
             <b>never fired</b>.
           </div>
@@ -349,8 +373,40 @@ folium.Marker(
     icon=folium.Icon(color="darkblue", icon="plane", prefix="fa"),
 ).add_to(hero)
 
-st_folium(hero, height=560, use_container_width=True, returned_objects=[],
-          key="hero_map")
+_click = st_folium(hero, height=560, use_container_width=True,
+                   returned_objects=["last_object_clicked_tooltip"],
+                   key="hero_map")
+
+_picked = (_click or {}).get("last_object_clicked_tooltip")
+if _picked:
+    _name = str(_picked).split("<")[0].strip()
+    _row = next((z for z in res["zones"]
+                 if z["name"].lower() in _name.lower()), None)
+    if _row:
+        _sil = _row["zone_id"] in SILENT
+        _pp = pop.get(_row["zone_id"], {}).get("population")
+        with st.container(border=True):
+            _c1, _c2, _c3, _c4 = st.columns([2, 1, 1, 1])
+            _c1.markdown(f"#### {_row['name']}")
+            _c1.caption("Click any other area to compare.")
+            _c2.metric("Residents", f"{_pp:,}" if _pp else "—")
+            _c3.metric("Area", f"{_row.get('area_sq_mi', 0):.0f} mi²")
+            _c4.metric("Status", "SILENT" if _sil else "covered",
+                       delta_color="off")
+            if _sil:
+                _days = sorted({d["day"] for c in res["clauses"]
+                                for d in c.get("determinations", [])
+                                if not d["proxy"]["fired"]
+                                and any(z["zone_id"] == _row["zone_id"] and z["fired"]
+                                        for z in d["zones"])})
+                st.error(
+                    f"**{_row['name']} met the condition on "
+                    f"{len(_days)} day(s) when the citywide reading never "
+                    f"fired.** " + (f"Nights: {', '.join(_days)}." if _days else ""),
+                    icon="🔴")
+            else:
+                st.info(f"{_row['name']} was never silent in this window — the "
+                        f"citywide reading and this area agreed.", icon="✅")
 st.markdown(
     """<div class="tg-legend">
       <span><span class="tg-sw" style="background:#c1121f"></span>
@@ -372,7 +428,7 @@ c1, c2, c3, c4, c5 = st.columns(5)
 if summary.get("population_exposed"):
     c1.metric("People exposed",
               f"{summary['population_exposed']:,}",
-              f"{summary['population_exposed']/summary['population_total']:.0%} of Phoenix",
+              f"{summary['population_exposed']/summary['population_total']:.0%} of {CITY['short']}",
               delta_color="off")
 else:
     c1.metric("People exposed", "n/a")
@@ -455,7 +511,7 @@ for _i, _r in enumerate(_rank[:3], 1):
                 f"**Responsible**\n\n{_r['actor']}\n\n"
                 f"**Authority**\n\n`{_r['clause']}`, page {_r['page']} of the "
                 f"published plan\n\n"
-                f"[Open the source page]({study.PLAN_URL}#page={_r['page']})")
+                f"[Open the source page]({CITY['plan_url']}#page={_r['page']})")
 
 if len(_rank) > 3:
     with st.expander(f"The remaining {len(_rank) - 3} zone-clause pairs, same ranking"):
@@ -530,9 +586,9 @@ pc1, pc2 = st.columns([3, 2])
 with pc1:
     st.markdown(f'<div class="tg-quote">&ldquo;{cl["source_text"]}&rdquo;</div>',
                 unsafe_allow_html=True)
-    st.caption(f"**{study.PLAN_TITLE}, page {cl['source_page']}** — verbatim, "
+    st.caption(f"**{CITY['plan']}, page {cl['source_page']}** — verbatim, "
                f"verified against that page. "
-               f"[Open the source PDF]({study.PLAN_URL}#page={cl['source_page']})")
+               f"[Open the source PDF]({CITY['plan_url']}#page={cl['source_page']})")
 with pc2:
     st.markdown(
         f"**Threshold** {threshold_f:g} °F ({cl['threshold_c']:.2f} °C)  \n"
@@ -964,7 +1020,7 @@ with tab_retract:
 st.divider()
 st.caption(
     f"Thermal data: FortyGuard Temperature API at {study.GRANULARITY_M} m, "
-    f"272,917 tiles per day over {study.city_aoi_sq_mi():,.0f} mi². "
+    f"{CITY['tiles']} tiles per day over {CITY['aoi']} mi². "
     f"No external weather source is used anywhere in this pipeline. "
     f"Zones: {study.ZONES_SOURCE}. "
     f"Population: US Census ACS 5-year 2023. "
