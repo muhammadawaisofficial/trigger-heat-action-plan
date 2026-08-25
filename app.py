@@ -92,7 +92,7 @@ st.markdown("""
     padding:1rem 1.1rem; box-shadow:0 1px 2px rgba(0,0,0,.04);
   }
   [data-testid="stMetricValue"] {
-    font-size:1.75rem !important; font-weight:700; letter-spacing:-0.02em;
+    font-size:clamp(1.15rem,1.6vw,1.75rem) !important; white-space:nowrap; font-weight:700; letter-spacing:-0.02em;
     font-variant-numeric:tabular-nums;
   }
   [data-testid="stMetricLabel"] {
@@ -207,8 +207,24 @@ if exposed:
           </div>
         </div>""", unsafe_allow_html=True)
 
-hero = folium.Map(location=[33.55, -112.09], zoom_start=9,
-                  tiles="cartodbpositron")
+hero = folium.Map(tiles="cartodbpositron", zoom_control=True)
+
+# Fit to the villages rather than guessing a zoom: a fixed zoom_start shows
+# half of Arizona on a wide screen and buries the hero visual.
+_lats, _lons = [], []
+for _ft in geo["features"]:
+    if zone_id_of(_ft) in {z["zone_id"] for z in res["zones"]}:
+        def _walk(c):
+            if isinstance(c, (int, float)):
+                return
+            if len(c) == 2 and isinstance(c[0], (int, float)):
+                _lons.append(c[0]); _lats.append(c[1]); return
+            for _x in c:
+                _walk(_x)
+        _walk(_ft["geometry"]["coordinates"])
+if _lats:
+    hero.fit_bounds([[min(_lats), min(_lons)], [max(_lats), max(_lons)]],
+                    padding=(18, 18))
 for ft in geo["features"]:
     zid = zone_id_of(ft)
     if zid not in {z["zone_id"] for z in res["zones"]}:
@@ -260,11 +276,12 @@ st.divider()
 
 c1, c2, c3, c4, c5 = st.columns(5)
 if summary.get("population_exposed"):
-    c1.metric("People in silent zones",
+    c1.metric("People exposed",
               f"{summary['population_exposed']:,}",
-              f"{summary['population_exposed']/summary['population_total']:.0%} of Phoenix")
+              f"{summary['population_exposed']/summary['population_total']:.0%} of Phoenix",
+              delta_color="off")
 else:
-    c1.metric("People in silent zones", "n/a")
+    c1.metric("People exposed", "n/a")
 c2.metric("Silent zones", f"{summary['silent_zones']} of {len(res['zones'])}")
 c3.metric("Silent zone-days", summary["silent_zone_days"])
 c4.metric("False-calm days",
@@ -473,7 +490,10 @@ fired = {z["zone_id"]: z["fired"] for z in det["zones"]}
 names = {z["zone_id"]: z["name"] for z in det["zones"]}
 
 
-m = folium.Map(location=[33.55, -112.09], zoom_start=9, tiles="cartodbpositron")
+m = folium.Map(tiles="cartodbpositron", zoom_control=True)
+if _lats:
+    m.fit_bounds([[min(_lats), min(_lons)], [max(_lats), max(_lons)]],
+                 padding=(18, 18))
 
 for ft in geo["features"]:
     zid = zone_id_of(ft)
@@ -555,7 +575,8 @@ with tab_over:
     act = summary.get("actionable_clause_days")
     if n:
         o1, o2, o3 = st.columns(3)
-        o1.metric("Actionable", f"{act} of {n}", f"{act/n:.0%}")
+        o1.metric("Actionable", f"{act} of {n}", f"{act/n:.0%}",
+                  delta_color="off")
         o2.metric("Over-triggered", summary.get("over_triggered_clause_days"),
                   "fired on >95% of tiles", delta_color="off")
         o3.metric("Under-triggered", summary.get("under_triggered_clause_days"),
