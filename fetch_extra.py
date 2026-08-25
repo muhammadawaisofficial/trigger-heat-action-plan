@@ -95,10 +95,16 @@ def main() -> int:
             print(f"\n   Silent zones peak {abs(d):.2f} h "
                   f"{'LATER' if d > 0 else 'EARLIER'} than the rest, on average.")
     except Exception as exc:  # noqa: BLE001
-        # time_of_measure did not complete at city scale: 2400 s and 40
-        # transient status errors on 272,917 tiles. Recorded as a measured API
-        # limit rather than retried forever, and it must not prevent env_params
-        # from running.
+        # time_of_measure did not complete at city scale on two attempts:
+        # 2400 s and 40 transient status errors each time, on 272,917 tiles.
+        #
+        # DO NOT read that as "the endpoint is broken at scale". A later 2 km
+        # probe over Manhattan AND downtown Phoenix each returned in 31 s, and
+        # a city-scale NYC tcm request failed with the identical signature at
+        # the same time -- so the API was simply degraded during that window.
+        # The honest statement is that we could not obtain a city-scale
+        # time_of_measure result, not that one is unobtainable. Retry when the
+        # API is responsive before drawing any conclusion.
         out["time_of_measure_error"] = f"{type(exc).__name__}: {exc}"
         print(f"   FAILED at city scale: {type(exc).__name__}")
         print(f"   {str(exc)[:150]}")
