@@ -22,6 +22,25 @@ too: `python run_demo.py`.
 >
 > These are not two findings. **Saturation is the mechanism; lost coverage is the
 > consequence.** A threshold can only resolve variation it sits inside.
+>
+> ---
+>
+> **And it is not one city.** We ran the same pipeline, unchanged, on **New York
+> City** — which triggers on *heat index* where Phoenix triggers on *dry-bulb*,
+> because NYC is humid and Phoenix is arid, and each is right for its own
+> climate. Opposite choices. **Same failure.**
+>
+> | | Phoenix | New York City |
+> |---|---|---|
+> | Citywide proxy, worst day | **89.9 °F** | **99.0 °F** |
+> | Its own threshold | 90 °F | 100 °F |
+> | Missed by | **0.1 °F** | **1.0 °F** |
+> | Zones above it anyway | 10 of 15 | 13 of 51 |
+> | People exposed | **1,184,971** | **2,453,713** |
+> | Actionable clause-days | **23%** | **24%** |
+>
+> **3.6 million people. Two cities. 23% against 24%.** The problem is not which
+> metric a city picks — it is using **one number for a whole city**.
 
 ---
 

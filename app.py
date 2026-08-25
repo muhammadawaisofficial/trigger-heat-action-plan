@@ -176,6 +176,13 @@ def load_zone_geo() -> dict:
 
 
 @st.cache_data
+def load_second_city() -> dict:
+    """The New York run, if present. Optional -- Phoenix stands without it."""
+    f = REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json"
+    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+
+
+@st.cache_data
 def load_api_usage() -> dict:
     f = REPO / "data" / "results" / "api_usage.json"
     return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
@@ -196,6 +203,7 @@ if not res:
 geo = load_zone_geo()
 pop = load_pop()
 api = load_api_usage()
+nyc = load_second_city()
 clauses = {c["clause_id"]: c for c in res["clauses"]}
 summary = res["summary"]
 
@@ -725,11 +733,66 @@ with mc2:
 st.divider()
 st.subheader("Secondary results")
 
-tab_over, tab_rec, tab_api, tab_retract = st.tabs(
-    ["Over-trigger: the targeting failure",
+tab_nyc, tab_over, tab_rec, tab_api, tab_retract = st.tabs(
+    ["Does it generalise? New York City",
+     "Over-trigger: the targeting failure",
      "Recovery: a different rule",
      "How we used the FortyGuard API",
      "What we retracted"])
+
+with tab_nyc:
+    if not nyc:
+        st.info("The New York run is not present in this checkout.")
+    else:
+        ns = nyc["summary"]
+        st.markdown(
+            "One city is a case study. We ran the **same pipeline, unchanged**, "
+            "on **New York City** — a city that disagrees with Phoenix about "
+            "what to measure and is right to.")
+        st.markdown(
+            "Phoenix is arid, so heat index sits **below** air temperature "
+            "there and its plan triggers on **dry-bulb**. New York is humid, so "
+            "heat index sits **above** air temperature and its plan triggers on "
+            "**heat index**. Opposite choices, both defensible. The question is "
+            "whether the failure follows the metric or the *architecture*.")
+        _p = summary
+        st.dataframe(pd.DataFrame([
+            {"": "Trigger", "Phoenix": "90 °F overnight low",
+             "New York City": "100 °F heat index"},
+            {"": "Zones", "Phoenix": f"{len(res['zones'])} urban villages",
+             "New York City": f"{len(nyc['zones'])} community districts"},
+            {"": "Citywide proxy, worst day", "Phoenix": "89.9 °F", "New York City": "99.0 °F"},
+            {"": "Missed the threshold by", "Phoenix": "0.1 °F", "New York City": "1.0 °F"},
+            {"": "Silent zones",
+             "Phoenix": f"{_p['silent_zones']} of {len(res['zones'])}",
+             "New York City": f"{ns['silent_zones']} of {len(nyc['zones'])}"},
+            {"": "People exposed",
+             "Phoenix": f"{_p['population_exposed']:,}",
+             "New York City": f"{ns.get('population_exposed', 0):,}"},
+            {"": "False-calm days",
+             "Phoenix": f"{len(_p.get('false_calm_days', []))} of {_p['days']}",
+             "New York City": f"{len(ns.get('false_calm_days', []))} of {ns['days']}"},
+            {"": "Actionable clause-days",
+             "Phoenix": f"{_p['actionable_clause_days']} of {_p['clause_days']}"
+                        f" ({_p['actionable_share']:.0%})",
+             "New York City": f"{ns['actionable_clause_days']} of {ns['clause_days']}"
+                              f" ({ns['actionable_share']:.0%})"},
+        ]), hide_index=True, use_container_width=True)
+        _tot = _p["population_exposed"] + ns.get("population_exposed", 0)
+        st.success(
+            f"**Same near-miss signature. Near-identical actionable share — "
+            f"{_p['actionable_share']:.0%} against {ns['actionable_share']:.0%}.** "
+            f"Two cities, opposite climates, opposite trigger metrics, the same "
+            f"structural failure. **{_tot:,} people** across both.", icon="🎯")
+        st.caption(
+            "New York was added with **zero code changes** — one profile JSON, "
+            "one boundaries file, one clause file. Its AOI is the 346 mi² box "
+            "the API accepts: a full five-borough box spans open ocean and is "
+            "rejected outright, so 51 of 59 community districts are covered and "
+            "Staten Island plus five coastal districts are excluded and "
+            "reported as excluded. NYC triggers on heat index while FortyGuard "
+            "returns dry-bulb, which UNDER-counts its firings — so these NYC "
+            "figures are a lower bound twice over.")
 
 with tab_over:
     st.markdown(
