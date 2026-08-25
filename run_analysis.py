@@ -31,7 +31,11 @@ from recover import (NotRecomputable, dwell_recovery,  # noqa: E402
 from parse import parse_heatmap  # noqa: E402
 from schema import c_to_f, inventory, load_clauses  # noqa: E402
 
-POP_PATH = Path(__file__).parent / "data" / "zones" / "phoenix_villages_population.json"
+#: Per-city, read from the active profile. Hardcoding Phoenix's file here meant
+#: a second city loaded Phoenix's populations, matched none of its zone ids, and
+#: reported "0 of 1,639,501 people (0% of Phoenix)" -- a wrong number attached to
+#: the wrong city's denominator, which is worse than reporting nothing.
+POP_PATH = study.REPO_ROOT / study.CITY_PROFILE.population_path
 
 
 def load_population() -> dict[str, dict]:
@@ -316,7 +320,7 @@ def main() -> int:
         exposed = sum(pop[z]["population"] for z in report.silent_zone_ids if z in pop)
         total = sum(v["population"] for v in pop.values())
         print(f"  Population exposed    {exposed:,} of {total:,} "
-              f"({exposed/total:.0%} of Phoenix)")
+              f"({exposed/total:.0%} of {study.CITY.split(chr(44))[0]})")
     print(f"  Silent zone-days      {s['silent_zone_days']}")
     print(f"  False-calm days       {len(s['false_calm_days'])} of {s['days']}"
           f"  {', '.join(s['false_calm_days'])}")

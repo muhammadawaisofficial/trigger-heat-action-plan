@@ -32,5 +32,14 @@
   "granularity_m": 100,
   "default_start": "2025-07-14",
   "default_end": "2025-07-20",
-  "label_prefix": "nyc-city"
+  "label_prefix": "nyc-city",
+  "census_state": "36",
+  "census_counties": [
+    "005",
+    "047",
+    "061",
+    "081",
+    "085"
+  ],
+  "census_label": "Bronx, Kings, New York, Queens and Richmond Counties, New York (FIPS 36005/36047/36061/36081/36085)"
 }

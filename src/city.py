@@ -71,6 +71,9 @@ class City:
     population_path: str | None = None
     granularity_m: int = 100
     label_prefix: str | None = None
+    census_state: str | None = None
+    census_counties: list[str] | None = None
+    census_label: str | None = None
     default_start: str | None = None
     default_end: str | None = None
 

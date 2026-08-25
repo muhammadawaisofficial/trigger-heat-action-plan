@@ -42,8 +42,21 @@ from shapely.strtree import STRtree  # noqa: E402
 import study  # noqa: E402
 from aggregate import _project_ring, _to_polygon, load_zones  # noqa: E402
 
-STATE, COUNTY = "04", "013"          # Arizona, Maricopa County
-OUT = Path("data/zones/phoenix_villages_population.json")
+#: Census geography, per city. NYC spans five counties, so this is a LIST --
+#: hardcoding a single county silently returned nothing for any multi-county
+#: city and produced a zero-population join.
+STATE = study.CITY_PROFILE.census_state or "04"
+COUNTIES = study.CITY_PROFILE.census_counties or ["013"]
+COUNTY_LABEL = study.CITY_PROFILE.census_label or "Maricopa County, Arizona"
+#: Cache files are per-city; sharing them across cities would serve Phoenix's
+#: block groups to New York.
+CITY_TAG = study.CITY_PROFILE.slug
+#: Per-city, read from the active profile. This was hardcoded to Phoenix's file,
+#: so running it under TRIGGER_CITY=nyc computed New York's zones against
+#: New York's tracts and then OVERWROTE PHOENIX'S POPULATION FILE with the
+#: result -- 51 districts at zero, destroying the headline's denominator. The
+#: guard below refuses to write a total of zero for exactly that reason.
+OUT = study.REPO_ROOT / study.CITY_PROFILE.population_path
 CACHE = Path("data/cache/census")
 
 CENSUS_POP = ("https://api.census.gov/data/2023/acs/acs5"
@@ -60,18 +73,22 @@ def _get(url: str, timeout: int = 120) -> bytes:
 def fetch_population(key: str) -> dict[str, int]:
     """GEOID -> population for every block group in the county."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    cached = CACHE / "acs2023_bg_population.json.gz"
+    cached = CACHE / f"acs2023_bg_population_{CITY_TAG}.json.gz"
     if cached.exists():
         with gzip.open(cached, "rt", encoding="utf-8") as fh:
             return json.load(fh)
 
-    raw = json.loads(_get(CENSUS_POP.format(s=STATE, c=COUNTY, k=key)))
-    header, rows = raw[0], raw[1:]
+    out: dict[str, int] = {}
+    rows = []
+    header = None
+    for county in COUNTIES:
+        raw = json.loads(_get(CENSUS_POP.format(s=STATE, c=county, k=key)))
+        header = raw[0]
+        rows.extend(raw[1:])
     i_pop = header.index("B01003_001E")
     i_st, i_co = header.index("state"), header.index("county")
     i_tr, i_bg = header.index("tract"), header.index("block group")
 
-    out: dict[str, int] = {}
     for r in rows:
         geoid = f"{r[i_st]}{r[i_co]}{r[i_tr]}{r[i_bg]}"
         try:
@@ -90,7 +107,7 @@ def fetch_population(key: str) -> dict[str, int]:
 def fetch_geometry() -> dict[str, dict]:
     """GEOID -> GeoJSON geometry, paged through the TIGERweb record limit."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    cached = CACHE / "tigerweb_bg_geometry.json.gz"
+    cached = CACHE / f"tigerweb_bg_geometry_{CITY_TAG}.json.gz"
     if cached.exists():
         with gzip.open(cached, "rt", encoding="utf-8") as fh:
             return json.load(fh)
@@ -99,7 +116,8 @@ def fetch_geometry() -> dict[str, dict]:
     offset = 0
     while True:
         params = {
-            "where": f"STATE='{STATE}' AND COUNTY='{COUNTY}'",
+            "where": ("STATE='" + STATE + "' AND COUNTY IN ("
+                      + ",".join(f"'{c}'" for c in COUNTIES) + ")"),
             "outFields": "GEOID",
             "returnGeometry": "true",
             "outSR": "4326",
@@ -185,6 +203,13 @@ def main() -> int:
         assigned_total += total
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    if assigned_total == 0 and OUT.exists():
+        raise SystemExit(
+            f"REFUSING to overwrite {OUT.name}: the join produced a total "
+            f"population of ZERO, which means the zone ids did not match the "
+            f"tract data. Writing this would destroy a working population file. "
+            f"Check that the city profile, the zone file and the Census "
+            f"geography refer to the same place.")
     OUT.write_text(json.dumps({
         "meta": {
             "method": ("areal interpolation of Census block-group population onto "
@@ -193,7 +218,7 @@ def main() -> int:
                            "group; this is an approximation"),
             "population_source": "US Census ACS 5-year 2023, table B01003_001E",
             "geometry_source": "US Census TIGERweb ACS2023, Census Block Groups",
-            "county": "Maricopa County, Arizona (FIPS 04013)",
+            "county": COUNTY_LABEL,
             "county_population": sum(pop.values()),
             "assigned_to_villages": int(round(assigned_total)),
         },

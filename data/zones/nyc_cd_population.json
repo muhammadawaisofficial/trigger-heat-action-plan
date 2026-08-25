@@ -1,0 +1,370 @@
+{
+  "meta": {
+    "method": "areal interpolation of Census block-group population onto urban village boundaries, weighted by overlap area",
+    "assumption": "population is uniformly distributed within a block group; this is an approximation",
+    "population_source": "US Census ACS 5-year 2023, table B01003_001E",
+    "geometry_source": "US Census TIGERweb ACS2023, Census Block Groups",
+    "county": "Bronx, Kings, New York, Queens and Richmond Counties, New York (FIPS 36005/36047/36061/36081/36085)",
+    "county_population": 8516202,
+    "assigned_to_villages": 7222846
+  },
+  "villages": {
+    "manhattan_cd1": {
+      "name": "Manhattan CD1",
+      "population": 72215,
+      "area_sq_mi": 1.49,
+      "density_per_sq_mi": 48597,
+      "block_groups_touched": 68
+    },
+    "manhattan_cd2": {
+      "name": "Manhattan CD2",
+      "population": 85922,
+      "area_sq_mi": 1.34,
+      "density_per_sq_mi": 63885,
+      "block_groups_touched": 91
+    },
+    "manhattan_cd3": {
+      "name": "Manhattan CD3",
+      "population": 152853,
+      "area_sq_mi": 1.67,
+      "density_per_sq_mi": 91462,
+      "block_groups_touched": 146
+    },
+    "manhattan_cd4": {
+      "name": "Manhattan CD4",
+      "population": 119099,
+      "area_sq_mi": 1.76,
+      "density_per_sq_mi": 67725,
+      "block_groups_touched": 113
+    },
+    "manhattan_cd5": {
+      "name": "Manhattan CD5",
+      "population": 55908,
+      "area_sq_mi": 1.56,
+      "density_per_sq_mi": 35800,
+      "block_groups_touched": 93
+    },
+    "manhattan_cd6": {
+      "name": "Manhattan CD6",
+      "population": 140707,
+      "area_sq_mi": 1.38,
+      "density_per_sq_mi": 101884,
+      "block_groups_touched": 149
+    },
+    "manhattan_cd7": {
+      "name": "Manhattan CD7",
+      "population": 215988,
+      "area_sq_mi": 1.9,
+      "density_per_sq_mi": 113887,
+      "block_groups_touched": 164
+    },
+    "manhattan_cd8": {
+      "name": "Manhattan CD8",
+      "population": 211858,
+      "area_sq_mi": 1.97,
+      "density_per_sq_mi": 107562,
+      "block_groups_touched": 199
+    },
+    "manhattan_cd9": {
+      "name": "Manhattan CD9",
+      "population": 112593,
+      "area_sq_mi": 1.5,
+      "density_per_sq_mi": 75287,
+      "block_groups_touched": 82
+    },
+    "manhattan_cd10": {
+      "name": "Manhattan CD10",
+      "population": 134879,
+      "area_sq_mi": 1.39,
+      "density_per_sq_mi": 96707,
+      "block_groups_touched": 99
+    },
+    "manhattan_cd11": {
+      "name": "Manhattan CD11",
+      "population": 124199,
+      "area_sq_mi": 2.36,
+      "density_per_sq_mi": 52606,
+      "block_groups_touched": 107
+    },
+    "manhattan_cd12": {
+      "name": "Manhattan CD12",
+      "population": 188337,
+      "area_sq_mi": 2.78,
+      "density_per_sq_mi": 67635,
+      "block_groups_touched": 130
+    },
+    "bronx_cd1": {
+      "name": "Bronx CD1",
+      "population": 97033,
+      "area_sq_mi": 2.16,
+      "density_per_sq_mi": 45009,
+      "block_groups_touched": 92
+    },
+    "bronx_cd2": {
+      "name": "Bronx CD2",
+      "population": 54385,
+      "area_sq_mi": 2.21,
+      "density_per_sq_mi": 24651,
+      "block_groups_touched": 74
+    },
+    "bronx_cd3": {
+      "name": "Bronx CD3",
+      "population": 89760,
+      "area_sq_mi": 1.6,
+      "density_per_sq_mi": 56119,
+      "block_groups_touched": 84
+    },
+    "bronx_cd4": {
+      "name": "Bronx CD4",
+      "population": 148925,
+      "area_sq_mi": 1.98,
+      "density_per_sq_mi": 75120,
+      "block_groups_touched": 125
+    },
+    "bronx_cd5": {
+      "name": "Bronx CD5",
+      "population": 130580,
+      "area_sq_mi": 1.37,
+      "density_per_sq_mi": 95422,
+      "block_groups_touched": 125
+    },
+    "bronx_cd6": {
+      "name": "Bronx CD6",
+      "population": 87773,
+      "area_sq_mi": 1.52,
+      "density_per_sq_mi": 57608,
+      "block_groups_touched": 83
+    },
+    "bronx_cd7": {
+      "name": "Bronx CD7",
+      "population": 136792,
+      "area_sq_mi": 1.9,
+      "density_per_sq_mi": 71829,
+      "block_groups_touched": 137
+    },
+    "bronx_cd8": {
+      "name": "Bronx CD8",
+      "population": 105654,
+      "area_sq_mi": 3.29,
+      "density_per_sq_mi": 32110,
+      "block_groups_touched": 96
+    },
+    "bronx_cd9": {
+      "name": "Bronx CD9",
+      "population": 171763,
+      "area_sq_mi": 4.08,
+      "density_per_sq_mi": 42098,
+      "block_groups_touched": 164
+    },
+    "bronx_cd10": {
+      "name": "Bronx CD10",
+      "population": 126022,
+      "area_sq_mi": 6.39,
+      "density_per_sq_mi": 19714,
+      "block_groups_touched": 126
+    },
+    "bronx_cd11": {
+      "name": "Bronx CD11",
+      "population": 111512,
+      "area_sq_mi": 3.58,
+      "density_per_sq_mi": 31123,
+      "block_groups_touched": 117
+    },
+    "bronx_cd12": {
+      "name": "Bronx CD12",
+      "population": 163928,
+      "area_sq_mi": 5.54,
+      "density_per_sq_mi": 29615,
+      "block_groups_touched": 163
+    },
+    "brooklyn_cd1": {
+      "name": "Brooklyn CD1",
+      "population": 202515,
+      "area_sq_mi": 4.69,
+      "density_per_sq_mi": 43143,
+      "block_groups_touched": 166
+    },
+    "brooklyn_cd2": {
+      "name": "Brooklyn CD2",
+      "population": 129106,
+      "area_sq_mi": 2.83,
+      "density_per_sq_mi": 45681,
+      "block_groups_touched": 142
+    },
+    "brooklyn_cd3": {
+      "name": "Brooklyn CD3",
+      "population": 181378,
+      "area_sq_mi": 2.83,
+      "density_per_sq_mi": 64067,
+      "block_groups_touched": 176
+    },
+    "brooklyn_cd4": {
+      "name": "Brooklyn CD4",
+      "population": 111951,
+      "area_sq_mi": 2.02,
+      "density_per_sq_mi": 55449,
+      "block_groups_touched": 113
+    },
+    "brooklyn_cd5": {
+      "name": "Brooklyn CD5",
+      "population": 199383,
+      "area_sq_mi": 5.54,
+      "density_per_sq_mi": 36002,
+      "block_groups_touched": 173
+    },
+    "brooklyn_cd6": {
+      "name": "Brooklyn CD6",
+      "population": 116591,
+      "area_sq_mi": 3.05,
+      "density_per_sq_mi": 38280,
+      "block_groups_touched": 134
+    },
+    "brooklyn_cd7": {
+      "name": "Brooklyn CD7",
+      "population": 119958,
+      "area_sq_mi": 3.71,
+      "density_per_sq_mi": 32353,
+      "block_groups_touched": 119
+    },
+    "brooklyn_cd8": {
+      "name": "Brooklyn CD8",
+      "population": 108244,
+      "area_sq_mi": 1.62,
+      "density_per_sq_mi": 66628,
+      "block_groups_touched": 94
+    },
+    "brooklyn_cd9": {
+      "name": "Brooklyn CD9",
+      "population": 99559,
+      "area_sq_mi": 1.61,
+      "density_per_sq_mi": 61690,
+      "block_groups_touched": 87
+    },
+    "brooklyn_cd10": {
+      "name": "Brooklyn CD10",
+      "population": 125842,
+      "area_sq_mi": 3.96,
+      "density_per_sq_mi": 31753,
+      "block_groups_touched": 132
+    },
+    "brooklyn_cd12": {
+      "name": "Brooklyn CD12",
+      "population": 191037,
+      "area_sq_mi": 3.54,
+      "density_per_sq_mi": 53921,
+      "block_groups_touched": 178
+    },
+    "brooklyn_cd14": {
+      "name": "Brooklyn CD14",
+      "population": 161093,
+      "area_sq_mi": 2.93,
+      "density_per_sq_mi": 55069,
+      "block_groups_touched": 140
+    },
+    "brooklyn_cd16": {
+      "name": "Brooklyn CD16",
+      "population": 98482,
+      "area_sq_mi": 1.84,
+      "density_per_sq_mi": 53410,
+      "block_groups_touched": 118
+    },
+    "brooklyn_cd17": {
+      "name": "Brooklyn CD17",
+      "population": 154703,
+      "area_sq_mi": 3.34,
+      "density_per_sq_mi": 46310,
+      "block_groups_touched": 163
+    },
+    "brooklyn_cd18": {
+      "name": "Brooklyn CD18",
+      "population": 189450,
+      "area_sq_mi": 8.39,
+      "density_per_sq_mi": 22585,
+      "block_groups_touched": 178
+    },
+    "queens_cd1": {
+      "name": "Queens CD1",
+      "population": 178251,
+      "area_sq_mi": 6.12,
+      "density_per_sq_mi": 29146,
+      "block_groups_touched": 169
+    },
+    "queens_cd2": {
+      "name": "Queens CD2",
+      "population": 124748,
+      "area_sq_mi": 4.99,
+      "density_per_sq_mi": 24989,
+      "block_groups_touched": 121
+    },
+    "queens_cd3": {
+      "name": "Queens CD3",
+      "population": 161539,
+      "area_sq_mi": 2.98,
+      "density_per_sq_mi": 54260,
+      "block_groups_touched": 112
+    },
+    "queens_cd4": {
+      "name": "Queens CD4",
+      "population": 167373,
+      "area_sq_mi": 2.34,
+      "density_per_sq_mi": 71405,
+      "block_groups_touched": 130
+    },
+    "queens_cd5": {
+      "name": "Queens CD5",
+      "population": 180339,
+      "area_sq_mi": 7.5,
+      "density_per_sq_mi": 24050,
+      "block_groups_touched": 176
+    },
+    "queens_cd6": {
+      "name": "Queens CD6",
+      "population": 122108,
+      "area_sq_mi": 2.95,
+      "density_per_sq_mi": 41420,
+      "block_groups_touched": 107
+    },
+    "queens_cd7": {
+      "name": "Queens CD7",
+      "population": 245330,
+      "area_sq_mi": 11.71,
+      "density_per_sq_mi": 20949,
+      "block_groups_touched": 212
+    },
+    "queens_cd8": {
+      "name": "Queens CD8",
+      "population": 157108,
+      "area_sq_mi": 7.4,
+      "density_per_sq_mi": 21234,
+      "block_groups_touched": 132
+    },
+    "queens_cd9": {
+      "name": "Queens CD9",
+      "population": 149557,
+      "area_sq_mi": 3.83,
+      "density_per_sq_mi": 39089,
+      "block_groups_touched": 128
+    },
+    "queens_cd10": {
+      "name": "Queens CD10",
+      "population": 133109,
+      "area_sq_mi": 6.13,
+      "density_per_sq_mi": 21718,
+      "block_groups_touched": 128
+    },
+    "queens_cd11": {
+      "name": "Queens CD11",
+      "population": 121187,
+      "area_sq_mi": 9.29,
+      "density_per_sq_mi": 13051,
+      "block_groups_touched": 141
+    },
+    "queens_cd12": {
+      "name": "Queens CD12",
+      "population": 254219,
+      "area_sq_mi": 9.53,
+      "density_per_sq_mi": 26689,
+      "block_groups_touched": 204
+    }
+  }
+}

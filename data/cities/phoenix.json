@@ -50,5 +50,10 @@
   "granularity_m": 100,
   "default_start": "2025-08-02",
   "default_end": "2025-08-08",
-  "label_prefix": "phx-city"
+  "label_prefix": "phx-city",
+  "census_state": "04",
+  "census_counties": [
+    "013"
+  ],
+  "census_label": "Maricopa County, Arizona (FIPS 04013)"
 }
