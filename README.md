@@ -1,5 +1,10 @@
 # TRIGGER — the Heat Action Plan Compiler
 
+**🔗 Live demo:** _add the Streamlit URL here once deployed_ &nbsp;·&nbsp;
+**▶ Video:** _add link_ &nbsp;·&nbsp;
+**Reproduce offline:** `python run_demo.py` (no API key)
+
+
 > ## One flaw, two failure modes
 >
 > A heat trigger keyed to a single fixed number fails in **both** directions,
@@ -99,8 +104,33 @@ Reproduce it in one command, offline, with no API key:
 ```bash
 pip install -r requirements.txt
 python run_demo.py         # the headline, in seconds
-python verify_all.py       # re-derive everything and assert it
+python verify_all.py       # re-derive everything and assert it — 12 checks
 ```
+
+---
+
+## Submission — FortyGuard Hackathon '26
+
+**Track 04 · Government & Environment** — primary
+**Track 07 · Data Analysis & Correlation** — co-primary
+**Track 05 · Model Designing** — supporting
+
+Track 04 names its own build examples as *Heat Vulnerability Map* and *Climate
+Resilience Planner*, and its technologies as *Temperature API, Policy AI, GIS,
+Open Data*. TRIGGER is a heat vulnerability map produced by compiling policy with
+an LLM and evaluating it over GIS and open data — so this is the track's own
+brief, answered literally.
+
+We are **not** claiming Track 06 Agentic AI. There is no agent here, by design:
+every number is a deterministic comparison, and the language model only extracts
+quotes and narrates verified results. It decides nothing.
+
+| | |
+|---|---|
+| Thermal data | FortyGuard Temperature API only — no external weather source anywhere |
+| Scale | 272,917 tiles/day at 100 m over 1,053 mi² |
+| Reproducibility | committed cache, **no API key needed**, one command |
+| Tests | 59 unit + UI tests, 12 end-to-end checks |
 
 ---
 
