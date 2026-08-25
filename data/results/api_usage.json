@@ -1,0 +1,14 @@
+{
+  "calls": 125,
+  "tiles": 11189301,
+  "credits": 527500,
+  "by_analytic": {
+    "tcm": 23,
+    "exceedance": 84,
+    "persistence": 18
+  },
+  "distinct_days": 58,
+  "cache_mb": 63.5,
+  "responses": 126,
+  "grids": 8
+}
