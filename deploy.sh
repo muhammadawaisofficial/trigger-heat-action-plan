@@ -35,22 +35,34 @@ fi
 echo "    no .env tracked, no oversized files"
 
 echo "==> creating github.com/$USER_NAME/$REPO"
-CODE=$(curl -s -o /tmp/gh_create.json -w "%{http_code}" \
-  -X POST https://api.github.com/user/repos \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Accept: application/vnd.github+json" \
-  -d "{\"name\":\"$REPO\",\"description\":\"TRIGGER — compiles a published Heat Action Plan into executable rules and measures what citywide sensing misses. FortyGuard Hackathon '26.\",\"private\":false,\"has_issues\":true,\"has_wiki\":false}")
+
+# The payload is written to a file rather than passed inline. Git Bash on
+# Windows mangles non-ASCII bytes in an inline -d argument, which GitHub then
+# rejects with "Problems parsing JSON" -- so the description is ASCII-only and
+# the body is handed to curl as a file.
+PAYLOAD=$(mktemp)
+cat > "$PAYLOAD" <<JSON
+{"name":"$REPO","description":"TRIGGER - compiles a published Heat Action Plan into executable rules and measures what citywide sensing misses. FortyGuard Hackathon 26.","private":false,"has_issues":true,"has_wiki":false}
+JSON
+
+RESP=$(mktemp)
+CODE=$(curl -sS -o "$RESP" -w "%{http_code}"   -X POST https://api.github.com/user/repos   -H "Authorization: Bearer $TOKEN"   -H "Accept: application/vnd.github+json"   -H "Content-Type: application/json"   --data-binary @"$PAYLOAD")
+rm -f "$PAYLOAD"
 
 if [[ "$CODE" == "201" ]]; then
   echo "    created"
-elif grep -q "name already exists" /tmp/gh_create.json 2>/dev/null; then
+elif grep -q "already exists" "$RESP" 2>/dev/null; then
   echo "    already exists, reusing"
+elif [[ "$CODE" == "401" ]]; then
+  echo "FAILED: token rejected (401). Generate a new one with the 'repo' scope:" >&2
+  echo "  https://github.com/settings/tokens/new?scopes=repo" >&2
+  rm -f "$RESP"; exit 1
 else
   echo "FAILED (HTTP $CODE):" >&2
-  cat /tmp/gh_create.json >&2
-  exit 1
+  cat "$RESP" >&2
+  rm -f "$RESP"; exit 1
 fi
-rm -f /tmp/gh_create.json
+rm -f "$RESP"
 
 echo "==> pushing"
 git remote remove origin 2>/dev/null || true
