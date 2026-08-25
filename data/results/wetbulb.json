@@ -1,0 +1,309 @@
+{
+  "day": "2025-07-15",
+  "n_metros": 30,
+  "wetbulb_limit_c": 24.0,
+  "method": "/v1/env_params sampled at each metro centre, using that metro's own measured mean daily high as the temperature input. One point per metro.",
+  "caveat": "env_params is a per-POINT endpoint, so this is a single centre sample and cannot resolve wet-bulb variation ACROSS a metro -- which is real, and is the same limitation this project criticises elsewhere. The free-cooling term is gridded at 100 m; this term is not.",
+  "metros": [
+    {
+      "id": "ashburn",
+      "name": "Ashburn, VA",
+      "wet_bulb_mean_c": 23.15,
+      "wet_bulb_max_c": 24.2,
+      "rh_mean_pct": 79.2,
+      "heat_index_max_c": 57.0,
+      "air_temp_input_f": 90.6,
+      "evaporative_effective": false
+    },
+    {
+      "id": "hillsboro",
+      "name": "Hillsboro, OR",
+      "wet_bulb_mean_c": 15.67,
+      "wet_bulb_max_c": 19.7,
+      "rh_mean_pct": 54.9,
+      "heat_index_max_c": 60.8,
+      "air_temp_input_f": 93.33,
+      "evaporative_effective": true
+    },
+    {
+      "id": "seattle",
+      "name": "Seattle, WA",
+      "wet_bulb_mean_c": 16.07,
+      "wet_bulb_max_c": 18.2,
+      "rh_mean_pct": 53.6,
+      "heat_index_max_c": 40.3,
+      "air_temp_input_f": 87.12,
+      "evaporative_effective": true
+    },
+    {
+      "id": "minneapolis",
+      "name": "Minneapolis, MN",
+      "wet_bulb_mean_c": 22.56,
+      "wet_bulb_max_c": 24.6,
+      "rh_mean_pct": 72.4,
+      "heat_index_max_c": 65.0,
+      "air_temp_input_f": 94.23,
+      "evaporative_effective": false
+    },
+    {
+      "id": "chicago",
+      "name": "Chicago, IL",
+      "wet_bulb_mean_c": 21.72,
+      "wet_bulb_max_c": 23.1,
+      "rh_mean_pct": 68.2,
+      "heat_index_max_c": 40.3,
+      "air_temp_input_f": 85.89,
+      "evaporative_effective": true
+    },
+    {
+      "id": "columbus",
+      "name": "Columbus, OH",
+      "wet_bulb_mean_c": 22.23,
+      "wet_bulb_max_c": 23.9,
+      "rh_mean_pct": 78.2,
+      "heat_index_max_c": 63.2,
+      "air_temp_input_f": 92.79,
+      "evaporative_effective": true
+    },
+    {
+      "id": "desmoines",
+      "name": "Des Moines, IA",
+      "wet_bulb_mean_c": 22.03,
+      "wet_bulb_max_c": 23.7,
+      "rh_mean_pct": 71.3,
+      "heat_index_max_c": 48.2,
+      "air_temp_input_f": 89.54,
+      "evaporative_effective": true
+    },
+    {
+      "id": "omaha",
+      "name": "Omaha, NE",
+      "wet_bulb_mean_c": 22.2,
+      "wet_bulb_max_c": 24.0,
+      "rh_mean_pct": 69.0,
+      "heat_index_max_c": 53.8,
+      "air_temp_input_f": 91.74,
+      "evaporative_effective": false
+    },
+    {
+      "id": "saltlake",
+      "name": "Salt Lake City, UT",
+      "wet_bulb_mean_c": 14.43,
+      "wet_bulb_max_c": 17.0,
+      "rh_mean_pct": 16.8,
+      "heat_index_max_c": 36.8,
+      "air_temp_input_f": 98.04,
+      "evaporative_effective": true
+    },
+    {
+      "id": "denver",
+      "name": "Denver, CO",
+      "wet_bulb_mean_c": 14.65,
+      "wet_bulb_max_c": 16.2,
+      "rh_mean_pct": 27.2,
+      "heat_index_max_c": 41.1,
+      "air_temp_input_f": 94.98,
+      "evaporative_effective": true
+    },
+    {
+      "id": "reno",
+      "name": "Reno, NV",
+      "wet_bulb_mean_c": 12.85,
+      "wet_bulb_max_c": 14.7,
+      "rh_mean_pct": 20.0,
+      "heat_index_max_c": 37.6,
+      "air_temp_input_f": 95.36,
+      "evaporative_effective": true
+    },
+    {
+      "id": "boise",
+      "name": "Boise, ID",
+      "wet_bulb_mean_c": 14.72,
+      "wet_bulb_max_c": 16.0,
+      "rh_mean_pct": 24.7,
+      "heat_index_max_c": 34.5,
+      "air_temp_input_f": 92.07,
+      "evaporative_effective": true
+    },
+    {
+      "id": "buffalo",
+      "name": "Buffalo, NY",
+      "wet_bulb_mean_c": 21.46,
+      "wet_bulb_max_c": 23.2,
+      "rh_mean_pct": 66.1,
+      "heat_index_max_c": 49.3,
+      "air_temp_input_f": 88.43,
+      "evaporative_effective": true
+    },
+    {
+      "id": "portlandme",
+      "name": "Portland, ME",
+      "wet_bulb_mean_c": 22.13,
+      "wet_bulb_max_c": 23.6,
+      "rh_mean_pct": 83.2,
+      "heat_index_max_c": 48.6,
+      "air_temp_input_f": 87.73,
+      "evaporative_effective": true
+    },
+    {
+      "id": "boston",
+      "name": "Boston, MA",
+      "wet_bulb_mean_c": 23.39,
+      "wet_bulb_max_c": 24.9,
+      "rh_mean_pct": 81.6,
+      "heat_index_max_c": 65.4,
+      "air_temp_input_f": 93.72,
+      "evaporative_effective": false
+    },
+    {
+      "id": "nyc",
+      "name": "New York, NY",
+      "wet_bulb_mean_c": 23.68,
+      "wet_bulb_max_c": 25.1,
+      "rh_mean_pct": 85.4,
+      "heat_index_max_c": 53.0,
+      "air_temp_input_f": 89.79,
+      "evaporative_effective": false
+    },
+    {
+      "id": "pittsburgh",
+      "name": "Pittsburgh, PA",
+      "wet_bulb_mean_c": 22.68,
+      "wet_bulb_max_c": 23.9,
+      "rh_mean_pct": 80.3,
+      "heat_index_max_c": 60.2,
+      "air_temp_input_f": 91.66,
+      "evaporative_effective": true
+    },
+    {
+      "id": "kansascity",
+      "name": "Kansas City, MO",
+      "wet_bulb_mean_c": 22.55,
+      "wet_bulb_max_c": 24.0,
+      "rh_mean_pct": 67.9,
+      "heat_index_max_c": 66.1,
+      "air_temp_input_f": 95.21,
+      "evaporative_effective": false
+    },
+    {
+      "id": "richmond",
+      "name": "Richmond, VA",
+      "wet_bulb_mean_c": 23.97,
+      "wet_bulb_max_c": 24.9,
+      "rh_mean_pct": 87.5,
+      "heat_index_max_c": 48.8,
+      "air_temp_input_f": 87.9,
+      "evaporative_effective": false
+    },
+    {
+      "id": "charlotte",
+      "name": "Charlotte, NC",
+      "wet_bulb_mean_c": 23.69,
+      "wet_bulb_max_c": 25.0,
+      "rh_mean_pct": 76.0,
+      "heat_index_max_c": 66.5,
+      "air_temp_input_f": 94.83,
+      "evaporative_effective": false
+    },
+    {
+      "id": "nashville",
+      "name": "Nashville, TN",
+      "wet_bulb_mean_c": 24.15,
+      "wet_bulb_max_c": 24.8,
+      "rh_mean_pct": 69.9,
+      "heat_index_max_c": 72.3,
+      "air_temp_input_f": 95.42,
+      "evaporative_effective": false
+    },
+    {
+      "id": "atlanta",
+      "name": "Atlanta, GA",
+      "wet_bulb_mean_c": 23.46,
+      "wet_bulb_max_c": 24.5,
+      "rh_mean_pct": 68.1,
+      "heat_index_max_c": 73.5,
+      "air_temp_input_f": 96.24,
+      "evaporative_effective": false
+    },
+    {
+      "id": "dallas",
+      "name": "Dallas, TX",
+      "wet_bulb_mean_c": 24.26,
+      "wet_bulb_max_c": 25.7,
+      "rh_mean_pct": 67.5,
+      "heat_index_max_c": 66.9,
+      "air_temp_input_f": 96.51,
+      "evaporative_effective": false
+    },
+    {
+      "id": "sanantonio",
+      "name": "San Antonio, TX",
+      "wet_bulb_mean_c": 23.93,
+      "wet_bulb_max_c": 25.8,
+      "rh_mean_pct": 76.8,
+      "heat_index_max_c": 80.2,
+      "air_temp_input_f": 97.34,
+      "evaporative_effective": false
+    },
+    {
+      "id": "houston",
+      "name": "Houston, TX",
+      "wet_bulb_mean_c": 25.5,
+      "wet_bulb_max_c": 27.0,
+      "rh_mean_pct": 81.7,
+      "heat_index_max_c": 70.5,
+      "air_temp_input_f": 96.26,
+      "evaporative_effective": false
+    },
+    {
+      "id": "phoenix",
+      "name": "Phoenix, AZ",
+      "wet_bulb_mean_c": 21.0,
+      "wet_bulb_max_c": 23.1,
+      "rh_mean_pct": 25.5,
+      "heat_index_max_c": 45.7,
+      "air_temp_input_f": 104.32,
+      "evaporative_effective": true
+    },
+    {
+      "id": "lasvegas",
+      "name": "Las Vegas, NV",
+      "wet_bulb_mean_c": 18.86,
+      "wet_bulb_max_c": 20.9,
+      "rh_mean_pct": 16.2,
+      "heat_index_max_c": 44.3,
+      "air_temp_input_f": 106.3,
+      "evaporative_effective": true
+    },
+    {
+      "id": "sanjose",
+      "name": "San Jose, CA",
+      "wet_bulb_mean_c": 15.53,
+      "wet_bulb_max_c": 19.0,
+      "rh_mean_pct": 57.9,
+      "heat_index_max_c": 48.9,
+      "air_temp_input_f": 89.45,
+      "evaporative_effective": true
+    },
+    {
+      "id": "losangeles",
+      "name": "Los Angeles, CA",
+      "wet_bulb_mean_c": 16.6,
+      "wet_bulb_max_c": 19.5,
+      "rh_mean_pct": 67.1,
+      "heat_index_max_c": 38.2,
+      "air_temp_input_f": 84.35,
+      "evaporative_effective": true
+    },
+    {
+      "id": "miami",
+      "name": "Miami, FL",
+      "wet_bulb_mean_c": 24.14,
+      "wet_bulb_max_c": 24.7,
+      "rh_mean_pct": 80.3,
+      "heat_index_max_c": 50.5,
+      "air_temp_input_f": 89.99,
+      "evaporative_effective": false
+    }
+  ]
+}

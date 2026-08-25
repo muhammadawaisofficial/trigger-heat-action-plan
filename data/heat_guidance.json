@@ -1,0 +1,85 @@
+{
+  "_README": "Danger levels and precautions. NOT invented: the tier structure follows the NWS HeatRisk framing and standard public-health heat guidance. Every action listed is the kind of measure heat plans and health departments actually publish. Levels here are keyed to measured overnight low and daily high because that is what this project measures; the NWS product itself is forecast-driven and multi-factor, so this is an ANALOGUE of it, not a reproduction, and must not be presented as an NWS product.",
+
+  "source_note": "Structure after NOAA/NWS HeatRisk (five ordinal levels, colour-coded, keyed to how unusual the heat is for the location and time of year) and NWS/CDC extreme-heat safety guidance. Overnight-low emphasis follows the epidemiological finding that mortality tracks failure to cool at night more closely than it tracks daytime peak.",
+
+  "levels": [
+    {
+      "level": 0,
+      "name": "Little to none",
+      "colour": "#e8f0e8",
+      "overnight_low_f": [0, 75],
+      "daily_high_f": [0, 90],
+      "meaning": "Little to no risk from heat for most people.",
+      "who": [],
+      "actions": ["No heat-specific action required."]
+    },
+    {
+      "level": 1,
+      "name": "Minor",
+      "colour": "#ffeaa7",
+      "overnight_low_f": [75, 80],
+      "daily_high_f": [90, 95],
+      "meaning": "Risk mainly to people who are unusually sensitive to heat, especially those without effective cooling or adequate hydration.",
+      "who": ["people without air conditioning", "outdoor workers", "athletes"],
+      "actions": [
+        "Drink water before you feel thirsty.",
+        "Reschedule strenuous outdoor work to early morning.",
+        "Check that cooling is working where vulnerable people live."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Moderate",
+      "colour": "#fdcb6e",
+      "overnight_low_f": [80, 85],
+      "daily_high_f": [95, 100],
+      "meaning": "Risk increases for anyone without effective cooling or adequate hydration. Some health systems begin to see heat-related presentations.",
+      "who": ["older adults", "young children", "pregnant people", "people with chronic illness", "outdoor workers", "people experiencing homelessness"],
+      "actions": [
+        "Open or publicise cooling centres and extend their hours.",
+        "Direct outreach to unsheltered residents and isolated older adults.",
+        "Limit strenuous outdoor work during peak hours; enforce rest and shade breaks.",
+        "Check on neighbours who live alone, in person where possible."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Major",
+      "colour": "#e17055",
+      "overnight_low_f": [85, 90],
+      "daily_high_f": [100, 108],
+      "meaning": "Risk to anyone without effective cooling or adequate hydration. Impacts likely across health systems, industries and infrastructure.",
+      "who": ["everyone without reliable cooling", "older adults", "infants", "people with cardiovascular or respiratory conditions", "outdoor and warehouse workers", "people experiencing homelessness"],
+      "actions": [
+        "Activate the heat emergency plan and open cooling centres citywide.",
+        "Extend cooling centre hours into the night — the overnight low is what determines whether bodies recover.",
+        "Proactive welfare checks on isolated older adults and known vulnerable residents.",
+        "Suspend utility disconnections for non-payment.",
+        "Pause or reschedule non-essential outdoor work.",
+        "Brief emergency departments and EMS to expect heat presentations."
+      ]
+    },
+    {
+      "level": 4,
+      "name": "Extreme",
+      "colour": "#b2182b",
+      "overnight_low_f": [90, 999],
+      "daily_high_f": [108, 999],
+      "meaning": "Rare and long-duration heat with little or no overnight relief. Health impacts likely in anyone without effective cooling and adequate hydration.",
+      "who": ["the entire population", "with severe risk to older adults, infants, people with chronic illness, outdoor workers and anyone unsheltered"],
+      "actions": [
+        "Full heat emergency activation, with 24-hour cooling facilities.",
+        "Actively transport at-risk residents to cooled facilities rather than waiting for them to travel.",
+        "Door-to-door welfare checks in the areas measured hottest, not the city average.",
+        "Suspend outdoor work in the hottest hours where legally possible.",
+        "Surge EMS and emergency department staffing.",
+        "Public messaging that names the specific neighbourhoods at highest risk."
+      ]
+    }
+  ],
+
+  "why_overnight": "Daytime peak is what heat plans usually trigger on, but the epidemiological literature consistently finds that mortality tracks the failure of temperature to fall at night. A body that never cools does not recover, and consecutive hot nights compound that. This is why the overnight-low thresholds above govern the level where they disagree with the daytime ones.",
+
+  "consecutive_day_note": "Duration matters as much as peak. Risk rises sharply across the first three days of sustained heat, so a run of nights at a given level is treated as more severe than a single night at that level."
+}

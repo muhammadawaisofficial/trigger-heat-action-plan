@@ -103,20 +103,43 @@ class SiteScore:
     sub: dict[str, float] = field(default_factory=dict)
     score: float = 0.0
 
+    #: Set by score_metros so the strategy logic works for any window length.
+    window_days: int = 1
+
+    @property
+    def free_share(self) -> float:
+        """Free-cooling hours as a fraction of the window. Window-length safe.
+
+        The absolute hour count is meaningless without knowing how many days it
+        covers -- 12 hours is excellent over one day and negligible over seven.
+        """
+        total = self.window_days * 24.0
+        return self.free_hours / total if total else 0.0
+
     @property
     def cooling_strategy(self) -> dict[str, str]:
         """Which cooling technology this site's climate actually calls for.
 
         Not a preference -- a consequence of wet-bulb and water stress together.
+        Where wet-bulb has not been measured this says so rather than guessing,
+        because the evaporative branch turns entirely on it.
         """
-        arid_ok = (self.wet_bulb_c is not None and self.wet_bulb_c < WETBULB_LIMIT_C)
         scarce = self.water_stress in ("high", "extreme")
 
-        if self.free_hours >= 100:
+        if self.free_share >= 0.40:
             return {"strategy": "Air-side economiser",
                     "why": ("Enough hours below the setpoint that outside air "
                             "carries most of the load. Lowest energy AND lowest "
                             "water: no tradeoff to make here.")}
+        if self.wet_bulb_c is None:
+            return {"strategy": "Needs wet-bulb to decide",
+                    "why": ("Free cooling alone will not carry this site, so the "
+                            "choice is between evaporative and mechanical -- and "
+                            "that turns on WET-BULB temperature, which has not "
+                            "been measured here. Run fetch_wetbulb.py to resolve "
+                            "it. Guessing would be worse than saying so.")}
+
+        arid_ok = self.wet_bulb_c < WETBULB_LIMIT_C
         if arid_ok and not scarce:
             return {"strategy": "Evaporative / adiabatic",
                     "why": ("Low wet-bulb makes evaporative cooling highly "
@@ -140,6 +163,7 @@ class SiteScore:
             "metro_id": self.metro_id, "name": self.name, "state": self.state,
             "score": round(self.score, 4),
             "free_cooling_hours": round(self.free_hours, 1),
+            "free_cooling_share": round(self.free_share, 4),
             "daily_high_f": self.daily_high_f,
             "overnight_low_f": self.overnight_low_f,
             "wet_bulb_c": self.wet_bulb_c,
@@ -155,6 +179,15 @@ class SiteScore:
         return d
 
 
+def load_wetbulb() -> dict[str, float]:
+    """Measured wet-bulb per metro, if fetch_wetbulb.py has been run."""
+    f = REPO / "data" / "results" / "wetbulb.json"
+    if not f.exists():
+        return {}
+    d = json.loads(f.read_text(encoding="utf-8"))
+    return {m["id"]: m["wet_bulb_mean_c"] for m in d.get("metros", [])}
+
+
 def score_metros(national: dict, weights: dict[str, float] | None = None,
                  wet_bulb: dict[str, float] | None = None) -> list[SiteScore]:
     """Rank the national panel. Returns best-first.
@@ -165,7 +198,7 @@ def score_metros(national: dict, weights: dict[str, float] | None = None,
     """
     weights = {**DEFAULT_WEIGHTS, **(weights or {})}
     total_w = sum(weights.values()) or 1.0
-    wet_bulb = wet_bulb or {}
+    wet_bulb = wet_bulb if wet_bulb is not None else load_wetbulb()
 
     metros = [m for m in national.get("metros", [])
               if m.get("free_hours_24") is not None]
@@ -199,6 +232,7 @@ def score_metros(national: dict, weights: dict[str, float] | None = None,
             water_stress=s["water_stress"], disaster_risk=s["disaster_risk"],
             grid_headroom=s["grid_headroom"], renewables=s["renewables"],
             note=s.get("note", ""), sub=sub,
+            window_days=int(national.get("n_days", 1) or 1),
         )
         sc.score = sum(sub[k] * weights[k] for k in weights) / total_w
         out.append(sc)
@@ -216,7 +250,7 @@ def tradeoff_table(scores: list[SiteScore]) -> list[dict[str, Any]]:
     """
     rows = []
     for s in scores:
-        energy_good = s.sub.get("cooling", 0) >= 0.5 or s.free_hours >= 60
+        energy_good = s.free_share >= 0.25
         water_good = s.sub.get("water", 0) >= 0.5
         if energy_good and water_good:
             quad = "win-win — cool and water-secure"

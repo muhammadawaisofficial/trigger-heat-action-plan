@@ -1,0 +1,1185 @@
+{
+  "design_day": "2025-07-15",
+  "days": [
+    "2025-07-15"
+  ],
+  "n_days": 1,
+  "box_km": 10.0,
+  "setpoint_c": 24.0,
+  "setpoint_strict_c": 18.0,
+  "n_metros": 30,
+  "n_complete": 30,
+  "coverage_note": "A 30-metro panel, not a national grid. The API accepts roughly 1,053 sq mi of land per call and the continental US is about 3.1 million sq mi, so full coverage would take around 3,000 calls against a 472-call budget. Every metro is sampled identically -- same 10 km box, same granularity, same day, same analytics -- so the comparison between them is sound even though the coverage is a sample.",
+  "metros": [
+    {
+      "id": "ashburn",
+      "name": "Ashburn, VA",
+      "lat": 39.0438,
+      "lon": -77.4874,
+      "market": "Data Center Alley - largest US market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 4.128,
+            "min": 0.05,
+            "max": 8.165,
+            "n_tiles": 9966
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9966
+          },
+          "tcm": {
+            "min_f": 73.4,
+            "max_f": 92.61,
+            "mean_f": 81.64,
+            "overnight_low_f": 74.28,
+            "daily_high_f": 90.6,
+            "spread_f": 19.21,
+            "n_tiles": 9966
+          }
+        }
+      },
+      "free_hours_24": 4.13,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 90.6,
+      "mean_overnight_low_f": 74.28,
+      "complete": true
+    },
+    {
+      "id": "hillsboro",
+      "name": "Hillsboro, OR",
+      "lat": 45.5229,
+      "lon": -122.9898,
+      "market": "major west-coast market",
+      "zone": "marine west coast",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 12.067,
+            "min": 10.809,
+            "max": 14.425,
+            "n_tiles": 10100
+          },
+          "free18": {
+            "mean": 9.462,
+            "min": 8.706,
+            "max": 10.231,
+            "n_tiles": 10100
+          },
+          "tcm": {
+            "min_f": 50.67,
+            "max_f": 95.47,
+            "mean_f": 72.7,
+            "overnight_low_f": 51.84,
+            "daily_high_f": 93.33,
+            "spread_f": 44.79,
+            "n_tiles": 10100
+          }
+        }
+      },
+      "free_hours_24": 12.07,
+      "free_hours_18": 9.46,
+      "mean_daily_high_f": 93.33,
+      "mean_overnight_low_f": 51.84,
+      "complete": true
+    },
+    {
+      "id": "seattle",
+      "name": "Seattle, WA",
+      "lat": 47.6062,
+      "lon": -122.3321,
+      "market": "cool-climate benchmark",
+      "zone": "marine west coast",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 15.114,
+            "min": 10.842,
+            "max": 26.396,
+            "n_tiles": 8283
+          },
+          "free18": {
+            "mean": 9.392,
+            "min": 6.708,
+            "max": 16.251,
+            "n_tiles": 8283
+          },
+          "tcm": {
+            "min_f": 48.66,
+            "max_f": 94.57,
+            "mean_f": 70.59,
+            "overnight_low_f": 56.04,
+            "daily_high_f": 87.12,
+            "spread_f": 45.9,
+            "n_tiles": 8283
+          }
+        }
+      },
+      "free_hours_24": 15.11,
+      "free_hours_18": 9.39,
+      "mean_daily_high_f": 87.12,
+      "mean_overnight_low_f": 56.04,
+      "complete": true
+    },
+    {
+      "id": "minneapolis",
+      "name": "Minneapolis, MN",
+      "lat": 44.9778,
+      "lon": -93.265,
+      "market": "cold-climate benchmark",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 3.25,
+            "min": 1.475,
+            "max": 5.574,
+            "n_tiles": 9664
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9664
+          },
+          "tcm": {
+            "min_f": 71.15,
+            "max_f": 95.23,
+            "mean_f": 82.76,
+            "overnight_low_f": 72.95,
+            "daily_high_f": 94.23,
+            "spread_f": 24.08,
+            "n_tiles": 9664
+          }
+        }
+      },
+      "free_hours_24": 3.25,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 94.23,
+      "mean_overnight_low_f": 72.95,
+      "complete": true
+    },
+    {
+      "id": "chicago",
+      "name": "Chicago, IL",
+      "lat": 41.8781,
+      "lon": -87.6298,
+      "market": "major midwest market",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 9.535,
+            "min": 4.041,
+            "max": 19.177,
+            "n_tiles": 9860
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9860
+          },
+          "tcm": {
+            "min_f": 65.58,
+            "max_f": 93.87,
+            "mean_f": 78.5,
+            "overnight_low_f": 69.75,
+            "daily_high_f": 85.89,
+            "spread_f": 28.29,
+            "n_tiles": 9860
+          }
+        }
+      },
+      "free_hours_24": 9.54,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 85.89,
+      "mean_overnight_low_f": 69.75,
+      "complete": true
+    },
+    {
+      "id": "columbus",
+      "name": "Columbus, OH",
+      "lat": 39.9612,
+      "lon": -82.9988,
+      "market": "fast-growing market",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 8.305,
+            "min": 5.595,
+            "max": 9.526,
+            "n_tiles": 10039
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10039
+          },
+          "tcm": {
+            "min_f": 69.28,
+            "max_f": 93.61,
+            "mean_f": 82.17,
+            "overnight_low_f": 70.02,
+            "daily_high_f": 92.79,
+            "spread_f": 24.33,
+            "n_tiles": 10039
+          }
+        }
+      },
+      "free_hours_24": 8.3,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 92.79,
+      "mean_overnight_low_f": 70.02,
+      "complete": true
+    },
+    {
+      "id": "desmoines",
+      "name": "Des Moines, IA",
+      "lat": 41.5868,
+      "lon": -93.625,
+      "market": "hyperscale cluster",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 9.441,
+            "min": 8.777,
+            "max": 10.25,
+            "n_tiles": 10030
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10030
+          },
+          "tcm": {
+            "min_f": 67.72,
+            "max_f": 91.65,
+            "mean_f": 79.34,
+            "overnight_low_f": 68.61,
+            "daily_high_f": 89.54,
+            "spread_f": 23.93,
+            "n_tiles": 10030
+          }
+        }
+      },
+      "free_hours_24": 9.44,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 89.54,
+      "mean_overnight_low_f": 68.61,
+      "complete": true
+    },
+    {
+      "id": "omaha",
+      "name": "Omaha, NE",
+      "lat": 41.2565,
+      "lon": -95.9345,
+      "market": "hyperscale cluster",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 8.09,
+            "min": 6.548,
+            "max": 9.334,
+            "n_tiles": 10028
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10028
+          },
+          "tcm": {
+            "min_f": 68.75,
+            "max_f": 93.62,
+            "mean_f": 81.42,
+            "overnight_low_f": 70.32,
+            "daily_high_f": 91.74,
+            "spread_f": 24.87,
+            "n_tiles": 10028
+          }
+        }
+      },
+      "free_hours_24": 8.09,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 91.74,
+      "mean_overnight_low_f": 70.32,
+      "complete": true
+    },
+    {
+      "id": "saltlake",
+      "name": "Salt Lake City, UT",
+      "lat": 40.7608,
+      "lon": -111.891,
+      "market": "growing western market",
+      "zone": "cold semi-arid",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 7.276,
+            "min": 2.821,
+            "max": 13.936,
+            "n_tiles": 9580
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9580
+          },
+          "tcm": {
+            "min_f": 65.09,
+            "max_f": 100.97,
+            "mean_f": 84.12,
+            "overnight_low_f": 70.34,
+            "daily_high_f": 98.04,
+            "spread_f": 35.88,
+            "n_tiles": 9580
+          }
+        }
+      },
+      "free_hours_24": 7.28,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 98.04,
+      "mean_overnight_low_f": 70.34,
+      "complete": true
+    },
+    {
+      "id": "denver",
+      "name": "Denver, CO",
+      "lat": 39.7392,
+      "lon": -104.9903,
+      "market": "mountain west market",
+      "zone": "cold semi-arid",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 9.744,
+            "min": 8.763,
+            "max": 10.214,
+            "n_tiles": 9713
+          },
+          "free18": {
+            "mean": 3.682,
+            "min": 1.678,
+            "max": 5.399,
+            "n_tiles": 9713
+          },
+          "tcm": {
+            "min_f": 58.32,
+            "max_f": 95.77,
+            "mean_f": 79.19,
+            "overnight_low_f": 60.57,
+            "daily_high_f": 94.98,
+            "spread_f": 37.45,
+            "n_tiles": 9713
+          }
+        }
+      },
+      "free_hours_24": 9.74,
+      "free_hours_18": 3.68,
+      "mean_daily_high_f": 94.98,
+      "mean_overnight_low_f": 60.57,
+      "complete": true
+    },
+    {
+      "id": "reno",
+      "name": "Reno, NV",
+      "lat": 39.5296,
+      "lon": -119.8138,
+      "market": "Switch / Tahoe Reno",
+      "zone": "cold desert",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 11.389,
+            "min": 10.759,
+            "max": 14.383,
+            "n_tiles": 10059
+          },
+          "free18": {
+            "mean": 4.928,
+            "min": 2.116,
+            "max": 7.502,
+            "n_tiles": 10059
+          },
+          "tcm": {
+            "min_f": 56.92,
+            "max_f": 97.9,
+            "mean_f": 78.05,
+            "overnight_low_f": 58.14,
+            "daily_high_f": 95.36,
+            "spread_f": 40.97,
+            "n_tiles": 10059
+          }
+        }
+      },
+      "free_hours_24": 11.39,
+      "free_hours_18": 4.93,
+      "mean_daily_high_f": 95.36,
+      "mean_overnight_low_f": 58.14,
+      "complete": true
+    },
+    {
+      "id": "boise",
+      "name": "Boise, ID",
+      "lat": 43.615,
+      "lon": -116.2023,
+      "market": "emerging",
+      "zone": "cold semi-arid",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 9.347,
+            "min": 8.566,
+            "max": 11.473,
+            "n_tiles": 10009
+          },
+          "free18": {
+            "mean": 1.665,
+            "min": -0.592,
+            "max": 3.248,
+            "n_tiles": 10009
+          },
+          "tcm": {
+            "min_f": 59.54,
+            "max_f": 93.76,
+            "mean_f": 79.17,
+            "overnight_low_f": 63.08,
+            "daily_high_f": 92.07,
+            "spread_f": 34.22,
+            "n_tiles": 10009
+          }
+        }
+      },
+      "free_hours_24": 9.35,
+      "free_hours_18": 1.67,
+      "mean_daily_high_f": 92.07,
+      "mean_overnight_low_f": 63.08,
+      "complete": true
+    },
+    {
+      "id": "buffalo",
+      "name": "Buffalo, NY",
+      "lat": 42.8864,
+      "lon": -78.8784,
+      "market": "cold-climate candidate",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 6.431,
+            "min": 2.325,
+            "max": 9.664,
+            "n_tiles": 10069
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10069
+          },
+          "tcm": {
+            "min_f": 71.85,
+            "max_f": 91.76,
+            "mean_f": 80.44,
+            "overnight_low_f": 73.74,
+            "daily_high_f": 88.43,
+            "spread_f": 19.91,
+            "n_tiles": 10069
+          }
+        }
+      },
+      "free_hours_24": 6.43,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 88.43,
+      "mean_overnight_low_f": 73.74,
+      "complete": true
+    },
+    {
+      "id": "portlandme",
+      "name": "Portland, ME",
+      "lat": 43.6591,
+      "lon": -70.2568,
+      "market": "northern candidate",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 12.336,
+            "min": 9.301,
+            "max": 24.577,
+            "n_tiles": 6566
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 6566
+          },
+          "tcm": {
+            "min_f": 64.37,
+            "max_f": 92.49,
+            "mean_f": 76.83,
+            "overnight_low_f": 68.88,
+            "daily_high_f": 87.73,
+            "spread_f": 28.12,
+            "n_tiles": 6566
+          }
+        }
+      },
+      "free_hours_24": 12.34,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 87.73,
+      "mean_overnight_low_f": 68.88,
+      "complete": true
+    },
+    {
+      "id": "boston",
+      "name": "Boston, MA",
+      "lat": 42.3601,
+      "lon": -71.0589,
+      "market": "northeast metro",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 1.997,
+            "min": -0.693,
+            "max": 23.02,
+            "n_tiles": 7924
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 7924
+          },
+          "tcm": {
+            "min_f": 69.31,
+            "max_f": 97.78,
+            "mean_f": 83.77,
+            "overnight_low_f": 74.53,
+            "daily_high_f": 93.72,
+            "spread_f": 28.46,
+            "n_tiles": 7924
+          }
+        }
+      },
+      "free_hours_24": 2.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 93.72,
+      "mean_overnight_low_f": 74.53,
+      "complete": true
+    },
+    {
+      "id": "nyc",
+      "name": "New York, NY",
+      "lat": 40.7128,
+      "lon": -74.006,
+      "market": "northeast metro",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 2.999,
+            "min": 0.31,
+            "max": 9.582,
+            "n_tiles": 7085
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 7085
+          },
+          "tcm": {
+            "min_f": 72.67,
+            "max_f": 92.68,
+            "mean_f": 81.43,
+            "overnight_low_f": 74.74,
+            "daily_high_f": 89.79,
+            "spread_f": 20.01,
+            "n_tiles": 7085
+          }
+        }
+      },
+      "free_hours_24": 3.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 89.79,
+      "mean_overnight_low_f": 74.74,
+      "complete": true
+    },
+    {
+      "id": "pittsburgh",
+      "name": "Pittsburgh, PA",
+      "lat": 40.4406,
+      "lon": -79.9959,
+      "market": "emerging",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 8.902,
+            "min": 6.76,
+            "max": 9.223,
+            "n_tiles": 9935
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9935
+          },
+          "tcm": {
+            "min_f": 68.02,
+            "max_f": 93.97,
+            "mean_f": 80.9,
+            "overnight_low_f": 70.19,
+            "daily_high_f": 91.66,
+            "spread_f": 25.95,
+            "n_tiles": 9935
+          }
+        }
+      },
+      "free_hours_24": 8.9,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 91.66,
+      "mean_overnight_low_f": 70.19,
+      "complete": true
+    },
+    {
+      "id": "kansascity",
+      "name": "Kansas City, MO",
+      "lat": 39.0997,
+      "lon": -94.5786,
+      "market": "central market",
+      "zone": "humid continental",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 5.586,
+            "min": 2.371,
+            "max": 8.213,
+            "n_tiles": 10086
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10086
+          },
+          "tcm": {
+            "min_f": 71.38,
+            "max_f": 96.3,
+            "mean_f": 85.08,
+            "overnight_low_f": 72.88,
+            "daily_high_f": 95.21,
+            "spread_f": 24.92,
+            "n_tiles": 10086
+          }
+        }
+      },
+      "free_hours_24": 5.59,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 95.21,
+      "mean_overnight_low_f": 72.88,
+      "complete": true
+    },
+    {
+      "id": "richmond",
+      "name": "Richmond, VA",
+      "lat": 37.5407,
+      "lon": -77.436,
+      "market": "Virginia overflow",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 6.272,
+            "min": 2.0,
+            "max": 10.498,
+            "n_tiles": 9753
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9753
+          },
+          "tcm": {
+            "min_f": 72.59,
+            "max_f": 89.15,
+            "mean_f": 79.5,
+            "overnight_low_f": 73.87,
+            "daily_high_f": 87.9,
+            "spread_f": 16.55,
+            "n_tiles": 9753
+          }
+        }
+      },
+      "free_hours_24": 6.27,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 87.9,
+      "mean_overnight_low_f": 73.87,
+      "complete": true
+    },
+    {
+      "id": "charlotte",
+      "name": "Charlotte, NC",
+      "lat": 35.2271,
+      "lon": -80.8431,
+      "market": "southeast market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10000
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10000
+          },
+          "tcm": {
+            "min_f": 76.54,
+            "max_f": 95.89,
+            "mean_f": 83.75,
+            "overnight_low_f": 77.49,
+            "daily_high_f": 94.83,
+            "spread_f": 19.35,
+            "n_tiles": 10000
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 94.83,
+      "mean_overnight_low_f": 77.49,
+      "complete": true
+    },
+    {
+      "id": "nashville",
+      "name": "Nashville, TN",
+      "lat": 36.1627,
+      "lon": -86.7816,
+      "market": "southeast market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.024,
+            "min": -0.142,
+            "max": 1.222,
+            "n_tiles": 10098
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10098
+          },
+          "tcm": {
+            "min_f": 74.8,
+            "max_f": 96.4,
+            "mean_f": 86.15,
+            "overnight_low_f": 76.81,
+            "daily_high_f": 95.42,
+            "spread_f": 21.6,
+            "n_tiles": 10098
+          }
+        }
+      },
+      "free_hours_24": 0.02,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 95.42,
+      "mean_overnight_low_f": 76.81,
+      "complete": true
+    },
+    {
+      "id": "atlanta",
+      "name": "Atlanta, GA",
+      "lat": 33.749,
+      "lon": -84.388,
+      "market": "major southeast market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10112
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10112
+          },
+          "tcm": {
+            "min_f": 76.8,
+            "max_f": 97.3,
+            "mean_f": 85.03,
+            "overnight_low_f": 78.31,
+            "daily_high_f": 96.24,
+            "spread_f": 20.5,
+            "n_tiles": 10112
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 96.24,
+      "mean_overnight_low_f": 78.31,
+      "complete": true
+    },
+    {
+      "id": "dallas",
+      "name": "Dallas, TX",
+      "lat": 32.7767,
+      "lon": -96.797,
+      "market": "major south market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9997
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9997
+          },
+          "tcm": {
+            "min_f": 78.0,
+            "max_f": 98.65,
+            "mean_f": 87.79,
+            "overnight_low_f": 79.42,
+            "daily_high_f": 96.51,
+            "spread_f": 20.65,
+            "n_tiles": 9997
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 96.51,
+      "mean_overnight_low_f": 79.42,
+      "complete": true
+    },
+    {
+      "id": "sanantonio",
+      "name": "San Antonio, TX",
+      "lat": 29.4241,
+      "lon": -98.4936,
+      "market": "Texas market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9713
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 9713
+          },
+          "tcm": {
+            "min_f": 80.01,
+            "max_f": 98.47,
+            "mean_f": 88.37,
+            "overnight_low_f": 81.04,
+            "daily_high_f": 97.34,
+            "spread_f": 18.45,
+            "n_tiles": 9713
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 97.34,
+      "mean_overnight_low_f": 81.04,
+      "complete": true
+    },
+    {
+      "id": "houston",
+      "name": "Houston, TX",
+      "lat": 29.7604,
+      "lon": -95.3698,
+      "market": "Texas market",
+      "zone": "humid subtropical",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10029
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10029
+          },
+          "tcm": {
+            "min_f": 79.57,
+            "max_f": 98.46,
+            "mean_f": 87.94,
+            "overnight_low_f": 80.31,
+            "daily_high_f": 96.26,
+            "spread_f": 18.89,
+            "n_tiles": 10029
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 96.26,
+      "mean_overnight_low_f": 80.31,
+      "complete": true
+    },
+    {
+      "id": "phoenix",
+      "name": "Phoenix, AZ",
+      "lat": 33.4484,
+      "lon": -112.074,
+      "market": "major southwest market",
+      "zone": "hot desert",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10016
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10016
+          },
+          "tcm": {
+            "min_f": 90.25,
+            "max_f": 104.66,
+            "mean_f": 98.5,
+            "overnight_low_f": 91.27,
+            "daily_high_f": 104.32,
+            "spread_f": 14.42,
+            "n_tiles": 10016
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 104.32,
+      "mean_overnight_low_f": 91.27,
+      "complete": true
+    },
+    {
+      "id": "lasvegas",
+      "name": "Las Vegas, NV",
+      "lat": 36.1699,
+      "lon": -115.1398,
+      "market": "southwest market",
+      "zone": "hot desert",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10091
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 10091
+          },
+          "tcm": {
+            "min_f": 85.36,
+            "max_f": 106.74,
+            "mean_f": 98.98,
+            "overnight_low_f": 90.82,
+            "daily_high_f": 106.3,
+            "spread_f": 21.38,
+            "n_tiles": 10091
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 106.3,
+      "mean_overnight_low_f": 90.82,
+      "complete": true
+    },
+    {
+      "id": "sanjose",
+      "name": "San Jose, CA",
+      "lat": 37.3382,
+      "lon": -121.8863,
+      "market": "Silicon Valley",
+      "zone": "mediterranean",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 16.409,
+            "min": 14.754,
+            "max": 18.655,
+            "n_tiles": 10004
+          },
+          "free18": {
+            "mean": 9.924,
+            "min": 8.748,
+            "max": 12.007,
+            "n_tiles": 10004
+          },
+          "tcm": {
+            "min_f": 55.97,
+            "max_f": 92.23,
+            "mean_f": 69.99,
+            "overnight_low_f": 58.67,
+            "daily_high_f": 89.45,
+            "spread_f": 36.26,
+            "n_tiles": 10004
+          }
+        }
+      },
+      "free_hours_24": 16.41,
+      "free_hours_18": 9.92,
+      "mean_daily_high_f": 89.45,
+      "mean_overnight_low_f": 58.67,
+      "complete": true
+    },
+    {
+      "id": "losangeles",
+      "name": "Los Angeles, CA",
+      "lat": 34.0522,
+      "lon": -118.2437,
+      "market": "west coast metro",
+      "zone": "mediterranean",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 15.667,
+            "min": 14.765,
+            "max": 16.234,
+            "n_tiles": 9922
+          },
+          "free18": {
+            "mean": 3.615,
+            "min": 0.725,
+            "max": 7.721,
+            "n_tiles": 9922
+          },
+          "tcm": {
+            "min_f": 60.58,
+            "max_f": 86.17,
+            "mean_f": 71.76,
+            "overnight_low_f": 63.07,
+            "daily_high_f": 84.35,
+            "spread_f": 25.58,
+            "n_tiles": 9922
+          }
+        }
+      },
+      "free_hours_24": 15.67,
+      "free_hours_18": 3.62,
+      "mean_daily_high_f": 84.35,
+      "mean_overnight_low_f": 63.07,
+      "complete": true
+    },
+    {
+      "id": "miami",
+      "name": "Miami, FL",
+      "lat": 25.7617,
+      "lon": -80.1918,
+      "market": "latam gateway",
+      "zone": "tropical monsoon",
+      "area_sq_mi": 38.6,
+      "days": {
+        "2025-07-15": {
+          "free24": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 5143
+          },
+          "free18": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n_tiles": 5143
+          },
+          "tcm": {
+            "min_f": 76.55,
+            "max_f": 92.38,
+            "mean_f": 83.86,
+            "overnight_low_f": 78.47,
+            "daily_high_f": 89.99,
+            "spread_f": 15.83,
+            "n_tiles": 5143
+          }
+        }
+      },
+      "free_hours_24": 0.0,
+      "free_hours_18": 0.0,
+      "mean_daily_high_f": 89.99,
+      "mean_overnight_low_f": 78.47,
+      "complete": true
+    }
+  ]
+}
