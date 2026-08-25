@@ -114,3 +114,54 @@ def test_no_retracted_numbers_in_ui(app):
     text = _all_text(app)
     for dead in ("0.974", "0.090 of a possible", "1 → 251", "1 -> 251"):
         assert dead not in text, f"retracted figure {dead!r} is back in the UI"
+
+
+# --------------------------------------------------------------- alerts
+
+def test_alerts_are_deterministic_and_traceable():
+    """Alerts must fire on an obligation, not a temperature.
+
+    The distinguishing claim of this project is that an alert can name a
+    department, a page and a verbatim sentence. If any alert loses that, it has
+    become an ordinary weather notification.
+    """
+    import json as _json
+    from alerts import detect, summarise
+    res = _json.loads((REPO / "data" / "results" / "divergence.json")
+                      .read_text(encoding="utf-8"))
+    pop = _json.loads((REPO / "data" / "zones" /
+                       "phoenix_villages_population.json")
+                      .read_text(encoding="utf-8"))["villages"]
+    al = detect(res, pop, city="Phoenix", plan_title="Plan", plan_url="http://x")
+    assert al, "no alerts generated from the published result"
+
+    for a in al:
+        assert a.source_text.strip(), f"{a.alert_id} has no verbatim quote"
+        assert a.source_page > 0, f"{a.alert_id} has no page"
+        assert a.clause_id, f"{a.alert_id} has no clause"
+        assert a.severity in ("RED", "AMBER", "YELLOW")
+        # An alert only exists where the zone fired and the city did not.
+        assert a.measured_f > a.threshold_f
+        assert a.proxy_f < a.threshold_f
+        assert a.to_dict()["condition"]["citywide_fired"] is False
+
+    s = summarise(al)
+    assert s["alerts"] == len(al)
+    assert s["red"] + s["amber"] + s["yellow"] == len(al)
+
+
+def test_alert_severity_is_earned_by_population():
+    from alerts import AMBER_POPULATION, RED_POPULATION, Alert
+    def mk(p):
+        return Alert(alert_id="x", day="2025-08-08", zone_id="z", zone_name="Z",
+                     population=p, clause_id="C", clause_action="a",
+                     source_page=1, source_text="q", actor=["A"],
+                     threshold_f=90.0, measured_f=93.0, proxy_f=89.0,
+                     units="degC", city="c", plan_title="p", plan_url="u")
+    assert mk(RED_POPULATION).severity == "RED"
+    assert mk(AMBER_POPULATION).severity == "AMBER"
+    assert mk(10).severity == "YELLOW"
+
+
+def test_alert_console_renders(app):
+    assert "Divergence alerts" in _all_text(app)

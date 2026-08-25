@@ -23,6 +23,7 @@ from streamlit_folium import st_folium
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import study  # noqa: E402
+from alerts import detect, summarise  # noqa: E402
 
 REPO = Path(__file__).parent
 RESULTS = REPO / "data" / "results" / "divergence.json"
@@ -443,6 +444,85 @@ c5.metric("Median lead time",
 st.caption(f"Study window {summary['window'][0]} to {summary['window'][1]}. "
            f"All decisions are deterministic comparisons; no language model "
            f"produces any number on this page.")
+
+
+# ======================================================= THE ALERT CONSOLE
+# Every other heat product alerts on temperature. "It is 108 degrees in your
+# neighbourhood" is true, and an emergency manager already knows it. These
+# alerts fire on an UNEXECUTED LEGAL OBLIGATION instead: a clause of the city's
+# own plan was met locally while the instrument that triggers it stayed quiet.
+# That is why each one can name a department, a page and a verbatim sentence,
+# which no temperature alert can do.
+#
+# Severity tiers follow the alerting literature: red alerts are read as credible
+# and drive behaviour while yellow draws the weakest response, so a red tier is
+# earned by measured exposure and kept rare enough to stay credible.
+
+_alerts = detect(res, pop, city=city_name, plan_title=CITY["plan"],
+                 plan_url=CITY["plan_url"])
+_asum = summarise(_alerts)
+
+st.markdown("### Divergence alerts")
+st.caption(
+    "Fired when a clause was met in an area while the citywide reading stayed "
+    "below its threshold: an obligation incurred locally that the city's own "
+    "trigger never registered. Detection is a deterministic comparison. No "
+    "language model decides whether to alert, at what severity, or about whom.")
+
+if not _alerts:
+    st.success(f"No divergence alerts for {CITY['short']} in this window.",
+               icon="✅")
+else:
+    _k1, _k2, _k3, _k4 = st.columns(4)
+    _k1.metric("Alerts", _asum["alerts"])
+    _k2.metric("Red", _asum["red"], "100k+ residents", delta_color="off")
+    _k3.metric("Amber", _asum["amber"], "25k+ residents", delta_color="off")
+    _k4.metric("People covered", f"{_asum['population_exposed']:,}")
+
+    _pick = st.selectbox("Filter by night", ["All nights"] + _asum["days"],
+                         key="alert_day")
+    _shown = [a for a in _alerts if _pick == "All nights" or a.day == _pick]
+
+    for _a in _shown[:6]:
+        _colour = {"RED": "#b2182b", "AMBER": "#c2711c",
+                   "YELLOW": "#8a8a2f"}[_a.severity]
+        _who = f" · {_a.population:,} residents" if _a.population else ""
+        with st.container(border=True):
+            st.markdown(
+                f"<span style='background:{_colour};color:#fff;font-weight:800;"
+                f"font-size:0.72rem;letter-spacing:0.08em;padding:0.2rem 0.55rem;"
+                f"border-radius:5px'>{_a.severity}</span> &nbsp;"
+                f"<b style='font-size:1.08rem'>{_a.zone_name}</b>"
+                f"<span style='color:#71717a'> · {_a.day}{_who}</span>",
+                unsafe_allow_html=True)
+            _x, _y = st.columns([3, 2])
+            _x.markdown(
+                f"Reached **{_a.measured_f:.1f} °F** against the "
+                f"**{_a.threshold_f:g} °F** threshold "
+                f"(**{_a.margin_f:+.1f} °F** over). The citywide reading was "
+                f"**{_a.proxy_f:.1f} °F**, "
+                f"{_a.proxy_shortfall_f:.1f} °F *below* the line, so "
+                f"**nothing fired**.")
+            _y.markdown(
+                "**Responsible**  \n"
+                + (", ".join(_a.actor) or "—")
+                + "  \n\n**Authority**  \n"
+                + f"`{_a.clause_id}` · "
+                + f"[page {_a.source_page}]({_a.plan_url}#page={_a.source_page})")
+            with st.expander("Machine-readable payload"):
+                st.json(_a.to_dict())
+
+    if len(_shown) > 6:
+        st.caption(f"Showing 6 of {len(_shown)} for this filter.")
+
+    st.download_button(
+        "Download every alert as JSON",
+        json.dumps([a.to_dict() for a in _alerts], indent=2),
+        file_name=f"trigger_alerts_{CITY['short'].lower().replace(' ', '_')}.json",
+        mime="application/json")
+
+st.divider()
+
 
 
 # ================================================== THE OPERATIONAL ANSWER
