@@ -44,7 +44,10 @@ abbreviations to owning departments — that is our `actor` field, pre-structure
 
 ## 2. Context: this is a hackathon submission
 
-**FortyGuard Hackathon '26. Deadline 30 Aug 2026, 11:59 PM GST.**
+**FortyGuard Hackathon '26. Deadline 30 Aug 2026, 11:59 PM GST (UTC+4).**
+VERIFIED against the live site 25 Aug 2026: build sprint 18-30 Aug, submission
+30 Aug, judging 1-15 Sept, winners 16 Sept. Press coverage stating a 17 Aug
+deadline describes a superseded schedule -- ignore it.
 Team of two. Judged by FortyGuard engineers.
 
 Scoring weights — optimise against these, in this order:
@@ -56,10 +59,20 @@ Scoring weights — optimise against these, in this order:
 | 15% | Innovation | Already secured by the concept — do not chase it |
 | 10% | Communication | README + video; budget real time for these |
 
-Tracks: **04 Government & Environment** (primary), **07 Data Analysis &
-Correlation** (co-primary), **05 Model Designing** (supporting — the compiler's
-measured extraction accuracy). We do *not* lead with Track 06 Agentic AI; it is
-the most saturated track in the competition.
+Tracks — CONFIRMED, 7 on the live site: 01 Resilient Cities & Infrastructure,
+02 Future Buildings & Energy, 03 Industrial & Enterprise, 04 Government &
+Environment, 05 Model Designing, 06 Agentic AI, 07 Data Analysis & Correlation.
+Tracks may be combined.
+
+We claim **04 Government & Environment** (primary), **07 Data Analysis &
+Correlation** (co-primary), **05 Model Designing** (supporting). Track 04's own
+build examples are "Heat Vulnerability Map / Climate Resilience Planner" and its
+technologies are "Temperature API, Policy AI, GIS, Open Data" -- an exact
+description of this project. We do *not* lead with Track 06 Agentic AI; it is the
+most saturated track and we deliberately have no agent.
+
+Prizes: $3,000 / $2,000 / $1,000. Teams up to 3. All participants get a
+certificate; 1st adds an internship pathway and partner promotion.
 
 **Competitive position:** ~70% of the field is building heat maps with an LLM
 alert layer. We are the only entrant compiling policy documents. Protect that

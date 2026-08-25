@@ -1,6 +1,22 @@
 # Submission checklist, deployment, and video script
 
-Everything needed to ship TRIGGER. Deadline **30 August 2026, 11:59 PM GST**.
+Everything needed to ship TRIGGER.
+
+## Verified against the live hackathon site, 25 Aug 2026
+
+| | |
+|---|---|
+| **Submission deadline** | **30 August 2026, 11:59 PM GST (UTC+4)** |
+| Build sprint | 18–30 August 2026 |
+| Judging | 1–15 September |
+| Winners announced | 16 September |
+| Prizes | $3,000 / $2,000 / $1,000 — plus internship pathway and partner promotion for 1st |
+| Team size | solo or up to 3 |
+| Every participant | certificate of completion, partner network access |
+
+**Note on a conflicting source.** Press coverage (Entrepreneur ME) states the
+sprint ran 3–17 August with submissions due 17 August. That is a superseded
+schedule — the live site shows 18–30 August. Trust the site.
 
 ---
 
@@ -83,19 +99,26 @@ of `requirements.txt` for the deployment leaves the app fully working.
 | Limitations written honestly | ✅ | README §5, report §5 |
 | Video under three minutes | to record | `VIDEO_SCRIPT.md` — rewritten post-retraction |
 
-### Tracks to claim
+### Tracks to claim — confirmed, 7 tracks on the live site
 
-- **04 Government & Environment** (primary) — the user is a city heat officer
-  executing a legal instrument.
-- **07 Data Analysis & Correlation** (co-primary) — Trigger Divergence is a
-  divergence result between two sensing regimes over the same rule set.
-- **05 Model Designing** (supporting) — the clause compiler is an extraction
-  model with a hand-built golden set and a reported F1.
+**Track 04 — Government & Environment (PRIMARY).** The site's own build examples
+for this track are *Heat Vulnerability Map, Agricultural Stress Monitor, Climate
+Resilience Planner*, and its listed technologies are *Temperature API, Policy AI,
+GIS, Open Data*. TRIGGER is a heat vulnerability map driven by policy AI over GIS
+and open data. This is the closest fit of any track to any project we could have
+built, and the framing — "support policymakers and city agencies to act on heat
+intelligence" — is the sentence our whole submission answers.
 
-If the portal's tracks are the four named in press coverage (AI Agents,
-Predictive Models, Dashboards, Interactive Maps), map to **Predictive Models**
-primary and **Interactive Maps** secondary — the compiler is the model, the app
-is the map. Confirm the live track list before submitting.
+**Track 07 — Data Analysis & Correlation (CO-PRIMARY).** Build examples include
+*Heat Equity Analysis*. Trigger Divergence is a correlation result between two
+sensing regimes over one rule set, with population weighting.
+
+**Track 05 — Model Designing (SUPPORTING).** The clause compiler is an
+extraction model with a hand-built golden set and a measured F1 of 0.962.
+
+The site says tracks may be combined, so claim 04 + 07 and mention 05.
+**Do not claim Track 06 Agentic AI** — we deliberately do not have an agent, and
+it is the most crowded track.
 
 ---
 
