@@ -127,6 +127,10 @@ st.markdown("""
     text-transform:uppercase; color:#71717a;
   }
 
+  .tg-rank { display:inline-block; background:#b2182b; color:#fff;
+             font-weight:800; font-size:0.85rem; border-radius:6px;
+             padding:0.1rem 0.5rem; margin-right:0.5rem; vertical-align:2px; }
+
   /* ---- legend */
   .tg-legend {
     display:flex; gap:1.4rem; flex-wrap:wrap; align-items:center;
@@ -375,6 +379,86 @@ c5.metric("Median lead time",
 st.caption(f"Study window {summary['window'][0]} to {summary['window'][1]}. "
            f"All decisions are deterministic comparisons; no language model "
            f"produces any number on this page.")
+
+
+# ================================================== THE OPERATIONAL ANSWER
+# Everything above measures a gap. This answers the question a heat officer
+# actually has at 4pm: given finite crews, where do they go first, on whose
+# authority, and what do I cite when someone asks why. Ranked deterministically
+# by exposed population-days; every line traces to a clause, a page and a named
+# department.
+
+st.markdown("### Tonight's brief — where the crews go first")
+st.caption("Ranked by residents × nights the condition was met while the "
+           "citywide reading stayed silent. Deterministic ranking; no language "
+           "model orders this list.")
+
+_rank = []
+for _c in res["clauses"]:
+    _pop = pop or {}
+    for _z in sorted(_c.get("silent_zones") or []):
+        _n = next((x["name"] for x in res["zones"] if x["zone_id"] == _z), _z)
+        _p = _pop.get(_z, {}).get("population") or 0
+        _dets = _c.get("determinations", [])
+        _silent_days = [d["day"] for d in _dets
+                        if not d["proxy"]["fired"]
+                        and any(zz["zone_id"] == _z and zz["fired"] for zz in d["zones"])]
+        if not _silent_days:
+            continue
+        _worst = max(
+            ((d["day"], zz["value"]) for d in _dets for zz in d["zones"]
+             if zz["zone_id"] == _z and zz["fired"]),
+            key=lambda t: t[1], default=(None, None))
+        _rank.append({
+            "zone": _n, "pop": _p, "nights": len(_silent_days),
+            "severity": _p * len(_silent_days),
+            "clause": _c["clause_id"], "page": _c["source_page"],
+            "actor": ", ".join(_c.get("actor") or []) or "—",
+            "threshold_f": _c["threshold_f"],
+            "worst_day": _worst[0],
+            "worst_val": (_worst[1] * 9 / 5 + 32) if _worst[1] is not None else None,
+            "quote": _c["source_text"],
+            "days": _silent_days,
+        })
+_rank.sort(key=lambda r: -r["severity"])
+
+for _i, _r in enumerate(_rank[:3], 1):
+    with st.container(border=True):
+        _a, _b = st.columns([3, 2])
+        with _a:
+            st.markdown(
+                f"<span class='tg-rank'>{_i}</span> "
+                f"<span style='font-size:1.3rem;font-weight:700'>{_r['zone']}</span>"
+                f"<span style='color:#71717a'> &nbsp;·&nbsp; {_r['pop']:,} residents"
+                f"</span>", unsafe_allow_html=True)
+            st.markdown(
+                f"Met the **{_r['threshold_f']:g} °F** condition on "
+                f"**{_r['nights']} night{'s' if _r['nights'] != 1 else ''}** when the "
+                f"citywide reading never fired"
+                + (f", peaking at **{_r['worst_val']:.1f} °F** on {_r['worst_day']}."
+                   if _r["worst_val"] else ".")
+                + f"<br><span style='color:#52525b'>Nights: "
+                  f"{', '.join(_r['days'])}</span>", unsafe_allow_html=True)
+            st.markdown(f"<div class='tg-quote' style='margin-top:0.5rem;"
+                        f"font-size:0.88rem'>&ldquo;{_r['quote']}&rdquo;</div>",
+                        unsafe_allow_html=True)
+        with _b:
+            st.markdown(
+                f"**Responsible**\n\n{_r['actor']}\n\n"
+                f"**Authority**\n\n`{_r['clause']}`, page {_r['page']} of the "
+                f"published plan\n\n"
+                f"[Open the source page]({study.PLAN_URL}#page={_r['page']})")
+
+if len(_rank) > 3:
+    with st.expander(f"The remaining {len(_rank) - 3} zone-clause pairs, same ranking"):
+        st.dataframe(pd.DataFrame([{
+            "rank": i, "zone": r["zone"], "residents": r["pop"],
+            "silent nights": r["nights"], "clause": r["clause"],
+            "page": r["page"], "responsible": r["actor"],
+        } for i, r in enumerate(_rank[3:], 4)]), hide_index=True,
+        use_container_width=True)
+
+st.divider()
 
 
 # ------------------------------------------------------------------- missions
