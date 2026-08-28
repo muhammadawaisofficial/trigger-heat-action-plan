@@ -156,34 +156,28 @@ CSS = """
   iframe { border-radius:13px; }
 
   /* ---------- page background ---------- */
-  /* An aerial street grid with a few districts running warm over it -- the
-     subject of this project drawn faintly behind it. Two deliberate choices
-     keep it from competing with the real map on the landing page: the grid is
-     regular where a real street network is not, and it is pinned to the
-     viewport so it never scrolls alongside the Folium map.
+  /* The measured temperature field of Phoenix -- 272,917 real FortyGuard tiles,
+     the same ones the headline number is computed from, rasterised by
+     make_backdrop.py. Not an illustration OF the measurement; the measurement
+     itself.
 
-     Everything above it -- cards, charts, tables -- keeps an opaque surface, so
-     no text is ever read against moving artwork. */
+     It is held far back: low opacity, blurred, under a white scrim, and always
+     beneath opaque cards and charts. Evidence that happens to be beautiful, not
+     something competing with a figure. */
   .tg-bg { position:fixed; inset:0; z-index:0; overflow:hidden;
     pointer-events:none; }
-  .tg-bg svg { position:absolute; inset:0; width:100%; height:100%; }
-  .tg-district { position:absolute; border-radius:44% 56% 52% 48%;
-    filter:blur(58px); opacity:.20; }
-  .tg-district.d1 { width:34vw; height:26vw; left:6vw; top:8vh;
-    background:var(--tg-nav-b); animation:tgWarm1 46s ease-in-out infinite; }
-  .tg-district.d2 { width:26vw; height:22vw; right:10vw; top:22vh;
-    background:var(--tg-accent); animation:tgWarm2 58s ease-in-out infinite; }
-  .tg-district.d3 { width:30vw; height:20vw; left:40vw; bottom:6vh;
-    background:var(--tg-nav-a); opacity:.13;
-    animation:tgWarm3 64s ease-in-out infinite; }
-  @keyframes tgWarm1 { 0%,100%{transform:translate(0,0) scale(1); opacity:.20}
-    50%{transform:translate(3vw,2vh) scale(1.08); opacity:.26} }
-  @keyframes tgWarm2 { 0%,100%{transform:translate(0,0) scale(1); opacity:.18}
-    50%{transform:translate(-2.5vw,3vh) scale(1.10); opacity:.24} }
-  @keyframes tgWarm3 { 0%,100%{transform:translate(0,0) scale(1); opacity:.13}
-    50%{transform:translate(2vw,-2vh) scale(1.06); opacity:.18} }
-  @media (prefers-reduced-motion: reduce) {
-    .tg-district { animation:none !important; } }
+  .tg-field { position:absolute; inset:-6%; background-size:cover;
+    background-position:center; opacity:.30;
+    filter:saturate(.85) var(--tg-hue);
+    animation:tgField 90s ease-in-out infinite; }
+  @keyframes tgField { 0%,100%{transform:scale(1.00) translate(0,0)}
+    50%{transform:scale(1.06) translate(-1.2%,0.8%)} }
+  /* A white scrim so text never sits directly on the field. */
+  .tg-scrim { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(255,255,255,.90) 0%,
+      rgba(255,255,255,.82) 45%, rgba(255,255,255,.90) 100%); }
+  .tg-grid { position:absolute; inset:0; opacity:.5; }
+  @media (prefers-reduced-motion: reduce) { .tg-field { animation:none; } }
   .stApp > div { position:relative; z-index:1; }
 
   /* ---------- responsive ---------- */
@@ -350,15 +344,15 @@ def tier_for(overnight_low_f: float | None, daily_high_f: float | None = None) -
 # another, which is the fastest way to make a chart lie.
 PAGE_THEME = {
     "home":     {"accent": "#b2182b", "nav_a": "#8c1220", "nav_b": "#c9455a",
-                 "glow": "#ffe6e3", "file": "app"},
+                 "glow": "#ffe6e3", "file": "app", "hue": "hue-rotate(0deg)"},
     "heat":     {"accent": "#c2410c", "nav_a": "#9a3412", "nav_b": "#ea7317",
-                 "glow": "#ffeadf", "file": "1_Heat_Waves"},
+                 "glow": "#ffeadf", "file": "1_Heat_Waves", "hue": "hue-rotate(-12deg)"},
     "siting":   {"accent": "#1d6a96", "nav_a": "#14506f", "nav_b": "#3d8cb8",
-                 "glow": "#e3f1f9", "file": "2_Data_Centre_Siting"},
+                 "glow": "#e3f1f9", "file": "2_Data_Centre_Siting", "hue": "hue-rotate(175deg) saturate(.7)"},
     "planning": {"accent": "#2d6a4f", "nav_a": "#1f4f3a", "nav_b": "#4f9b73",
-                 "glow": "#e4f2ea", "file": "3_Urban_Planning"},
+                 "glow": "#e4f2ea", "file": "3_Urban_Planning", "hue": "hue-rotate(105deg) saturate(.65)"},
     "methods":  {"accent": "#4a4458", "nav_a": "#39344a", "nav_b": "#6d6484",
-                 "glow": "#eeedf3", "file": "4_Methods_and_Evidence"},
+                 "glow": "#eeedf3", "file": "4_Methods_and_Evidence", "hue": "hue-rotate(225deg) saturate(.45)"},
 }
 
 
@@ -380,7 +374,8 @@ def theme(page: str) -> None:
     css = """
 <style>
   :root { --tg-accent:%(a)s; --tg-glow:%(g)s;
-          --tg-nav-a:%(na)s; --tg-nav-b:%(nb)s; }
+          --tg-nav-a:%(na)s; --tg-nav-b:%(nb)s;
+          --tg-hue:%(hue)s; }
   .stApp { background:linear-gradient(180deg,#fbfbfc 0%%,#f5f5f7 100%%); }
   .tg-q, .tg-kicker { color:%(a)s !important; }
   .tg-step-n, .tg-rank { background:%(a)s !important; }
@@ -403,24 +398,23 @@ def theme(page: str) -> None:
   a[href$="/%(f)s"] p, a[href$="/%(f)s"] span { color:%(na)s !important; }
 </style>
 <div class="tg-bg">
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <div class="tg-field" style="background-image:url(app/static/phoenix_field.png)"></div>
+  <div class="tg-scrim"></div>
+  <svg class="tg-grid" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
       <pattern id="tgMinor" width="46" height="46" patternUnits="userSpaceOnUse">
         <path d="M46 0H0V46" fill="none" stroke="%(na)s" stroke-width="1"
-              stroke-opacity="0.07"/>
+              stroke-opacity="0.10"/>
       </pattern>
       <pattern id="tgMajor" width="230" height="230" patternUnits="userSpaceOnUse">
         <rect width="230" height="230" fill="url(#tgMinor)"/>
         <path d="M230 0H0V230" fill="none" stroke="%(na)s" stroke-width="2.5"
-              stroke-opacity="0.10"/>
+              stroke-opacity="0.13"/>
       </pattern>
     </defs>
     <rect width="100%%" height="100%%" fill="url(#tgMajor)"/>
   </svg>
-  <div class="tg-district d1"></div>
-  <div class="tg-district d2"></div>
-  <div class="tg-district d3"></div>
 </div>
 """ % {"a": t["accent"], "g": t["glow"], "na": t["nav_a"], "nb": t["nav_b"],
-       "f": t["file"]}
+       "f": t["file"], "hue": t["hue"]}
     st.markdown(css, unsafe_allow_html=True)

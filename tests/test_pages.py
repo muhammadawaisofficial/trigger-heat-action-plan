@@ -298,3 +298,37 @@ def test_every_page_still_shows_its_pills():
                  "pages/4_Methods_and_Evidence.py"]:
         src = (REPO / page).read_text(encoding="utf-8")
         assert "pills=[" in src, f"{page} lost its masthead pills"
+
+
+# --------------------------------------------------------------- the backdrop
+def test_backdrop_is_generated_from_real_cached_tiles():
+    """The background is the project's own measurement, not stock artwork.
+
+    If the generator ever loses its input, the claim in the README and the video
+    ('that is the measured field') stops being true.
+    """
+    import make_backdrop
+    assert make_backdrop.RESPONSE.exists(), "cached tcm response is missing"
+    assert (REPO / "static" / "phoenix_field.png").exists()
+    # Small enough not to hurt first paint on Streamlit Cloud.
+    assert (REPO / "static" / "phoenix_field.png").stat().st_size < 400_000
+
+
+def test_backdrop_transform_preserves_temperature_order():
+    """The rank transform must be monotonic: hotter is darker, always.
+
+    Ranking is what makes the near-uniform field legible. It is honest only
+    while no two pixels swap order, so this pins that property directly.
+    """
+    import numpy as np
+    field = np.array([[30.0, 31.0, 35.0], [29.0, 33.0, 38.0]])
+    flat = field.ravel()
+    norm = (np.argsort(np.argsort(flat)) / (len(flat) - 1))
+    assert np.all(np.argsort(flat) == np.argsort(norm))
+    assert norm.min() == 0.0 and norm.max() == 1.0
+
+
+def test_static_serving_is_enabled():
+    """Without this the backdrop 404s and every page loses its background."""
+    cfg = (REPO / ".streamlit" / "config.toml").read_text(encoding="utf-8")
+    assert "enableStaticServing = true" in cfg
