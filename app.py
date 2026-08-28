@@ -35,6 +35,7 @@ st.set_page_config(page_title="TRIGGER — who does the heat plan miss?",
                    page_icon="🌡", layout="wide",
                    initial_sidebar_state="expanded")
 ui.style()
+ui.theme("home")
 
 st.markdown("""
 <style>

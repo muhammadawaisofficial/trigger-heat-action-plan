@@ -27,6 +27,7 @@ import ui  # noqa: E402
 st.set_page_config(page_title="TRIGGER — Heat Waves", page_icon="🌡",
                    layout="wide")
 ui.style()
+ui.theme("heat")
 
 city_name, city = ui.city_picker("hw_city")
 guide = ui.guidance()

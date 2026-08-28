@@ -230,3 +230,41 @@ def test_page_list_points_at_files_that_exist():
     for path, label, icon in _ui.PAGES:
         assert (REPO / path).exists(), path
         assert label and icon
+
+
+# ------------------------------------------------------------- page identity
+def test_every_page_declares_a_theme():
+    """A page with no accent falls back to the home red and loses its identity."""
+    import ui as _ui
+    expect = {"app.py": "home", "pages/1_Heat_Waves.py": "heat",
+              "pages/2_Data_Centre_Siting.py": "siting",
+              "pages/3_Urban_Planning.py": "planning",
+              "pages/4_Methods_and_Evidence.py": "methods"}
+    for path, key in expect.items():
+        src = (REPO / path).read_text(encoding="utf-8")
+        assert f'ui.theme("{key}")' in src, path
+        assert key in _ui.PAGE_THEME
+
+
+def test_page_accents_do_not_collide_with_chart_colours():
+    """Chrome tint must never equal a data colour.
+
+    If a page accent matched a series colour, the same hue would mean "you are
+    on this page" in one place and a measured value in another.
+    """
+    import charts
+    import ui as _ui
+    data_colours = {charts.ACCENT.lower(), charts.MUTED.lower(),
+                    *(c.lower() for c in charts.HEAT)}
+    for key, t in _ui.PAGE_THEME.items():
+        if key == "home":
+            continue  # home shares the brand red by design
+        assert t["accent"].lower() not in data_colours, key
+
+
+def test_every_theme_is_a_full_hex_pair():
+    import ui as _ui
+    import re
+    for key, t in _ui.PAGE_THEME.items():
+        for slot in ("accent", "glow"):
+            assert re.fullmatch(r"#[0-9a-fA-F]{6}", t[slot]), (key, slot)

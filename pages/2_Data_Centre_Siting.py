@@ -20,6 +20,7 @@ from siting import compare, rank  # noqa: E402
 st.set_page_config(page_title="TRIGGER — Data Centre Siting", page_icon="🌡",
                    layout="wide")
 ui.style()
+ui.theme("siting")
 
 national = ui.results("national.json")
 ui.masthead("Data centre siting",

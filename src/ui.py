@@ -92,14 +92,26 @@ CSS = """
      undifferentiated column. */
   hr, [data-testid="stDivider"] { margin:2.1rem 0 1.7rem !important; }
 
-  /* ---------- top navigation ---------- */
-  [data-testid="stPageLink"] a { border:1px solid #e7e5e4; border-radius:10px;
-    padding:.5rem .7rem; background:#fff; font-size:.84rem; font-weight:600;
-    color:#52525b; justify-content:center; transition:all .14s;
-    box-shadow:0 1px 2px rgba(24,24,27,.04); }
-  [data-testid="stPageLink"] a:hover { border-color:#b2182b; color:#b2182b;
-    box-shadow:0 2px 8px -2px rgba(178,24,43,.25); }
-  [data-testid="stPageLink"] a p { font-weight:600 !important; }
+  /* ---------- the navbar ---------- */
+  /* Masthead and nav are one object. Previously they were two strips with a
+     gap, which read as a header and then some buttons rather than as a bar. */
+  .tg-mast { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;
+    padding:.85rem 1.1rem .8rem; margin-bottom:0;
+    background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+    border:1px solid #ececef; border-bottom:none;
+    border-radius:14px 14px 0 0; }
+  .tg-navwrap { background:rgba(255,255,255,.92); border:1px solid #ececef;
+    border-top:none; border-radius:0 0 14px 14px; padding:.15rem .6rem .6rem;
+    margin-bottom:1.6rem;
+    box-shadow:0 1px 2px rgba(24,24,27,.05), 0 10px 26px -18px rgba(24,24,27,.3); }
+
+  [data-testid="stHorizontalBlock"]:has([data-testid="stPageLink"]) {
+    gap:.4rem !important; }
+  [data-testid="stPageLink"] a { border:1px solid transparent; border-radius:9px;
+    padding:.48rem .6rem; background:transparent; font-size:.83rem;
+    font-weight:600; color:#6b7280; justify-content:center; transition:all .14s; }
+  [data-testid="stPageLink"] a:hover { background:#f4f4f5; }
+  [data-testid="stPageLink"] a p { font-weight:600 !important; font-size:.83rem; }
 
   /* ---------- pipeline ---------- */
   .tg-flow { display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center;
@@ -253,6 +265,7 @@ def topnav() -> None:
     a page file is executed on its own, so a failure falls back to nothing
     rather than taking the page down with it.
     """
+    st.markdown('<div class="tg-navwrap">', unsafe_allow_html=True)
     try:
         cols = st.columns(len(PAGES))
         for col, (path, label, icon) in zip(cols, PAGES):
@@ -261,6 +274,7 @@ def topnav() -> None:
                              use_container_width=True)
     except Exception:  # noqa: BLE001 - navigation is chrome, never fatal
         pass
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def guidance() -> dict:
@@ -286,3 +300,58 @@ def tier_for(overnight_low_f: float | None, daily_high_f: float | None = None) -
         if lo_ok or hi_ok:
             chosen = lv
     return chosen
+
+
+# --------------------------------------------------------------- page themes
+# Each page carries its own accent so a reader always knows where they are
+# without reading the title. This is CHROME ONLY. Chart colour comes from
+# src/charts.py, where the palette is validated against CVD and contrast floors,
+# and a page tint must never leak into a data encoding -- otherwise the same hue
+# would mean "you are on the siting page" in one place and a measured value in
+# another, which is the fastest way to make a chart lie.
+PAGE_THEME = {
+    "home":     {"accent": "#b2182b", "glow": "#ffe6e3", "file": "app"},
+    "heat":     {"accent": "#c2410c", "glow": "#ffeadf", "file": "1_Heat_Waves"},
+    "siting":   {"accent": "#1d6a96", "glow": "#e3f1f9", "file": "2_Data_Centre_Siting"},
+    "planning": {"accent": "#2d6a4f", "glow": "#e4f2ea", "file": "3_Urban_Planning"},
+    "methods":  {"accent": "#4a4458", "glow": "#eeedf3", "file": "4_Methods_and_Evidence"},
+}
+
+
+def theme(page: str) -> None:
+    """Tint the page's chrome, and lay a soft wash behind it.
+
+    Flat white against flat white is what made the pages read as unfinished.
+    Two low-opacity radial washes in the page's own accent give the content
+    something to sit on without competing with any chart.
+    """
+    t = PAGE_THEME.get(page, PAGE_THEME["home"])
+    a, g = t["accent"], t["glow"]
+    css = """
+<style>
+  .stApp { background:
+      radial-gradient(1100px 480px at 10%% -8%%, %(g)s 0%%, transparent 60%%),
+      radial-gradient(900px 420px at 95%% 0%%, %(g)s 0%%, transparent 55%%),
+      linear-gradient(180deg,#fcfcfd 0%%,#f6f6f8 100%%); }
+  .tg-q, .tg-kicker { color:%(a)s !important; }
+  .tg-step-n, .tg-rank { background:%(a)s !important; }
+  .tg-pill { background:%(a)s !important; }
+  [data-testid="stMetric"]::before {
+      background:linear-gradient(90deg,%(a)s,%(a)s55) !important; }
+  .tg-quote { border-left-color:%(a)s !important; }
+  .tg-vs-mid { color:%(a)s !important; }
+  .stTabs [aria-selected="true"] { color:%(a)s !important; background:%(g)s !important; }
+  .tg-next .tg-card:hover { border-color:%(a)s !important; }
+  .tg-hero { background:
+      radial-gradient(ellipse 70%% 120%% at 50%% -10%%, %(g)s 0%%, transparent 65%%),
+      linear-gradient(180deg,#fff,#fff) !important;
+      border-color:%(a)s33 !important;
+      box-shadow:0 2px 4px %(a)s0d, 0 18px 40px -24px %(a)s59 !important; }
+  .tg-hero::before { background:linear-gradient(90deg,%(a)s,%(a)saa,%(a)s44) !important; }
+  .tg-num { color:%(a)s !important; }
+  [data-testid="stPageLink"] a:hover { border-color:%(a)s !important; color:%(a)s !important; }
+  a[href$="/%(f)s"] { background:%(a)s !important; border-color:%(a)s !important; }
+  a[href$="/%(f)s"] p, a[href$="/%(f)s"] span { color:#fff !important; }
+</style>
+""" % {"a": a, "g": g, "f": t["file"]}
+    st.markdown(css, unsafe_allow_html=True)

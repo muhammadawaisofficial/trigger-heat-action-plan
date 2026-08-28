@@ -23,6 +23,7 @@ import ui  # noqa: E402
 st.set_page_config(page_title="TRIGGER — Urban Planning", page_icon="🌡",
                    layout="wide")
 ui.style()
+ui.theme("planning")
 
 city_name, city = ui.city_picker("up_city")
 national = ui.results("national.json")

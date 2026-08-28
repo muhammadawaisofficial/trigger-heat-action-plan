@@ -44,6 +44,7 @@ st.set_page_config(page_title="TRIGGER — Methods & Evidence",
 # on every page. Defining it per page is how two pages drift into looking like
 # two products.
 ui.style()
+ui.theme("methods")
 
 
 # ------------------------------------------------------------------- cities
