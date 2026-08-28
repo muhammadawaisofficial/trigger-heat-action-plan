@@ -1,174 +1,158 @@
-# Video script — 2:30
+# Video script — 2:40
 
-Rewritten after the dwell-time retraction. **The previous version opened on a
-framing we withdrew and quoted numbers that no longer stand.** Every figure below
-is checked against `verify_all.py` output as of commit `5fa7af3`.
+Rewritten for the five-page app. **The previous version described a single-page
+layout that no longer exists** and opened by scrolling to a hero number that is
+now the *second* thing on the page, after the problem it answers.
 
-Record with the app **already loaded** and a terminal ready. **Never call the API
-live** — polling takes minutes and will look broken on camera.
+Every figure below is produced by `python run_demo.py` and `python verify_all.py`.
+Check them the morning you record; if one has moved, change the script, not the
+number.
 
-Two windows open before you start:
-- Browser: `streamlit run app.py`, scrolled to the top so the hero number and the
-  silent-zones map are both in frame
-- Terminal: at the repo root, ready to run `python run_demo.py`
+## Before you hit record
 
----
+Two windows, both prepared:
 
-## 0:00 – 0:20 · The number, on the map
+- **Browser** — the deployed app, or `streamlit run app.py`. Open every page once
+  first so nothing renders cold on camera. Start on the home page, scrolled to top.
+- **Terminal** — at the repo root, cleared, ready to run `python run_demo.py`.
 
-**Screen:** the app at the top. The big red number and the silent-zones map are
-both visible without scrolling.
+**Never call the API live.** Polling takes minutes and will look broken.
 
-> "Phoenix has a Heat Response Plan. It's a legal document — twenty-three
-> actions, named departments, numeric temperature thresholds."
->
-> **[point at the map — the ten red villages]**
->
-> "**One point one eight million people. Seventy-two percent of Phoenix.** They
-> live in the ten of fifteen urban villages that met the City's own
-> overnight-heat benchmark — on nights the citywide reading never fired."
+Close the sidebar before recording — the in-page nav strip is enough, and a
+closed sidebar gives the charts more width.
 
 ---
 
-## 0:20 – 0:50 · One station, one thousand square miles
+## 0:00 – 0:25 · The number first
 
-**Screen:** zoom the hero map until the Sky Harbor plane marker is centred.
+**Screen:** home page, top. Scroll immediately to the big red number.
 
-> "That citywide reading comes from one weather station. Here, at the airport.
-> **One number for one thousand and fifty-three square miles.**"
+> "One-point-one-eight million people. Seventy-two percent of Phoenix.
 >
-> "And the City already knows heat isn't one number. Page four of their own plan
-> says neighbourhoods differ by **ten degrees or more**. We measured twenty-one
-> degrees overnight."
->
-> "Page nine says **sixty-three percent of heat deaths happen on days no warning
-> fires.** The plan is good. The sensor is in the wrong place."
+> Those are the residents who live in a neighbourhood that got hot enough to
+> trigger the city's Heat Action Plan — on nights the city's own reading never
+> did. So the plan stayed off."
+
+**Pause on the number for a full beat before moving.** This is the 40% of the
+score; do not rush past it to get to the architecture.
 
 ---
 
-## 0:50 – 1:30 · Compiling a clause, with its receipt
+## 0:25 – 0:50 · Why it happens
 
-**Screen:** scroll to "Explore the result", Mission 4 — the clause inventory.
-Click into a clause so the verbatim quote and the page link are visible.
+**Screen:** scroll up to the "What the plan sees / What people live in" panel.
 
-> "We didn't hardcode those rules. We compiled them out of the published PDF."
+> "A Heat Action Plan is a legal document. Twenty-three actions, named
+> departments, numeric thresholds. Open cooling centres at ninety degrees
+> overnight.
 >
-> **[point at the source quote and the page link]**
->
-> "Every clause carries a word-for-word quote and a page number. And here's the
-> part that matters — **if that quote isn't found on that page, the clause is
-> thrown away automatically.** A model that invents a citation produces nothing,
-> not a wrong answer."
->
-> "On the free Gemini tier that's an **F1 of 0.962**, with a hundred percent
-> quote-verification rate. Though I'll come back to what that score doesn't
-> cover."
->
-> "Compiling the whole document also found something we weren't looking for.
-> **Twenty of the twenty-three actions aren't conditioned on heat at all** —
-> they run on the calendar. Of the two that do respond to temperature, both fire
-> citywide."
+> The whole thing is switched on and off by **one number** — one reading, from
+> one weather station at the airport. But heat isn't one number."
 
 ---
 
-## 1:30 – 2:00 · The lead time, and the replication
+## 0:50 – 1:15 · The proof, in one chart
 
-**Screen:** Mission 1 for the worst day, then Mission 3 for the lead-time view.
+**Screen:** the gap chart. Let it fill the frame.
 
-> "Across the study week: **twenty zone-days** where a neighbourhood met the
-> condition and the city stayed quiet. Median lead time, **four days.**"
+> "Here is that night, neighbourhood by neighbourhood.
 >
-> "On the eighth of August the citywide average overnight low read **eighty-nine
-> point nine.** The City's benchmark is ninety. One tenth of a degree. Nothing
-> fired — and ten villages were above it."
+> The dashed line is the threshold the plan names. The solid line is the single
+> citywide reading. **The solid line sits below the dashed one — so the plan
+> stayed off.**
 >
-> **[switch to the terminal, run `python run_demo.py`, let the replication table
-> land]**
->
-> "And it isn't one lucky week. We re-ran the identical pipeline on **live data
-> from August 2026** — a year later, data the analysis had never seen. Same
-> pattern: **nine villages, nine hundred and fifty-eight thousand people**, and
-> the same near-miss signature — eighty-nine point four against a ninety-degree
-> threshold."
+> And these ten bars are already above it."
+
+**[trace the red bars crossing the dashed line with the cursor]**
+
+> "One number cannot be above and below the same line at once. That is the
+> entire failure, in one picture."
 
 ---
 
-## 2:00 – 2:20 · What we got wrong
+## 1:15 – 1:40 · Why you can believe it
 
-**Screen:** the app's "What we retracted" tab. Hold on it — do not rush this.
+**Screen:** Methods & evidence page, clause provenance panel with a quote visible.
 
-> "One more thing, and it's the part I'd want to see in someone else's
-> submission."
+> "We don't paraphrase the plan. We compile it. Every rule carries the verbatim
+> sentence and the page it came from, so any number here walks back to the
+> document.
 >
-> "We had a second headline. We measured that adding a **duration requirement**
-> to the plan's existing hundred-and-five-degree threshold would restore its
-> ability to target — and then we retracted it."
->
-> "Two reasons. The analytic we used returns a **total** of hot hours, but a
-> duration clause describes a **continuous spell** — wrong tool for the
-> question. And when we switched to the right one, it returned runs of
-> twenty-six hours inside a single day, and negative runs. Impossible values."
->
-> "So **FortyGuard has no trustworthy duration analytic at city scale.** We
-> published that as a negative finding instead of deleting it — and our
-> verification script now asserts that the broken result *stays* broken, so the
-> retraction can't quietly go stale."
->
-> "That's also why I flagged the F1 score. **Our compiler missed the very clause
-> this headline rests on.** The published analysis runs on a hand-checked set. We
-> report the compiler's accuracy; we don't rely on it."
+> The language model extracts and narrates. It never decides. Every
+> fired/not-fired call is a plain numeric comparison in Python."
+
+**Screen:** switch to the terminal. Run `python run_demo.py`.
+
+> "No API key. Runs offline from a committed cache. One command, and you get the
+> same number I just showed you."
+
+**Let the output land on screen.** Reproducibility is the 35%.
 
 ---
 
-## 2:20 – 2:30 · Close
+## 1:40 – 2:05 · It is not one clause, and not one city
 
-**Screen:** the terminal, `run_demo.py` output still on screen.
+**Screen:** Heat waves page, the threshold ladder chart.
 
-> "Everything reproduces offline. Clone it, no API key, one command."
+> "Same week, same measurements, same neighbourhoods — detected against each
+> threshold in turn. At ninety degrees this week is ten heat waves covering
+> 1.18 million residents. At a hundred and ten, it's zero.
 >
-> "Change the PDF, the boundaries and the bounding box, and it runs on any US
-> city. The plan is fine. It's being executed with the wrong sensor — and now
-> that gap has a number."
+> Nothing about the weather changes down that table. Only the number written in
+> the plan changes."
+
+**Screen:** switch the city selector to New York.
+
+> "Same pipeline, unchanged, on New York's plan and New York's districts. The
+> finding reproduces."
 
 ---
 
-## Recording notes
+## 2:05 – 2:25 · What else the same measurement answers
 
-- **The number must land inside the first twenty seconds.** Non-negotiable.
-- Say **"proxy"** or **"lower bound"** whenever the baseline comes up. An
-  engineer judge who catches an overclaim discounts everything else you said.
-- **Give the retraction its full twenty seconds.** It is the strongest
-  credibility signal in the video and the thing almost no other entrant will
-  have. Do not apologise through it — deliver it as a result.
-- The strongest single shot is the terminal printing the headline with no key
-  set. Hold on it.
-- Rehearse three times, record the fourth.
-- Under three minutes. If over, cut from 0:50–1:30 — never from the number and
-  never from the retraction.
+**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell.
+Move quickly — these are breadth, not the argument.
 
-## Numbers to get right
+> "The same hyperlocal layer answers two more questions. Where a data centre
+> should go — measured free-cooling hours and wet-bulb across thirty US metros,
+> where the places evaporative cooling works best are exactly the places that
+> can least spare the water.
+>
+> And how much tree canopy, and where — a measured thermal gap joined to
+> published cooling effect sizes, so a recommendation carries a magnitude."
 
-| | |
+---
+
+## 2:25 – 2:40 · The honest close
+
+**Screen:** back to the home page, the caveat expander open.
+
+> "One caveat we put in the interface, not the footnotes. Our citywide
+> comparator is the average across the whole city — a **proxy** for a station
+> feed, not a real one. It's a *generous* stand-in: a single real sensor would
+> do worse.
+>
+> So 1.18 million is a **lower bound**."
+
+**End on the number.**
+
+---
+
+## Figures to re-check the morning you record
+
+| Claim | Source |
 |---|---|
-| People in silent zones | 1,184,971 (72% of Phoenix) |
-| Silent zones | 10 of 15 urban villages |
-| Silent zone-days | 20 |
-| Median lead time | 4 days |
-| Worst day | 8 Aug 2025 — proxy 89.9 °F vs 90 °F threshold |
-| False-calm days | 3 of 7 |
-| Calendar-activated actions | 20 of 23 |
-| Compiler F1 | 0.962, free Gemini tier, 100% quote verification |
-| Plan's own claim vs measured | 10 °F stated, 21.2 °F measured overnight |
-| Replication (live 2026) | 9 villages, 958,205 people, proxy 89.4 °F |
-| AOI | 1,053 mi², 272,917 tiles/day at 100 m |
+| 1,184,971 · 72% of Phoenix | `run_demo.py` |
+| 10 of 15 urban villages | `run_demo.py` |
+| 90 °F → 10 waves / 110 °F → 0 | Heat waves page, threshold ladder |
+| New York replication | `data/results/nyc/` |
+| 30 metros, wet-bulb measured | `data/results/wetbulb.json` |
 
-## Do NOT say — retracted or superseded
+## Things not to say
 
-| Dead figure | Why |
-|---|---|
-| ~~0.090 → 0.974 bits~~ | Retracted. Derived from a smoothed field, and from the wrong analytic. |
-| ~~"a dwell requirement recovers targeting"~~ | Retracted — no trustworthy duration analytic at city scale. |
-| ~~"1 → 251 distinct values"~~ | A 2 km box artefact, not a citywide finding. |
-| ~~"comparable to the San Jose sample"~~ | That reference cannot be sourced. Make no comparison. |
-| ~~"the plan has 8 strategies"~~ | It has 6. |
-| ~~"tcm returns °F"~~ | It returns °C. |
+- Do not call the citywide comparator a station feed. It is a proxy, always.
+- Do not say the app predicts heat waves. It detects them in measured data;
+  there is no forecast horizon in the API beyond about twelve hours.
+- Do not claim the national panel is national coverage. It is 30 metros,
+  sampled identically — say "panel", not "grid".
+- Do not mention the dwell-time figures. They were retracted.

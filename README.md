@@ -409,7 +409,11 @@ Phoenix 2026 Heat Response Plan (PDF, 23 pages)
         │
    [D] BRIEF      src/brief.py      ranked actions; every number in generated
         │                           prose verified against computed facts
-                  app.py            map, clause table, click-through to source page
+                  app.py            landing page: the problem, the number, the
+        │                           map, tonight's brief
+                  pages/            heat waves · siting · urban planning ·
+                                    methods & evidence (clause explorer,
+                                    provenance, replication, retractions)
 ```
 
 **The language model decides nothing.** It extracts structure from the PDF and
@@ -630,7 +634,7 @@ python eval_compiler.py      # compiler precision / recall / F1
 python build_golden.py       # re-verify all 29 quotes against the PDF
 python make_report.py        # regenerate the standalone research report
 python make_brief.py         # regenerate the ranked action brief
-streamlit run app.py         # map, clause table, provenance
+streamlit run app.py         # the app: 5 pages, sidebar or top-strip nav
 ```
 
 No API key is needed for any of these. To re-fetch from the API instead, set
@@ -776,6 +780,13 @@ still true.
 ---
 
 ## The four pages
+
+> **A note on wording.** This README says **silent zone** — the term the code and
+> the schema use. The interface says **missed**, because "silent zone" is our
+> vocabulary and means nothing to someone reading the page for the first time.
+> They are the same set, computed the same way: a zone that met a clause's
+> condition on a day the citywide proxy did not fire.
+
 
 The compiler and the divergence measurement are the project. The other three
 pages apply the same discipline — measure at 100 m, state what is measured and
