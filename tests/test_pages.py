@@ -211,3 +211,22 @@ def test_charts_survive_empty_input():
     assert charts.wave_runs([]) is not None
     assert charts.rank_bar(pd.DataFrame(), "v", "l", "t") is not None
     assert charts.spread_dumbbell(pd.DataFrame(), "l", "lo", "hi") is not None
+
+
+def test_navigation_does_not_depend_on_the_sidebar():
+    """Every page must offer a way off it that a collapsed sidebar cannot hide.
+
+    Streamlit's own multipage nav lives in the sidebar, and the sidebar can be
+    closed -- stranding a reader who closed it. ui.topnav() puts the same links
+    in the page body; this pins that every page calls it.
+    """
+    for page, *_ in __import__("ui").PAGES:
+        src = (REPO / page).read_text(encoding="utf-8")
+        assert "ui.topnav()" in src, f"{page} has no in-page navigation"
+
+
+def test_page_list_points_at_files_that_exist():
+    import ui as _ui
+    for path, label, icon in _ui.PAGES:
+        assert (REPO / path).exists(), path
+        assert label and icon

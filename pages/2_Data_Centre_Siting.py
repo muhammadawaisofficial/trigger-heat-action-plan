@@ -27,6 +27,7 @@ ui.masthead("Data centre siting",
                    "free-cooling hours measured at 100 m",
                    "ASHRAE 24 °C setpoint"] if national else [],
             warn=None if national else "data not generated")
+ui.topnav()
 
 st.title("Where should a data centre go?")
 st.markdown(

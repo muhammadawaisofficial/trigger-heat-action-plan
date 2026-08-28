@@ -122,6 +122,19 @@ for _ft in geo.get("features", []):
             _walk(_x)
     _walk(_ft["geometry"]["coordinates"])
 
+ui.masthead("Methods & evidence",
+            pills=[CITY["short"], "clause-level detail",
+                   "replication · API findings · retractions"])
+ui.topnav()
+
+st.title("How the number was computed, and what would falsify it")
+st.markdown(
+    "The landing page answers *what did you find*. This page answers **how, "
+    "exactly** — every rule with the page and sentence it came from, the map at "
+    "clause resolution, the New York replication, what we measured about the "
+    "API, and the claims we withdrew. It is deliberately dense.")
+
+
 
 
 # Every other heat product alerts on temperature. "It is 108 degrees in your
@@ -172,6 +185,7 @@ else:
                 f"<b style='font-size:1.08rem'>{_a.zone_name}</b>"
                 f"<span style='color:#71717a'> · {_a.day}{_who}</span>",
                 unsafe_allow_html=True)
+
             _x, _y = st.columns([3, 2])
             _x.markdown(
                 f"Reached **{_a.measured_f:.1f} °F** against the "

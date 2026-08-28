@@ -108,6 +108,7 @@ total_pop = summary.get("population_total")
 ui.masthead("who does the heat plan miss?",
             pills=[CITY["short"], f"{len(res['zones'])} {CITY['unit']}s",
                    f"{CITY['tiles']} tiles/day at 100 m"])
+ui.topnav()
 
 # ═══════════════════════════════════════════════════ 1 · WHAT IS WRONG
 st.markdown('<p class="tg-q">1 — The problem</p>', unsafe_allow_html=True)

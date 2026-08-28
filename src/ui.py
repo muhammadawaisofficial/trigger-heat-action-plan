@@ -92,6 +92,15 @@ CSS = """
      undifferentiated column. */
   hr, [data-testid="stDivider"] { margin:2.1rem 0 1.7rem !important; }
 
+  /* ---------- top navigation ---------- */
+  [data-testid="stPageLink"] a { border:1px solid #e7e5e4; border-radius:10px;
+    padding:.5rem .7rem; background:#fff; font-size:.84rem; font-weight:600;
+    color:#52525b; justify-content:center; transition:all .14s;
+    box-shadow:0 1px 2px rgba(24,24,27,.04); }
+  [data-testid="stPageLink"] a:hover { border-color:#b2182b; color:#b2182b;
+    box-shadow:0 2px 8px -2px rgba(178,24,43,.25); }
+  [data-testid="stPageLink"] a p { font-weight:600 !important; }
+
   /* ---------- pipeline ---------- */
   .tg-flow { display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center;
     padding:.9rem; background:#fafafa; border:1px solid #e4e4e7;
@@ -218,6 +227,40 @@ def city_picker(key: str = "city") -> tuple[str, dict]:
         st.caption(CITIES[name]["note"])
     return name, CITIES[name]
 
+
+
+
+#: The pages, in reading order. One list, so nav and any page index agree.
+PAGES = [
+    ("app.py", "Who does the plan miss?", "🏠"),
+    ("pages/1_Heat_Waves.py", "Heat waves", "🌡"),
+    ("pages/2_Data_Centre_Siting.py", "Data centre siting", "🏢"),
+    ("pages/3_Urban_Planning.py", "Urban planning", "🌳"),
+    ("pages/4_Methods_and_Evidence.py", "Methods & evidence", "🔬"),
+]
+
+
+def topnav() -> None:
+    """Page navigation IN THE PAGE, not only in the sidebar.
+
+    Streamlit puts multipage navigation in the sidebar, and the sidebar can be
+    collapsed -- at which point a reader who has closed it has no way to reach
+    another page short of knowing about the small reopen arrow. Navigation that
+    can be hidden by a control unrelated to navigation is not navigation, so it
+    also lives here, always visible, directly under the masthead.
+
+    st.page_link needs real page context and raises under the test harness when
+    a page file is executed on its own, so a failure falls back to nothing
+    rather than taking the page down with it.
+    """
+    try:
+        cols = st.columns(len(PAGES))
+        for col, (path, label, icon) in zip(cols, PAGES):
+            with col:
+                st.page_link(path, label=label, icon=icon,
+                             use_container_width=True)
+    except Exception:  # noqa: BLE001 - navigation is chrome, never fatal
+        pass
 
 
 def guidance() -> dict:

@@ -30,6 +30,7 @@ national = ui.results("national.json")
 ui.masthead("Urban planning",
             pills=["30 US metros", "measured gap × published effect size",
                    "intervention magnitude, not advice"])
+ui.topnav()
 
 st.title("How much intervention, and exactly where")
 st.markdown(
