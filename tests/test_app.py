@@ -27,6 +27,18 @@ def app():
 
 
 @pytest.fixture(scope="module")
+def methods():
+    """The Methods & Evidence page.
+
+    The home page was rewritten to answer "what did you find" for a reader
+    arriving cold; the clause explorer, the alert payload and the retractions
+    moved here. They are still guaranteed -- just asserted where they now live.
+    """
+    return AppTest.from_file(str(REPO / "pages" / "4_Methods_and_Evidence.py"),
+                             default_timeout=TIMEOUT).run()
+
+
+@pytest.fixture(scope="module")
 def results() -> dict:
     return json.loads(
         (REPO / "data" / "results" / "divergence.json").read_text(encoding="utf-8"))
@@ -82,24 +94,34 @@ def test_proxy_is_labelled_as_a_proxy(app):
     assert "lower bound" in text
 
 
-def test_both_maps_render(app):
-    """Hero map plus the per-clause explorer map."""
+def test_both_maps_render(app, methods):
+    """The hero map on the home page, the clause explorer on Methods."""
     assert len(app.get("iframe")) >= 1 or True  # folium mounts via components
-    # The hero legend only renders after the hero map block completes.
-    assert "Silent zone" in _all_text(app)
+    # The legend only renders once the map block completes, so it doubles as
+    # proof the map itself got that far.
+    assert "Missed" in _all_text(app)
+    assert not methods.exception, [str(e) for e in methods.exception]
 
 
-def test_retraction_is_visible(app):
-    """We publish what we withdrew. It must survive UI edits."""
-    text = _all_text(app).lower()
+def test_retraction_is_visible(methods):
+    """We publish what we withdrew. It must survive UI edits.
+
+    Asserted on Methods & Evidence, where the retraction now lives. Moving it
+    off the landing page is a presentation choice; removing it would not be,
+    which is why this test follows it rather than being deleted.
+    """
+    text = _all_text(methods).lower()
     assert "retract" in text, "the retraction disappeared from the UI"
     assert "duration analytic" in text
 
 
 def test_metrics_present(app):
-    labels = [m.label for m in app.metric]
-    assert any("silent zone" in l.lower() for l in labels)
-    assert len(labels) >= 5
+    labels = [m.label.lower() for m in app.metric]
+    # Plain-language labels: the landing page no longer says "silent zone",
+    # but it must still report how many neighbourhoods and nights were missed.
+    assert any("missed" in l for l in labels), labels
+    assert any("night" in l for l in labels), labels
+    assert len(labels) >= 4
 
 
 def test_no_placeholder_text_left(app):
@@ -163,5 +185,18 @@ def test_alert_severity_is_earned_by_population():
     assert mk(10).severity == "YELLOW"
 
 
-def test_alert_console_renders(app):
-    assert "Divergence alerts" in _all_text(app)
+def test_alert_console_renders(methods):
+    assert "Divergence alerts" in _all_text(methods)
+
+
+def test_home_page_states_the_question_in_plain_words(app):
+    """The landing page has to be legible to someone who arrives cold.
+
+    It must name the thing being measured without assuming the vocabulary --
+    a reader who has never heard "clause" or "divergence" should still be able
+    to say what the number means.
+    """
+    text = _all_text(app).lower()
+    assert "heat action plan" in text
+    assert "one number" in text or "one thermometer" in text
+    assert "lower bound" in text and "proxy" in text

@@ -1,12 +1,16 @@
-"""TRIGGER — the interface.
+"""TRIGGER — the home page, written to be understood by someone who arrives cold.
 
-Runs entirely from committed files. No API key, no network, no live calls:
+This page answers four questions in order, and nothing else:
 
-    streamlit run app.py
+    1. What is wrong?          one thermometer decides for a whole city
+    2. What did you find?      the number, in plain words
+    3. Where?                  a map you can click
+    4. So what do I do?        tonight's brief, and where to go next
 
-Four preset missions rather than an open text box, because the point of this
-tool is adjudicating a specific legal document, not answering arbitrary
-questions. Every panel traces back to a clause, a page and a verbatim sentence.
+Everything technical -- the clause explorer, provenance, the New York
+replication, the API findings, the retractions -- lives on the Methods &
+Evidence page. That separation is deliberate: a page that answers "what did you
+find" and "how exactly did you compute it" at the same time answers neither.
 """
 
 from __future__ import annotations
@@ -16,43 +20,47 @@ import sys
 from pathlib import Path
 
 import folium
-import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-import study  # noqa: E402
 import ui  # noqa: E402
 from alerts import detect, summarise  # noqa: E402
 
 REPO = Path(__file__).parent
-RESULTS = REPO / "data" / "results" / "divergence.json"
-ZONES = REPO / "data" / "zones" / "phoenix_villages_raw.geojson"
-POP = REPO / "data" / "zones" / "phoenix_villages_population.json"
 
-PROXY_LABEL = ("Citywide proxy — the area-weighted mean over the whole city AOI, "
-               "used as a stand-in for station-based sensing. **It is not a real "
-               "station feed.** A real single station is less representative than "
-               "this, so every divergence figure here is a lower bound.")
-
-st.set_page_config(page_title="TRIGGER — Heat Action Plan Compiler",
+st.set_page_config(page_title="TRIGGER — who does the heat plan miss?",
                    page_icon="🌡", layout="wide",
                    initial_sidebar_state="expanded")
-
-# --------------------------------------------------------------------- styling
-# One stylesheet for the WHOLE app, defined in src/ui.py and applied here and
-# on every page. Defining it per page is how two pages drift into looking like
-# two products.
 ui.style()
 
-
-# ------------------------------------------------------------------- cities
-# The pipeline is city-agnostic, so the interface is too. Switching cities here
-# re-renders every number on the page from that city's own committed results --
-# which is the portability claim demonstrated rather than asserted.
-
-CITIES = ui.CITIES
+st.markdown("""
+<style>
+  .tg-q { font-size:.72rem; font-weight:800; letter-spacing:.16em;
+    text-transform:uppercase; color:#b2182b; margin:0 0 .3rem; }
+  .tg-lead { font-size:clamp(1.05rem,1.7vw,1.3rem); line-height:1.65;
+    color:#27272a; }
+  .tg-lead b { color:#18181b; }
+  .tg-plain { background:#fafafa; border:1px solid #e4e4e7; border-radius:13px;
+    padding:1.1rem 1.3rem; margin:.5rem 0 1.1rem; }
+  .tg-vs { display:grid; grid-template-columns:1fr auto 1fr; gap:1rem;
+    align-items:center; margin:.6rem 0 0; }
+  .tg-vs-box { background:#fff; border:1px solid #e4e4e7; border-radius:11px;
+    padding:.9rem 1rem; }
+  .tg-vs-box h5 { margin:0 0 .3rem; font-size:.8rem; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; color:#71717a; }
+  .tg-vs-box p { margin:0; font-size:.92rem; line-height:1.55; color:#3f3f46; }
+  .tg-vs-mid { font-size:1.4rem; color:#b2182b; font-weight:800; }
+  .tg-next { display:grid; gap:.9rem;
+    grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); margin:.3rem 0 0; }
+  .tg-next a { text-decoration:none; }
+  .tg-next .tg-card { height:100%; transition:border-color .15s; }
+  .tg-next .tg-card:hover { border-color:#b2182b; }
+  @media (max-width:760px){ .tg-vs { grid-template-columns:1fr; }
+    .tg-vs-mid { text-align:center; } }
+</style>
+""", unsafe_allow_html=True)
 
 
 @st.cache_data
@@ -61,104 +69,35 @@ def load_json(path_str: str) -> dict:
     return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
 
 
-@st.cache_data
-def load_api_usage() -> dict:
-    return load_json(str(REPO / "data" / "results" / "api_usage.json"))
-
-
-AVAILABLE = {k: v for k, v in CITIES.items() if v["results"].exists()}
+AVAILABLE = {k: v for k, v in ui.CITIES.items() if v["results"].exists()}
 if not AVAILABLE:
     st.error("No results found. Run `python run_analysis.py` first.")
     st.stop()
 
 with st.sidebar:
-    st.markdown("### City")
-    city_name = st.radio(
-        "City", list(AVAILABLE.keys()), label_visibility="collapsed",
-        captions=[AVAILABLE[c]["trigger"] for c in AVAILABLE])
+    st.markdown("### Choose a city")
+    city_name = st.radio("City", list(AVAILABLE), label_visibility="collapsed",
+                         captions=[AVAILABLE[c]["trigger"] for c in AVAILABLE])
     CITY = AVAILABLE[city_name]
     st.caption(CITY["note"])
     if len(AVAILABLE) > 1:
-        st.success("Switch cities to re-run every figure on this page. Same "
-                   "pipeline, no code changes — one profile file per city.",
+        st.success("Switching city re-runs every number on this page from that "
+                   "city's own data. Same code, one profile file per city.",
                    icon="🔀")
     st.divider()
+    st.markdown("**More detail**")
+    st.page_link("pages/1_Heat_Waves.py", label="Heat waves", icon="🌡")
+    st.page_link("pages/2_Data_Centre_Siting.py", label="Data centre siting",
+                 icon="🏢")
+    st.page_link("pages/3_Urban_Planning.py", label="Urban planning", icon="🌳")
+    st.page_link("pages/4_Methods_and_Evidence.py",
+                 label="Methods & evidence", icon="🔬")
 
 res = load_json(str(CITY["results"]))
 geo = load_json(str(CITY["zones"]))
 pop = (load_json(str(CITY["pop"])) or {}).get("villages", {})
-api = load_api_usage()
-nyc = load_json(str(CITIES["New York City"]["results"]))
-clauses = {c["clause_id"]: c for c in res["clauses"]}
 summary = res["summary"]
 
-
-# --------------------------------------------------------------------- header
-
-st.markdown(
-    f"""<div class="tg-mast">
-      <span style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em">
-        TRIGGER</span>
-      <span style="color:#71717a;font-size:1.02rem">the Heat Action Plan Compiler</span>
-      <span style="flex:1"></span>
-      <span class="tg-pill">{CITY['short']}</span>
-      <span class="tg-pill ghost">{len(res['zones'])} {CITY['unit']}s</span>
-      <span class="tg-pill ghost">{CITY['tiles']} tiles/day @ 100 m</span>
-      <span class="tg-pill ghost">{CITY['aoi']} sq mi</span>
-    </div>""", unsafe_allow_html=True)
-
-
-# ============================================================ WHAT THIS IS
-# A judge lands here cold. Before any number means anything they need three
-# things: what a Heat Action Plan is, why one thermometer is a problem, and what
-# this tool actually does. Previously the page opened on a number with no
-# explanation, which is only legible to someone who already knows the project.
-
-st.markdown("""
-<div class="tg-explain">
-  <div class="tg-step">
-    <div class="tg-step-n">01</div>
-    <div>
-      <div class="tg-step-h">Cities run on heat law</div>
-      <p>Phoenix's Heat Response Plan is a <b>legal document</b> — 23 actions,
-      named departments, numeric temperature thresholds. "Open cooling centres
-      when it hits 105&nbsp;°F." Real obligations, real budgets.</p>
-    </div>
-  </div>
-  <div class="tg-step">
-    <div class="tg-step-n">02</div>
-    <div>
-      <div class="tg-step-h">It fires on one thermometer</div>
-      <p>The whole plan is triggered by <b>one reading, from one weather station
-      at the airport</b>. One number deciding for 1,053 square miles — and the
-      City's own plan says neighbourhoods differ by 10&nbsp;°F or more.</p>
-    </div>
-  </div>
-  <div class="tg-step">
-    <div class="tg-step-n">03</div>
-    <div>
-      <div class="tg-step-h">So we compiled the law and re-ran it</div>
-      <p>We turn the PDF into <b>executable rules</b> — each anchored to a
-      verbatim quote and page — then re-evaluate every clause against
-      <b>FortyGuard's 2&nbsp;m data, 272,917 tiles a day</b>, per neighbourhood.
-      Then we measure what the single reading missed.</p>
-    </div>
-  </div>
-</div>
-
-<div class="tg-flow">
-  <span class="tg-node">📄 Heat Action Plan PDF</span><span class="tg-arr">→</span>
-  <span class="tg-node">⚙️ COMPILE<small>quote + page verified</small></span><span class="tg-arr">→</span>
-  <span class="tg-node tg-node-api">🌡️ FortyGuard API<small>272,917 tiles/day</small></span><span class="tg-arr">→</span>
-  <span class="tg-node">📊 EVALUATE<small>clause × village × day</small></span><span class="tg-arr">→</span>
-  <span class="tg-node tg-node-out">🎯 THE GAP</span>
-</div>
-""", unsafe_allow_html=True)
-
-
-# ===================================================================== HERO
-# The headline number, then the map that is the headline number. Everything
-# else on this page is supporting material and sits below the divider.
 
 def zone_id_of(feature: dict) -> str:
     return str(feature["properties"].get("NAME", "")).lower().replace(" ", "_")
@@ -173,40 +112,121 @@ for _c in res["clauses"]:
 exposed = summary.get("population_exposed")
 total_pop = summary.get("population_total")
 
+ui.masthead("who does the heat plan miss?",
+            pills=[CITY["short"], f"{len(res['zones'])} {CITY['unit']}s",
+                   f"{CITY['tiles']} tiles/day at 100 m"])
+
+# ═══════════════════════════════════════════════════ 1 · WHAT IS WRONG
+st.markdown('<p class="tg-q">1 — The problem</p>', unsafe_allow_html=True)
+st.markdown(
+    f'<p class="tg-lead">{CITY["short"]} has a <b>Heat Action Plan</b>: a legal '
+    f'document that says who must do what when it gets hot enough. '
+    f'"Open cooling centres at {CITY["trigger"]}." Real duties, real budgets, '
+    f'named departments.<br><br>'
+    f'<b>The whole plan is switched on and off by one number</b> — a single '
+    f'reading, usually from the airport weather station. But heat is not one '
+    f'number. On the same night, one neighbourhood can be far hotter than '
+    f'another.</p>', unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="tg-plain"><div class="tg-vs">'
+    '<div class="tg-vs-box"><h5>What the plan sees</h5>'
+    '<p>One thermometer. One reading for the entire city. It either crosses the '
+    'threshold, or it does not.</p></div>'
+    '<div class="tg-vs-mid">vs</div>'
+    '<div class="tg-vs-box"><h5>What people live in</h5>'
+    '<p>Every neighbourhood at its own temperature, measured 2 metres above the '
+    'ground — where a body actually stands.</p></div>'
+    '</div></div>', unsafe_allow_html=True)
+
+st.markdown(
+    "**So here is the question this app answers:** on nights when the airport "
+    "reading stayed below the threshold — so the plan never switched on — were "
+    "there neighbourhoods that had *already* crossed it? And if so, **how many "
+    "people live there?**")
+
+st.divider()
+
+# ═══════════════════════════════════════════════════ 2 · WHAT WE FOUND
+st.markdown('<p class="tg-q">2 — What we found</p>', unsafe_allow_html=True)
+
 if exposed:
     st.markdown(
         f"""<div class="tg-hero">
-          <div class="tg-kicker">Measured, not modelled &middot; {summary['window'][0]} to {summary['window'][1]}</div>
+          <div class="tg-kicker">Measured, not modelled · {summary['window'][0]} to {summary['window'][1]}</div>
           <div class="tg-num">{exposed:,}</div>
           <div class="tg-sub">
-            people &mdash; <b>{exposed/total_pop:.0%} of {CITY['short']}</b> &mdash; live in the
-            <b>{len(SILENT)} of {len(res['zones'])}</b> {CITY['unit']}s that met the City's own
-            overnight-heat benchmark<br>on nights the citywide reading
-            <b>never fired</b>.
+            people — <b>{exposed / total_pop:.0%} of {CITY['short']}</b> — live in a
+            neighbourhood that <b>was hot enough to trigger the plan</b>,
+            on nights the citywide reading <b>never did</b>.<br>
+            That is <b>{len(SILENT)} of {len(res['zones'])}</b> {CITY['unit']}s.
           </div>
         </div>""", unsafe_allow_html=True)
 
-hero = folium.Map(tiles="cartodbpositron", zoom_control=True)
+k = st.columns(4)
+k[0].metric("Neighbourhoods missed", f"{summary['silent_zones']} of {len(res['zones'])}",
+            "the plan stayed off", delta_color="off")
+k[1].metric("Nights missed", summary["silent_zone_days"],
+            "neighbourhood-nights", delta_color="off")
+k[2].metric("Days the plan never fired at all",
+            f"{len(summary.get('false_calm_days', []))} of {summary['days']}",
+            "despite local conditions being met", delta_color="off")
+k[3].metric("Typical warning lost",
+            f"{summary['median_lead_days']:.0f} days"
+            if summary.get("median_lead_days") else "n/a",
+            "before the citywide trigger caught up", delta_color="off")
 
-# Fit to the villages rather than guessing a zoom: a fixed zoom_start shows
-# half of Arizona on a wide screen and buries the hero visual.
-_lats, _lons = [], []
-for _ft in geo["features"]:
-    if zone_id_of(_ft) in {z["zone_id"] for z in res["zones"]}:
-        def _walk(c):
-            if isinstance(c, (int, float)):
-                return
-            if len(c) == 2 and isinstance(c[0], (int, float)):
-                _lons.append(c[0]); _lats.append(c[1]); return
-            for _x in c:
-                _walk(_x)
-        _walk(_ft["geometry"]["coordinates"])
+with st.expander("How is this measured, and what is the comparison?"):
+    st.markdown(
+        f"We take {CITY['short']}'s **own published plan**, extract each rule "
+        f"(its threshold, who must act, which page it is on), and then test "
+        f"every rule twice against the same FortyGuard measurements:\n\n"
+        f"- **Neighbourhood by neighbourhood** — each {CITY['unit']} gets its "
+        f"own temperature, averaged over every 100 m tile that overlaps it.\n"
+        f"- **One citywide number** — the same measurements averaged over the "
+        f"whole city, standing in for the single-station reading.\n\n"
+        f"Where the first says *act* and the second says *nothing to do*, that "
+        f"is a **missed neighbourhood**. Every decision is a plain numeric "
+        f"comparison — no AI decides any of it.")
+    st.info(
+        "**One honest caveat.** Our citywide comparison is the average across "
+        "the whole city — a **proxy** for station-based sensing, not a real "
+        "feed from the airport station. That proxy is a *generous* stand-in: a "
+        "real single sensor would do worse than a citywide average. So every "
+        "number above is a **lower bound**, not an exaggeration.", icon="ℹ️")
+
+st.divider()
+
+# ═══════════════════════════════════════════════════ 3 · WHERE
+st.markdown('<p class="tg-q">3 — Where</p>', unsafe_allow_html=True)
+st.markdown(
+    f"**Red areas were missed.** Each one met the plan's condition on at least "
+    f"one night when the citywide reading did not. **Click any area** to see who "
+    f"lives there and which nights it happened.")
+
+hero = folium.Map(tiles="cartodbpositron", zoom_control=True)
+_lats: list[float] = []
+_lons: list[float] = []
+_ids = {z["zone_id"] for z in res["zones"]}
+for _ft in geo.get("features", []):
+    if zone_id_of(_ft) not in _ids:
+        continue
+
+    def _walk(c):
+        if isinstance(c, (int, float)):
+            return
+        if len(c) == 2 and isinstance(c[0], (int, float)):
+            _lons.append(c[0]); _lats.append(c[1]); return
+        for _x in c:
+            _walk(_x)
+    _walk(_ft["geometry"]["coordinates"])
 if _lats:
     hero.fit_bounds([[min(_lats), min(_lons)], [max(_lats), max(_lons)]],
                     padding=(18, 18))
-for ft in geo["features"]:
+
+for ft in geo.get("features", []):
     zid = zone_id_of(ft)
-    if zid not in {z["zone_id"] for z in res["zones"]}:
+    if zid not in _ids:
         continue
     silent = zid in SILENT
     nm = next((z["name"] for z in res["zones"] if z["zone_id"] == zid), zid)
@@ -221,20 +241,21 @@ for ft in geo["features"]:
         },
         tooltip=folium.Tooltip(
             f"<b>{nm}</b><br>"
-            + ("<span style='color:#c1121f'><b>SILENT ZONE</b></span><br>"
-               "met the benchmark on days the citywide reading did not"
-               if silent else "not silent in this window")
+            + ("<span style='color:#c1121f'><b>MISSED</b></span><br>"
+               "hot enough to trigger the plan on nights the city reading was not"
+               if silent else "covered by the citywide reading")
             + (f"<br>{p:,} people" if p else "")),
     ).add_to(hero)
 
-folium.Marker(
-    [33.4342, -112.0116],  # Sky Harbor: the station the plan is triggered from
-    tooltip=("<b>Phoenix Sky Harbor</b><br>One station. One reading for "
-             "1,053 square miles."),
-    icon=folium.Icon(color="darkblue", icon="plane", prefix="fa"),
-).add_to(hero)
+if CITY["short"] == "Phoenix":
+    folium.Marker(
+        [33.4342, -112.0116],
+        tooltip=("<b>Phoenix Sky Harbor</b><br>One station. One reading for "
+                 "1,053 square miles."),
+        icon=folium.Icon(color="darkblue", icon="plane", prefix="fa"),
+    ).add_to(hero)
 
-_click = st_folium(hero, height=560, use_container_width=True,
+_click = st_folium(hero, height=520, use_container_width=True,
                    returned_objects=["last_object_clicked_tooltip"],
                    key="hero_map")
 
@@ -252,7 +273,7 @@ if _picked:
             _c1.caption("Click any other area to compare.")
             _c2.metric("Residents", f"{_pp:,}" if _pp else "—")
             _c3.metric("Area", f"{_row.get('area_sq_mi', 0):.0f} mi²")
-            _c4.metric("Status", "SILENT" if _sil else "covered",
+            _c4.metric("Status", "MISSED" if _sil else "covered",
                        delta_color="off")
             if _sil:
                 _days = sorted({d["day"] for c in res["clauses"]
@@ -261,168 +282,51 @@ if _picked:
                                 and any(z["zone_id"] == _row["zone_id"] and z["fired"]
                                         for z in d["zones"])})
                 st.error(
-                    f"**{_row['name']} met the condition on "
-                    f"{len(_days)} day(s) when the citywide reading never "
-                    f"fired.** " + (f"Nights: {', '.join(_days)}." if _days else ""),
+                    f"**{_row['name']} was hot enough to trigger the plan on "
+                    f"{len(_days)} night(s) when the citywide reading never "
+                    f"was.** " + (f"Nights: {', '.join(_days)}." if _days else ""),
                     icon="🔴")
             else:
-                st.info(f"{_row['name']} was never silent in this window — the "
-                        f"citywide reading and this area agreed.", icon="✅")
+                st.success(f"{_row['name']} was never missed in this window — "
+                           f"the citywide reading and this area agreed.",
+                           icon="✅")
+else:
+    st.caption("👆 Click a neighbourhood on the map to see its detail.")
+
 st.markdown(
-    """<div class="tg-legend">
-      <span><span class="tg-sw" style="background:#c1121f"></span>
-        <b>Silent zone</b> &mdash; met the City's benchmark on nights the citywide
-        reading never fired</span>
-      <span><span class="tg-sw" style="background:#dfe6ec"></span>not silent
-        in this window</span>
-      <span>&#9992; Sky Harbor &mdash; the one station the plan reads</span>
-    </div>""", unsafe_allow_html=True)
-
-st.info("The comparator is a **proxy** for station-based sensing — the "
-        "area-weighted mean over the whole city — not a real station feed. It is "
-        "a *best-case* single sensor, so every figure here is a **lower bound**.",
-        icon="ℹ️")
+    '<div class="tg-legend">'
+    '<span><span class="tg-sw" style="background:#c1121f"></span>'
+    '<b>Missed</b> — met the plan\'s condition while the citywide reading stayed below it</span>'
+    '<span><span class="tg-sw" style="background:#dfe6ec"></span>covered in this window</span>'
+    '</div>', unsafe_allow_html=True)
 
 st.divider()
 
-c1, c2, c3, c4, c5 = st.columns(5)
-if summary.get("population_exposed"):
-    c1.metric("People exposed",
-              f"{summary['population_exposed']:,}",
-              f"{summary['population_exposed']/summary['population_total']:.0%} of {CITY['short']}",
-              delta_color="off")
-else:
-    c1.metric("People exposed", "n/a")
-c2.metric("Silent zones", f"{summary['silent_zones']} of {len(res['zones'])}")
-c3.metric("Silent zone-days", summary["silent_zone_days"])
-c4.metric("False-calm days",
-          f"{len(summary.get('false_calm_days', []))} of {summary['days']}")
-c5.metric("Median lead time",
-          f"{summary['median_lead_days']:.0f} d" if summary.get("median_lead_days")
-          else "n/a")
-
-st.caption(f"Study window {summary['window'][0]} to {summary['window'][1]}. "
-           f"All decisions are deterministic comparisons; no language model "
-           f"produces any number on this page.")
-
-
-# ======================================================= THE ALERT CONSOLE
-# Every other heat product alerts on temperature. "It is 108 degrees in your
-# neighbourhood" is true, and an emergency manager already knows it. These
-# alerts fire on an UNEXECUTED LEGAL OBLIGATION instead: a clause of the city's
-# own plan was met locally while the instrument that triggers it stayed quiet.
-# That is why each one can name a department, a page and a verbatim sentence,
-# which no temperature alert can do.
-#
-# Severity tiers follow the alerting literature: red alerts are read as credible
-# and drive behaviour while yellow draws the weakest response, so a red tier is
-# earned by measured exposure and kept rare enough to stay credible.
-
-_alerts = detect(res, pop, city=city_name, plan_title=CITY["plan"],
-                 plan_url=CITY["plan_url"])
-_asum = summarise(_alerts)
-
-st.markdown("### Divergence alerts")
-st.caption(
-    "Fired when a clause was met in an area while the citywide reading stayed "
-    "below its threshold: an obligation incurred locally that the city's own "
-    "trigger never registered. Detection is a deterministic comparison. No "
-    "language model decides whether to alert, at what severity, or about whom.")
-
-if not _alerts:
-    st.success(f"No divergence alerts for {CITY['short']} in this window.",
-               icon="✅")
-else:
-    _k1, _k2, _k3, _k4 = st.columns(4)
-    _k1.metric("Alerts", _asum["alerts"])
-    _k2.metric("Red", _asum["red"], "100k+ residents", delta_color="off")
-    _k3.metric("Amber", _asum["amber"], "25k+ residents", delta_color="off")
-    _k4.metric("People covered", f"{_asum['population_exposed']:,}")
-
-    _pick = st.selectbox("Filter by night", ["All nights"] + _asum["days"],
-                         key="alert_day")
-    _shown = [a for a in _alerts if _pick == "All nights" or a.day == _pick]
-
-    for _a in _shown[:6]:
-        _colour = {"RED": "#b2182b", "AMBER": "#c2711c",
-                   "YELLOW": "#8a8a2f"}[_a.severity]
-        _who = f" · {_a.population:,} residents" if _a.population else ""
-        with st.container(border=True):
-            st.markdown(
-                f"<span style='background:{_colour};color:#fff;font-weight:800;"
-                f"font-size:0.72rem;letter-spacing:0.08em;padding:0.2rem 0.55rem;"
-                f"border-radius:5px'>{_a.severity}</span> &nbsp;"
-                f"<b style='font-size:1.08rem'>{_a.zone_name}</b>"
-                f"<span style='color:#71717a'> · {_a.day}{_who}</span>",
-                unsafe_allow_html=True)
-            _x, _y = st.columns([3, 2])
-            _x.markdown(
-                f"Reached **{_a.measured_f:.1f} °F** against the "
-                f"**{_a.threshold_f:g} °F** threshold "
-                f"(**{_a.margin_f:+.1f} °F** over). The citywide reading was "
-                f"**{_a.proxy_f:.1f} °F**, "
-                f"{_a.proxy_shortfall_f:.1f} °F *below* the line, so "
-                f"**nothing fired**.")
-            _y.markdown(
-                "**Responsible**  \n"
-                + (", ".join(_a.actor) or "—")
-                + "  \n\n**Authority**  \n"
-                + f"`{_a.clause_id}` · "
-                + f"[page {_a.source_page}]({_a.plan_url}#page={_a.source_page})")
-            with st.expander("Machine-readable payload"):
-                st.json(_a.to_dict())
-
-    if len(_shown) > 6:
-        st.caption(f"Showing 6 of {len(_shown)} for this filter.")
-
-    st.download_button(
-        "Download every alert as JSON",
-        json.dumps([a.to_dict() for a in _alerts], indent=2),
-        file_name=f"trigger_alerts_{CITY['short'].lower().replace(' ', '_')}.json",
-        mime="application/json")
-
-st.divider()
-
-
-
-# ================================================== THE OPERATIONAL ANSWER
-# Everything above measures a gap. This answers the question a heat officer
-# actually has at 4pm: given finite crews, where do they go first, on whose
-# authority, and what do I cite when someone asks why. Ranked deterministically
-# by exposed population-days; every line traces to a clause, a page and a named
-# department.
-
-st.markdown("### Tonight's brief — where the crews go first")
-st.caption("Ranked by residents × nights the condition was met while the "
-           "citywide reading stayed silent. Deterministic ranking; no language "
-           "model orders this list.")
+# ═══════════════════════════════════════════════════ 4 · SO WHAT DO I DO
+st.markdown('<p class="tg-q">4 — What to do tonight</p>', unsafe_allow_html=True)
+st.markdown(
+    "If you had to send crews somewhere first, this is the order — **most "
+    "people, most nights missed, first**. Every line names the rule it comes "
+    "from, the page of the plan it is on, and the department that owns it.")
 
 _rank = []
 for _c in res["clauses"]:
-    _pop = pop or {}
     for _z in sorted(_c.get("silent_zones") or []):
         _n = next((x["name"] for x in res["zones"] if x["zone_id"] == _z), _z)
-        _p = _pop.get(_z, {}).get("population") or 0
+        _p = (pop or {}).get(_z, {}).get("population") or 0
         _dets = _c.get("determinations", [])
         _silent_days = [d["day"] for d in _dets
                         if not d["proxy"]["fired"]
-                        and any(zz["zone_id"] == _z and zz["fired"] for zz in d["zones"])]
+                        and any(zz["zone_id"] == _z and zz["fired"]
+                                for zz in d["zones"])]
         if not _silent_days:
             continue
-        _worst = max(
-            ((d["day"], zz["value"]) for d in _dets for zz in d["zones"]
-             if zz["zone_id"] == _z and zz["fired"]),
-            key=lambda t: t[1], default=(None, None))
         _rank.append({
             "zone": _n, "pop": _p, "nights": len(_silent_days),
             "severity": _p * len(_silent_days),
             "clause": _c["clause_id"], "page": _c["source_page"],
             "actor": ", ".join(_c.get("actor") or []) or "—",
-            "threshold_f": _c["threshold_f"],
-            "worst_day": _worst[0],
-            "worst_val": (_worst[1] * 9 / 5 + 32) if _worst[1] is not None else None,
-            "quote": _c["source_text"],
-            "days": _silent_days,
+            "threshold_f": _c["threshold_f"], "quote": _c["source_text"],
         })
 _rank.sort(key=lambda r: -r["severity"])
 
@@ -432,537 +336,65 @@ for _i, _r in enumerate(_rank[:3], 1):
         with _a:
             st.markdown(
                 f"<span class='tg-rank'>{_i}</span> "
-                f"<span style='font-size:1.3rem;font-weight:700'>{_r['zone']}</span>"
-                f"<span style='color:#71717a'> &nbsp;·&nbsp; {_r['pop']:,} residents"
-                f"</span>", unsafe_allow_html=True)
+                f"<span style='font-size:1.25rem;font-weight:700'>{_r['zone']}</span>"
+                f"<span style='color:#71717a'> &nbsp;·&nbsp; {_r['pop']:,} residents</span>",
+                unsafe_allow_html=True)
             st.markdown(
-                f"Met the **{_r['threshold_f']:g} °F** condition on "
-                f"**{_r['nights']} night{'s' if _r['nights'] != 1 else ''}** when the "
-                f"citywide reading never fired"
-                + (f", peaking at **{_r['worst_val']:.1f} °F** on {_r['worst_day']}."
-                   if _r["worst_val"] else ".")
-                + f"<br><span style='color:#52525b'>Nights: "
-                  f"{', '.join(_r['days'])}</span>", unsafe_allow_html=True)
-            st.markdown(f"<div class='tg-quote' style='margin-top:0.5rem;"
-                        f"font-size:0.88rem'>&ldquo;{_r['quote']}&rdquo;</div>",
-                        unsafe_allow_html=True)
+                f"Was hot enough to trigger the **{_r['threshold_f']:g} °F** rule "
+                f"on **{_r['nights']} night{'s' if _r['nights'] != 1 else ''}** "
+                f"when the citywide reading stayed below it.")
         with _b:
-            st.markdown(
-                f"**Responsible**\n\n{_r['actor']}\n\n"
-                f"**Authority**\n\n`{_r['clause']}`, page {_r['page']} of the "
-                f"published plan\n\n"
-                f"[Open the source page]({CITY['plan_url']}#page={_r['page']})")
+            st.markdown(f"**Who must act:** {_r['actor']}")
+            st.caption(f"{_r['clause']} · plan page {_r['page']}")
+        with st.expander("The exact sentence in the plan"):
+            st.markdown(f'<div class="tg-quote">"{_r["quote"]}"</div>',
+                        unsafe_allow_html=True)
+            st.caption(f"Source: {CITY['plan']}, page {_r['page']}. "
+                       f"[Open the plan]({CITY['plan_url']})")
 
 if len(_rank) > 3:
-    with st.expander(f"The remaining {len(_rank) - 3} zone-clause pairs, same ranking"):
-        st.dataframe(pd.DataFrame([{
-            "rank": i, "zone": r["zone"], "residents": r["pop"],
-            "silent nights": r["nights"], "clause": r["clause"],
-            "page": r["page"], "responsible": r["actor"],
-        } for i, r in enumerate(_rank[3:], 4)]), hide_index=True,
-        use_container_width=True)
+    with st.expander(f"The remaining {len(_rank) - 3} — same ranking"):
+        for _r in _rank[3:]:
+            st.markdown(
+                f"**{_r['zone']}** · {_r['pop']:,} residents · "
+                f"{_r['nights']} night(s) · {_r['clause']} (p. {_r['page']}) · "
+                f"{_r['actor']}")
+
+_alerts = detect(res, pop, city=city_name, plan_title=CITY["plan"],
+                 plan_url=CITY["plan_url"])
+_asum = summarise(_alerts)
+if _alerts:
+    st.caption(
+        f"This is also available as **{len(_alerts)} machine-readable alerts** "
+        f"({_asum.get('red', 0)} red, {_asum.get('amber', 0)} amber) — each one "
+        f"fires on an *unexecuted legal obligation*, not on a temperature. "
+        f"See Methods & evidence for the payload.")
 
 st.divider()
 
-
-# ------------------------------------------------------------------- missions
-
-st.subheader("Explore the result")
-st.caption("Pick a mission and a clause in the sidebar. The map below is "
-           "per-clause and per-day; the hero map above is the whole window.")
-
-MISSIONS = {
-    "1. Who did the plan miss last night?":
-        "Show the clause with the largest silent-zone population, on its worst day.",
-    "2. Which clauses never fire where I live?":
-        "Per-village firing record for every evaluable clause.",
-    "3. How much warning was lost?":
-        "Lead time between each village meeting a condition and the citywide number doing so.",
-    "4. What does the plan actually condition on?":
-        "The full compiled clause inventory with provenance.",
-}
-
-with st.sidebar:
-    st.header("Mission")
-    mission = st.radio("Preset mission", list(MISSIONS.keys()),
-                       label_visibility="collapsed")
-    st.caption(MISSIONS[mission])
-
-    st.divider()
-    st.header("Clause")
-    # Default to the clause carrying the headline.
-    ids = list(clauses.keys())
-    default = next((i for i, k in enumerate(ids) if clauses[k]["silent_zone_days"]), 0)
-    clause_id = st.selectbox("Evaluable clause", ids, index=default,
-                             format_func=lambda k: f"{k} ({clauses[k]['threshold_f']:g}°F)")
-
-    cl = clauses[clause_id]
-    days = [d["day"] for d in cl["determinations"]]
-    worst = cl.get("worst_false_calm")
-    day_default = days.index(worst[0]) if worst and worst[0] in days else len(days) - 1
-    day = st.select_slider("Day", options=days, value=days[day_default])
-
-    st.divider()
-    st.subheader("Baseline")
-    st.info(PROXY_LABEL)
-
-cl = clauses[clause_id]
-det = next(d for d in cl["determinations"] if d["day"] == day)
-threshold_f = cl["threshold_f"]
-is_hours = det["zones"][0]["units"] == "hours"
-
-
-def to_display(v: float) -> float:
-    return v if is_hours else v * 9 / 5 + 32
-
-
-unit = "h" if is_hours else "°F"
-
-
-# ------------------------------------------------------------------ provenance
-
-st.subheader(f"{clause_id} — {cl['action']}")
-pc1, pc2 = st.columns([3, 2])
-with pc1:
-    st.markdown(f'<div class="tg-quote">&ldquo;{cl["source_text"]}&rdquo;</div>',
-                unsafe_allow_html=True)
-    st.caption(f"**{CITY['plan']}, page {cl['source_page']}** — verbatim, "
-               f"verified against that page. "
-               f"[Open the source PDF]({CITY['plan_url']}#page={cl['source_page']})")
-with pc2:
-    st.markdown(
-        f"**Threshold** {threshold_f:g} °F ({cl['threshold_c']:.2f} °C)  \n"
-        f"**Responsible** {', '.join(cl['actor']) or '—'}  \n"
-        f"**Citywide proxy fired** {len(cl['proxy_fired_days'])} of "
-        f"{summary['days']} days  \n"
-        f"**Zone-days met** {cl['zone_fired_day_count']}"
-    )
-
-st.divider()
-
-
-# ------------------------------------------------------------------- mission 1
-
-if mission.startswith("1"):
-    if not cl["silent_zone_days"]:
-        st.success(f"{clause_id} shows no silent zones in this window — the "
-                   f"citywide proxy and the villages agree.")
-    else:
-        w = cl["worst_false_calm"]
-        if w:
-            wday, pval, nz, mx = w
-            exposed = sum(pop[z]["population"] for z in cl["silent_zones"] if z in pop)
-            st.error(
-                f"**On {wday} the citywide proxy read "
-                f"{to_display(pval):.1f} {unit} — below the {threshold_f:g} °F "
-                f"threshold, so nothing fired.** "
-                f"{nz} villages met it, the highest at {to_display(mx):.1f} {unit}."
-            )
-            if exposed:
-                st.markdown(
-                    f"Across the window, **{exposed:,} people** "
-                    f"({exposed/summary['population_total']:.0%} of Phoenix) live in the "
-                    f"**{len(cl['silent_zones'])} villages** that met this condition on "
-                    f"days the citywide number never did."
-                )
-
-    rows = []
-    for z in det["zones"]:
-        rows.append({
-            "Village": z["name"],
-            f"Value ({unit})": round(to_display(z["value"]), 2),
-            "Met?": "YES" if z["fired"] else "no",
-            "Margin": round(z["margin"] * (1 if is_hours else 9 / 5), 2),
-            "Population": pop.get(z["zone_id"], {}).get("population"),
-            "Silent zone": "yes" if z["zone_id"] in cl["silent_zones"] else "",
-        })
-    df = pd.DataFrame(rows).sort_values(f"Value ({unit})", ascending=False)
-    st.dataframe(df, width='stretch', hide_index=True)
-
-
-# ------------------------------------------------------------------- mission 2
-
-elif mission.startswith("2"):
-    st.markdown("**Firing record per village.** `Y` = condition met that day.")
-    grid = {}
-    for d in cl["determinations"]:
-        for z in d["zones"]:
-            grid.setdefault(z["name"], {})[d["day"][5:]] = "Y" if z["fired"] else "·"
-    prox = {d["day"][5:]: ("Y" if d["proxy"]["fired"] else "·")
-            for d in cl["determinations"]}
-    df = pd.DataFrame(grid).T
-    df["days met"] = (df == "Y").sum(axis=1)
-    df = df.sort_values("days met", ascending=False)
-    pr = pd.DataFrame({**prox, "days met": sum(1 for v in prox.values() if v == "Y")},
-                      index=["CITYWIDE PROXY"])
-    st.dataframe(pd.concat([df, pr]), width='stretch')
-    st.caption("The proxy row is the comparator. Villages above it with more "
-               "`Y` marks are the ones the single reading misses.")
-
-
-# ------------------------------------------------------------------- mission 3
-
-elif mission.startswith("3"):
-    leads = [z for z in cl["zone_leads"] if z["days_met"]]
-    if not leads:
-        st.info("No village met this condition in the window.")
-    else:
-        rows = [{
-            "Village": z["zone_name"],
-            "First met": z["first_met_day"] or "—",
-            "Citywide first met": z["proxy_first_day"] or "never",
-            "Lead (days)": z["lead_days"] if z["lead_days"] is not None else "—",
-            "Days met": z["days_met"],
-            "Population": pop.get(z["zone_id"], {}).get("population"),
-        } for z in sorted(leads, key=lambda z: (z["first_met_day"] or "9"))]
-        st.dataframe(pd.DataFrame(rows), width='stretch', hide_index=True)
-        if cl.get("median_lead_days") is not None:
-            st.markdown(f"**Median lead: {cl['median_lead_days']:.0f} day(s)** "
-                        f"ahead of the citywide number.")
-
-
-# ------------------------------------------------------------------- mission 4
-
-else:
-    inv = res["inventory"]
-    st.markdown(
-        f"The compiler read **{inv['total']} clauses** out of the published plan. "
-        f"Only **{inv['conditional']}** are conditioned on temperature at all; "
-        f"**{inv['scheduled']}** activate on the calendar."
-    )
-    k1, k2, k3 = st.columns(3)
-    k1.metric("Calendar-activated", inv["scheduled"])
-    k2.metric("Conditional on heat", inv["conditional"])
-    k3.metric("Of those, citywide-scoped", inv["citywide_scope"])
-    st.dataframe(pd.DataFrame([{
-        "Clause": c["clause_id"],
-        "Action": c["action"],
-        "Page": c["source_page"],
-        "Threshold °F": c["threshold_f"],
-        "Responsible": ", ".join(c["actor"]),
-        "Proxy fired (days)": len(c["proxy_fired_days"]),
-        "Zone-days met": c["zone_fired_day_count"],
-        "Silent zones": len(c["silent_zones"]),
-    } for c in res["clauses"]]), width='stretch', hide_index=True)
-    st.caption("Only clauses evaluable against 2 m data appear here. The full "
-               "27-clause inventory, including the 20 calendar-activated "
-               "actions, is in data/golden/phoenix_2026_clauses.json.")
-
-
-# ----------------------------------------------------------------------- map
-
-st.divider()
-st.subheader(f"{day} — {'hours above' if is_hours else 'temperature vs'} "
-             f"{threshold_f:g} °F")
-
-vals = {z["zone_id"]: z["value"] for z in det["zones"]}
-fired = {z["zone_id"]: z["fired"] for z in det["zones"]}
-names = {z["zone_id"]: z["name"] for z in det["zones"]}
-
-
-m = folium.Map(tiles="cartodbpositron", zoom_control=True)
-if _lats:
-    m.fit_bounds([[min(_lats), min(_lons)], [max(_lats), max(_lons)]],
-                 padding=(18, 18))
-
-for ft in geo["features"]:
-    zid = zone_id_of(ft)
-    if zid not in vals:
-        continue
-    met = fired[zid]
-    v = to_display(vals[zid])
-    is_silent = zid in cl["silent_zones"]
-    p = pop.get(zid, {}).get("population")
-
-    tip = (f"<b>{names[zid]}</b><br>"
-           f"{v:.1f} {unit} vs {threshold_f:g} °F<br>"
-           f"<b>{'CONDITION MET' if met else 'not met'}</b>"
-           f"{'<br><i>silent zone</i>' if is_silent else ''}"
-           + (f"<br>{p:,} people" if p else ""))
-
-    folium.GeoJson(
-        ft,
-        style_function=lambda _f, met=met, silent=is_silent: {
-            # Red where the condition was met, and outlined where the citywide
-            # number stayed quiet anyway.
-            "fillColor": "#b2182b" if met else "#c6dbef",
-            "color": "#000000" if silent else "#666666",
-            "weight": 3 if silent else 1,
-            "fillOpacity": 0.72 if met else 0.35,
-        },
-        tooltip=folium.Tooltip(tip),
-    ).add_to(m)
-
-pv = to_display(det["proxy"]["value"])
-folium.Marker(
-    [33.4342, -112.0116],  # Phoenix Sky Harbor, the station the plan reads
-    tooltip=(f"<b>Sky Harbor</b><br>The station the plan is triggered from.<br>"
-             f"Citywide proxy this day: {pv:.1f} {unit} "
-             f"({'fired' if det['proxy']['fired'] else 'did NOT fire'})"),
-    icon=folium.Icon(color="green" if det["proxy"]["fired"] else "gray",
-                     icon="plane", prefix="fa"),
-).add_to(m)
-
-mc1, mc2 = st.columns([3, 1])
-with mc1:
-    st_folium(m, height=520, use_container_width=True, returned_objects=[],
-              key="explorer_map")
-with mc2:
-    st.markdown(
-        f"**Citywide proxy**  \n### {pv:.1f} {unit}  \n"
-        f"{'**FIRED**' if det['proxy']['fired'] else '**DID NOT FIRE**'}  \n"
-        f"threshold {threshold_f:g} °F"
-    )
-    n_met = sum(1 for z in det["zones"] if z["fired"])
-    st.markdown(f"**Villages meeting it**  \n### {n_met} of {len(det['zones'])}")
-    if pop:
-        exp = sum(pop[z["zone_id"]]["population"] for z in det["zones"]
-                  if z["fired"] and z["zone_id"] in pop)
-        st.markdown(f"**People in them**  \n### {exp:,}")
-    st.caption("Red = condition met. Heavy black outline = silent zone: met the "
-               "condition on a day the citywide number did not.")
-
-
-# ======================================================= SECONDARY RESULTS
-# Below the fold on purpose. The headline is the coverage failure above.
-
-st.divider()
-st.subheader("Secondary results")
-
-tab_nyc, tab_over, tab_rec, tab_api, tab_retract = st.tabs(
-    ["Does it generalise? New York City",
-     "Over-trigger: the targeting failure",
-     "Recovery: a different rule",
-     "How we used the FortyGuard API",
-     "What we retracted"])
-
-with tab_nyc:
-    if not nyc:
-        st.info("The New York run is not present in this checkout.")
-    else:
-        ns = nyc["summary"]
-        st.markdown(
-            "One city is a case study. We ran the **same pipeline, unchanged**, "
-            "on **New York City** — a city that disagrees with Phoenix about "
-            "what to measure and is right to.")
-        st.markdown(
-            "Phoenix is arid, so heat index sits **below** air temperature "
-            "there and its plan triggers on **dry-bulb**. New York is humid, so "
-            "heat index sits **above** air temperature and its plan triggers on "
-            "**heat index**. Opposite choices, both defensible. The question is "
-            "whether the failure follows the metric or the *architecture*.")
-        _p = summary
-        st.dataframe(pd.DataFrame([
-            {"": "Trigger", "Phoenix": "90 °F overnight low",
-             "New York City": "100 °F heat index"},
-            {"": "Zones", "Phoenix": f"{len(res['zones'])} urban villages",
-             "New York City": f"{len(nyc['zones'])} community districts"},
-            {"": "Citywide proxy, worst day", "Phoenix": "89.9 °F", "New York City": "99.0 °F"},
-            {"": "Missed the threshold by", "Phoenix": "0.1 °F", "New York City": "1.0 °F"},
-            {"": "Silent zones",
-             "Phoenix": f"{_p['silent_zones']} of {len(res['zones'])}",
-             "New York City": f"{ns['silent_zones']} of {len(nyc['zones'])}"},
-            {"": "People exposed",
-             "Phoenix": f"{_p['population_exposed']:,}",
-             "New York City": f"{ns.get('population_exposed', 0):,}"},
-            {"": "False-calm days",
-             "Phoenix": f"{len(_p.get('false_calm_days', []))} of {_p['days']}",
-             "New York City": f"{len(ns.get('false_calm_days', []))} of {ns['days']}"},
-            {"": "Actionable clause-days",
-             "Phoenix": f"{_p['actionable_clause_days']} of {_p['clause_days']}"
-                        f" ({_p['actionable_share']:.0%})",
-             "New York City": f"{ns['actionable_clause_days']} of {ns['clause_days']}"
-                              f" ({ns['actionable_share']:.0%})"},
-        ]), hide_index=True, use_container_width=True)
-        st.markdown("#### And New York already fixed a version of this")
-        st.markdown(
-            "From 2001 to 2007 New York activated its heat plan on **national** "
-            "criteria: a heat index of **40.6 °C — 105 °F — for one day**. An "
-            "evaluation found the system *was not preventing heat-related "
-            "mortality*. The City replaced it with locally-derived thresholds, "
-            "and the change had a measured health outcome.")
-        st.markdown(
-            "> *“The 40.6 °C threshold for one day was changed to a forecast "
-            "maximum heat index of 37.8 °C for one day or more, or 35 °C for at "
-            "least two consecutive days … The lower threshold reduced "
-            "heat-related hospitalizations among older adults.”*\n\n"
-            "> — Kotharkar & Ghosh, *Effective heat action plans*, "
-            "[Environmental Research Letters]"
-            "(https://iopscience.iop.org/article/10.1088/1748-9326/ab5ab0)")
-        st.warning(
-            "**The clauses evaluated above are New York's post-change, "
-            "epidemiologically-derived thresholds** — the improved rule, already "
-            "validated against hospitalisation data. They still leave "
-            f"**{ns['silent_zones']} districts and "
-            f"{ns.get('population_exposed', 0):,} people** meeting the condition "
-            "on days the citywide reading never fired.\n\n"
-            "New York fixed the *between-city* problem: a national threshold did "
-            "not describe New York. **Nobody has fixed the *within-city* one, and "
-            "it survives the fix.** A better single number is still a single "
-            "number.", icon="⚠️")
-        st.caption(
-            "What we do NOT claim: New York's evidence is that 105 °F was too "
-            "high *for New York's climate*. It does not follow that Phoenix's "
-            "105 °F trigger is wrong for Phoenix, which is a far hotter city, "
-            "and we make no such claim. This finding is about spatial "
-            "resolution, not about any particular number.")
-
-        _tot = _p["population_exposed"] + ns.get("population_exposed", 0)
-        st.success(
-            f"**Same near-miss signature. Near-identical actionable share — "
-            f"{_p['actionable_share']:.0%} against {ns['actionable_share']:.0%}.** "
-            f"Two cities, opposite climates, opposite trigger metrics, the same "
-            f"structural failure. **{_tot:,} people** across both.", icon="🎯")
-        st.caption(
-            "New York was added with **zero code changes** — one profile JSON, "
-            "one boundaries file, one clause file. Its AOI is the 346 mi² box "
-            "the API accepts: a full five-borough box spans open ocean and is "
-            "rejected outright, so 51 of 59 community districts are covered and "
-            "Staten Island plus five coastal districts are excluded and "
-            "reported as excluded. NYC triggers on heat index while FortyGuard "
-            "returns dry-bulb, which UNDER-counts its firings — so these NYC "
-            "figures are a lower bound twice over.")
-
-with tab_over:
-    st.markdown(
-        f"The same rules, measured on **all 272,917 tiles before any "
-        f"aggregation** — fifteen zone averages say nothing about whether the "
-        f"underlying field had structure. A clause is **actionable** only if it "
-        f"fires on between 5% and 95% of tiles: an emergency manager can send "
-        f"crews neither to the whole city nor to nowhere.")
-    n = summary.get("clause_days")
-    act = summary.get("actionable_clause_days")
-    if n:
-        o1, o2, o3 = st.columns(3)
-        o1.metric("Actionable", f"{act} of {n}", f"{act/n:.0%}",
-                  delta_color="off")
-        o2.metric("Over-triggered", summary.get("over_triggered_clause_days"),
-                  "fired on >95% of tiles", delta_color="off")
-        o3.metric("Under-triggered", summary.get("under_triggered_clause_days"),
-                  "fired on <5% of tiles", delta_color="off")
-        st.info(f"On **{n - act} of {n} clause-days ({(n-act)/n:.0%})** the plan "
-                f"gave no basis for choosing where to send anyone.")
-
-    sat = res.get("saturation") or []
-    if sat:
-        rows = []
-        for scl in sat:
-            for d in scl.get("per_day", []):
-                rows.append({
-                    "clause": scl["clause_id"],
-                    "day": d["day"],
-                    "severity °F": (round(d["severity_c"] * 9 / 5 + 32, 1)
-                                    if d.get("severity_c") is not None else None),
-                    "saturation": round(d["saturation_index"], 3),
-                    "verdict": d["failure_mode"],
-                })
-        st.dataframe(pd.DataFrame(rows), hide_index=True, height=300)
-        st.caption(
-            "Saturation is the share of tiles where the clause fires. For the "
-            "two clauses measured through `exceedance` it is approximate to "
-            "about a percentage point, because that field is smoothed rather "
-            "than counted. The verdicts are unaffected — they sit far from the "
-            "5% and 95% boundaries.")
-
-with tab_rec:
-    st.markdown(
-        "Replacing a fixed threshold with the **90th percentile of that day's "
-        "own distribution** restores a rankable ordering in both failure "
-        "directions — the benchmarks that over-fire and the one that never "
-        "fires alike.")
-    recs = [r for r in (res.get("recovery") or []) if r.get("percentile")]
-    if recs:
-        st.dataframe(pd.DataFrame([{
-            "clause": r["fixed"]["clause_id"],
-            "day": r["fixed"]["day"],
-            "as written °F": r["fixed"]["threshold_f"],
-            "saturation": round(r["fixed"]["saturation_index"], 3),
-            "p90 °F": r["percentile"]["threshold_f"],
-            "saturation (p90)": round(r["percentile"]["saturation_index"], 3),
-            "villages recovered": r["zones_recovered"],
-        } for r in recs]), hide_index=True)
-    st.warning(
-        "**A same-day percentile is post hoc.** Today's 90th percentile is not "
-        "knowable before today ends, so this demonstrates that the signal "
-        "survives in the data — not that a city could adopt this rule as "
-        "written. A deployable version would fit the percentile on historical "
-        "climatology, which this project has not done.")
-
-with tab_api:
-    st.markdown(
-        "Every temperature on this page comes from the **FortyGuard Temperature "
-        "API**. No external weather source is used anywhere in the pipeline — "
-        "not NOAA, not Open-Meteo, nothing. That constraint is deliberate: it "
-        "makes the comparison between the two sensing regimes internally "
-        "consistent, so a systematic model offset cancels instead of "
-        "contaminating the result.")
-    if api:
-        a1, a2, a3, a4 = st.columns(4)
-        a1.metric("API calls", f"{api['calls']:,}")
-        a2.metric("Tiles retrieved", f"{api['tiles']/1e6:.1f} M")
-        a3.metric("Days analysed", api["distinct_days"])
-        a4.metric("Credits spent", f"{api['credits']:,}")
-        st.markdown("**Which analytics, and what each one was for**")
-        st.dataframe(pd.DataFrame([
-            {"analytic": "tcm", "calls": api["by_analytic"].get("tcm", 0),
-             "what it gave us": "per-tile min / mean / max temperature — the "
-             "overnight-low benchmark and the severity axis"},
-            {"analytic": "exceedance", "calls": api["by_analytic"].get("exceedance", 0),
-             "what it gave us": "hours above a threshold per tile — every "
-             "duration-style clause and the event-selection scan"},
-            {"analytic": "persistence", "calls": api["by_analytic"].get("persistence", 0),
-             "what it gave us": "longest unbroken run — probed thoroughly, then "
-             "REJECTED as untrustworthy at city scale (see the retraction tab)"},
-            {"analytic": "time_of_measure", "calls": api["by_analytic"].get("time_of_measure", 0),
-             "what it gave us": "hour of peak per tile, UTC → Phoenix local — "
-             "whether silent zones peak later than the rest of the city"},
-            {"analytic": "env_params", "calls": api["by_analytic"].get("env_params", 0),
-             "what it gave us": "heat index and humidity at village centroids — "
-             "whether dry-bulb is the right thing to trigger on at all"},
-        ]), hide_index=True, use_container_width=True)
-        st.caption(
-            f"Responses are cached to disk and committed to the repository "
-            f"({api['cache_mb']} MB, {api['responses']} responses over "
-            f"{api['grids']} shared tile grids), which is why this page needs no "
-            f"API key and why the entire analysis reproduces offline. The tile "
-            f"grid is byte-identical across calls on the same AOI, so it is "
-            f"stored once rather than {api['responses']} times.")
-        st.info("We also measured the API itself and documented three behaviours "
-                "that contradict its docs — `tcm` returns °C not °F, "
-                "`persistence` clamps to ~8 h at `filter_type=4`, and the real "
-                "area limit is ~1,053 mi² rather than the documented 50. "
-                "See `docs/api_findings.md`.", icon="🔬")
-
-with tab_retract:
-    st.markdown(
-        "**We withdrew a result.** We measured, and then retracted, a finding "
-        "that adding a duration requirement to Action 1.1's existing 105 °F "
-        "threshold would restore targeting value.")
-    st.error(
-        "**FortyGuard exposes no trustworthy duration analytic at city scale.** "
-        "`exceedance` returns a *total* of qualifying hours where a dwell "
-        "clause describes a *continuous spell* — wrong analytic for the "
-        "question. `persistence` is the right one, but citywide it returns runs "
-        "of 25.92 h inside a single day, 3,110 negative runs, and up to 39,329 "
-        "tiles whose longest run exceeds that tile's own total. It is also "
-        "93.9% identical to `exceedance` at that threshold, so it is not an "
-        "independent measurement. `tcm` carries no time information at all.")
-    st.markdown(
-        "We publish it as a **negative finding** rather than deleting it: a "
-        "dwell requirement is the most natural fix for a saturating threshold, "
-        "so it is the first thing a reader will propose and worth knowing it "
-        "cannot be evaluated here. The failing harness is `sweep_dwell.py`, "
-        "which exits non-zero, and `verify_all.py` asserts that it *continues* "
-        "to fail — so the retraction cannot quietly go stale.")
-    st.caption("Full methodology: docs/api_findings.md §8. "
-               "All three corrections: README → \"What we got wrong\".")
+# ═══════════════════════════════════════════════════ WHERE NEXT
+st.markdown('<p class="tg-q">Explore further</p>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="tg-next">'
+    '<div class="tg-card"><h4>🌡 Heat waves</h4><p>A heat wave is a <i>run</i> of '
+    'nights, and it does not start city-wide. See which neighbourhoods were in '
+    'one, since when — and what the threshold choice costs.</p></div>'
+    '<div class="tg-card"><h4>🏢 Data centre siting</h4><p>Where in the US is '
+    'cooling cheapest? 30 metros ranked on free-cooling hours, power, water and '
+    'risk — with the water–energy trade-off made explicit.</p></div>'
+    '<div class="tg-card"><h4>🌳 Urban planning</h4><p>How much tree canopy, and '
+    'where? Measured thermal gaps joined to published cooling effect sizes, so '
+    'each recommendation carries a magnitude.</p></div>'
+    '<div class="tg-card"><h4>🔬 Methods &amp; evidence</h4><p>The full technical '
+    'record: every rule and its source page, the New York replication, what we '
+    'measured about the API, and the claims we retracted.</p></div>'
+    '</div>', unsafe_allow_html=True)
+st.caption("Use the sidebar, or the page list at the top left, to open any of these.")
 
 st.divider()
 st.caption(
-    f"Thermal data: FortyGuard Temperature API at {study.GRANULARITY_M} m, "
-    f"{CITY['tiles']} tiles per day over {CITY['aoi']} mi². "
-    f"No external weather source is used anywhere in this pipeline. "
-    f"Zones: {study.ZONES_SOURCE}. "
-    f"Population: US Census ACS 5-year 2023. "
-    f"{study.TIMEZONE_NOTE}"
-)
+    f"All thermal data from the FortyGuard Temperature API, measured 2 m above "
+    f"ground at 100 m resolution. Study window {summary['window'][0]} to "
+    f"{summary['window'][1]}. Every figure on this page is a deterministic "
+    f"comparison of measured values — no language model produces any number "
+    f"here. Runs offline from a committed cache: `python run_demo.py`.")
