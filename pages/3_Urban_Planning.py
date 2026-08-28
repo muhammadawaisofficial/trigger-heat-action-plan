@@ -16,6 +16,7 @@ import streamlit as st
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
+import charts  # noqa: E402
 import planning  # noqa: E402
 import ui  # noqa: E402
 
@@ -71,6 +72,12 @@ else:
                   f"overnight low ≥ {planning.NIGHT_CRITICAL_F:.0f} °F",
                   delta_color="off")
 
+        st.altair_chart(
+            charts.spread_dumbbell(pdf, "Metro", "Coolest °F", "Hottest °F"),
+            use_container_width=True)
+        st.caption("Each line runs from the coolest to the hottest ground "
+                   "measured inside that metro's sample box. The length of the "
+                   "line is the range a single citywide number stands in for.")
         st.dataframe(pdf, hide_index=True, use_container_width=True, height=380)
         st.download_button("Download the national planning table as CSV",
                            pdf.to_csv(index=False),

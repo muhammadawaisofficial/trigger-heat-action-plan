@@ -20,6 +20,7 @@ import streamlit as st
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
+import charts  # noqa: E402
 import heatwave  # noqa: E402
 import ui  # noqa: E402
 
@@ -100,9 +101,18 @@ if ladder:
         "The same week, the same measurements, the same zones — detected "
         "against each threshold in turn. **Nothing about the weather changes "
         "down this table. Only the number written in the plan changes.**")
-    st.dataframe(pd.DataFrame([{k: v for k, v in r.items()
-                                if not k.startswith("_")} for r in ladder]),
-                 hide_index=True, use_container_width=True)
+    st.altair_chart(
+        charts.ladder([{"label": f"{r['Threshold °F']:g} °F",
+                        "people": r["Residents in those zones"],
+                        "waves": r["Waves"],
+                        "zones": r[f"{city['unit'].title()}s"]} for r in ladder]),
+        use_container_width=True)
+    st.caption("Bar height is residents inside a detected heat wave; the number "
+               "above each bar is how many separate waves were detected.")
+    with st.expander("The same figures as a table"):
+        st.dataframe(pd.DataFrame([{k: v for k, v in r.items()
+                                    if not k.startswith("_")} for r in ladder]),
+                     hide_index=True, use_container_width=True)
     lo, hi = ladder[0], ladder[-1]
     if lo["_waves"] != hi["_waves"]:
         st.error(
@@ -194,6 +204,9 @@ else:
         "Peak °F": w["peak_f"], "Peak day": w["peak_day"],
         "Residents": w["population"],
     } for w in waves])
+    st.altair_chart(charts.wave_runs(waves), use_container_width=True)
+    st.caption("Each bar is one continuous run of qualifying nights in one area. "
+               "Length is the run; colour reinforces it.")
     st.dataframe(wdf, hide_index=True, use_container_width=True)
     st.download_button("Download detected waves as CSV", wdf.to_csv(index=False),
                        f"trigger_heatwaves_{city['short'].lower()}.csv", "text/csv")

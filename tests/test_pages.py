@@ -173,3 +173,41 @@ def test_shared_city_registry_paths_exist():
     for name, c in ui.CITIES.items():
         assert Path(c["results"]).exists(), name
         assert Path(c["pop"]).exists(), name
+
+
+# ------------------------------------------------------------------ charts
+def test_every_feature_page_renders_a_chart():
+    """The pages were tables. A page with no figure has regressed to that."""
+    for page in PAGES + ["app.py"]:
+        at = AppTest.from_file(str(REPO / page), default_timeout=TIMEOUT).run()
+        assert not at.exception, [str(e) for e in at.exception]
+        n = len(at.get("vega_lite_chart"))
+        assert n >= 1, f"{page} renders no chart"
+
+
+def test_chart_palette_is_the_validated_pair():
+    """The accent/muted pair was validated, not eyeballed.
+
+    The earlier grey (#8c96a0) failed contrast against the surface at 2.93:1.
+    Pinning the values stops it drifting back to something unchecked.
+    """
+    import charts
+    assert charts.ACCENT == "#b2182b"
+    assert charts.MUTED == "#7d8792"
+    # Sequential ramp must be monotonically darker, or "more is darker" breaks.
+    def lum(h):
+        r, g, b = (int(h[i:i + 2], 16) / 255 for i in (1, 3, 5))
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    lums = [lum(c) for c in charts.HEAT]
+    assert lums == sorted(lums, reverse=True), "heat ramp is not monotonic"
+
+
+def test_charts_survive_empty_input():
+    """A city with no qualifying rows must render an empty chart, not raise."""
+    import charts
+    import pandas as pd
+    assert charts.zone_gap([], 90.0, 88.0) is not None
+    assert charts.ladder([]) is not None
+    assert charts.wave_runs([]) is not None
+    assert charts.rank_bar(pd.DataFrame(), "v", "l", "t") is not None
+    assert charts.spread_dumbbell(pd.DataFrame(), "l", "lo", "hi") is not None

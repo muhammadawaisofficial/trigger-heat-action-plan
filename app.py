@@ -25,6 +25,7 @@ from streamlit_folium import st_folium
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
+import charts  # noqa: E402
 import ui  # noqa: E402
 from alerts import detect, summarise  # noqa: E402
 
@@ -208,6 +209,54 @@ with st.expander("How is this measured, and what is the comparison?"):
         "feed from the airport station. That proxy is a *generous* stand-in: a "
         "real single sensor would do worse than a citywide average. So every "
         "number above is a **lower bound**, not an exaggeration.", icon="ℹ️")
+
+# ------------------------------------------------------------- the gap chart
+# The argument in one figure. Every neighbourhood's peak against the threshold
+# it had to clear, and against the single citywide number that was supposed to
+# notice. The bars that cross the dashed line while the solid line does not are
+# the finding -- previously the reader had to assemble that from a table.
+_gap_clause = next(
+    (c for c in res["clauses"]
+     if c.get("silent_zones") and c["determinations"][0]["zones"][0]["units"] != "hours"),
+    None)
+if _gap_clause:
+    _worst = _gap_clause.get("worst_false_calm")
+    _day = _worst[0] if _worst else _gap_clause["determinations"][-1]["day"]
+    _det = next((d for d in _gap_clause["determinations"] if d["day"] == _day),
+                _gap_clause["determinations"][-1])
+
+    def _f(v: float, units: str) -> float:
+        return v * 9 / 5 + 32 if units == "degC" else v
+
+    _rows = [{
+        "name": z["name"],
+        "value_f": _f(z["value"], z["units"]),
+        "missed": z["zone_id"] in SILENT and z["fired"],
+        "population": pop.get(z["zone_id"], {}).get("population") or 0,
+    } for z in _det["zones"]]
+    _thr = _gap_clause["threshold_f"]
+    _proxy_f = _f(_det["proxy"]["value"], _det["proxy"]["units"])
+
+    st.markdown(f"##### The night of {_day}, neighbourhood by neighbourhood")
+    st.altair_chart(
+        charts.zone_gap(_rows, _thr, _proxy_f, unit=CITY["unit"]),
+        use_container_width=True)
+    _n_over = sum(1 for r in _rows if r["value_f"] >= _thr)
+    st.markdown(
+        f'<div class="tg-legend">'
+        f'<span><span class="tg-sw" style="background:{charts.ACCENT}"></span>'
+        f'crossed the threshold — the plan should have fired here</span>'
+        f'<span><span class="tg-sw" style="background:{charts.MUTED}"></span>'
+        f'below it</span>'
+        f'<span>┈ dashed: the <b>{_thr:g} °F</b> threshold</span>'
+        f'<span>─ solid: the <b>citywide reading, {_proxy_f:.1f} °F</b></span>'
+        f'</div>', unsafe_allow_html=True)
+    st.caption(
+        f"**The solid line sits below the dashed one, so the plan stayed off.** "
+        f"{_n_over} of {len(_rows)} {CITY['unit']}s were already above the "
+        f"threshold that night. One number for the whole city cannot be above "
+        f"and below the same line at once — that is the entire failure, in one "
+        f"picture.")
 
 st.divider()
 

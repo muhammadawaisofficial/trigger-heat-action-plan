@@ -37,10 +37,14 @@ CSS = """
   .tg-pill.warn { background:#fef3c7; color:#92400e; border:1px solid #fde68a; }
 
   /* ---------- hero ---------- */
-  .tg-hero { text-align:center; padding:2.3rem 1rem 1.7rem;
-    background: radial-gradient(ellipse 80% 100% at 50% 0%, #fff1f0 0%, transparent 70%),
-                linear-gradient(180deg,#fafafa,#fff);
-    border:1px solid #f0d9d7; border-radius:18px; margin-bottom:.9rem; }
+  .tg-hero { text-align:center; padding:2.6rem 1.2rem 2rem; position:relative;
+    overflow:hidden;
+    background: radial-gradient(ellipse 70% 120% at 50% -10%, #ffe4e1 0%, transparent 65%),
+                linear-gradient(180deg,#fffdfd,#fff);
+    border:1px solid #f3dcda; border-radius:20px; margin-bottom:1rem;
+    box-shadow:0 2px 4px rgba(178,24,43,.05), 0 18px 40px -24px rgba(178,24,43,.35); }
+  .tg-hero::before { content:""; position:absolute; inset:0 0 auto 0; height:4px;
+    background:linear-gradient(90deg,#7f1220,#b2182b,#e0644b,#f0a58e); }
   .tg-num { font-size:clamp(2.8rem,8.5vw,5.6rem); line-height:.95; font-weight:900;
     letter-spacing:-.05em; color:#b2182b; font-variant-numeric:tabular-nums; }
   .tg-sub { font-size:clamp(.95rem,1.5vw,1.12rem); color:#3f3f46;
@@ -49,24 +53,44 @@ CSS = """
   .tg-kicker { font-size:.7rem; font-weight:800; letter-spacing:.17em;
     text-transform:uppercase; color:#b2182b; margin-bottom:.8rem; }
 
-  /* ---------- cards ---------- */
-  [data-testid="stMetric"] { background:#fff; border:1px solid #e4e4e7;
-    border-radius:13px; padding:.95rem 1.05rem; box-shadow:0 1px 2px rgba(0,0,0,.04); }
-  [data-testid="stMetricValue"] { font-size:clamp(1.1rem,1.7vw,1.75rem) !important;
-    font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums;
-    white-space:nowrap; }
-  [data-testid="stMetricLabel"] { font-size:.72rem !important; font-weight:700;
-    letter-spacing:.05em; text-transform:uppercase; color:#71717a; }
+  /* ---------- cards & metrics ---------- */
+  /* Depth is carried by a layered shadow and a top hairline, not by a heavy
+     border. A single flat 1px box on a white page reads as a wireframe; two
+     soft shadows at different radii read as a surface sitting above the page. */
+  [data-testid="stMetric"] { background:#fff; border:1px solid #ececef;
+    border-radius:14px; padding:1.05rem 1.15rem; position:relative;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(24,24,27,.05), 0 6px 16px -8px rgba(24,24,27,.10); }
+  [data-testid="stMetric"]::before { content:""; position:absolute; inset:0 0 auto 0;
+    height:3px; background:linear-gradient(90deg,#b2182b,#e0644b); opacity:.85; }
+  [data-testid="stMetricValue"] { font-size:clamp(1.15rem,1.8vw,1.85rem) !important;
+    font-weight:800; letter-spacing:-.025em; font-variant-numeric:tabular-nums;
+    white-space:nowrap; color:#18181b; }
+  [data-testid="stMetricLabel"] { font-size:.7rem !important; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase; color:#8a8a93; }
+  [data-testid="stMetricDelta"] { font-size:.78rem !important; color:#71717a; }
 
   .tg-grid { display:grid; gap:1rem;
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); margin:.4rem 0 1.2rem; }
-  .tg-card { background:#fff; border:1px solid #e4e4e7; border-radius:13px;
-    padding:1.05rem 1.15rem; }
-  .tg-card h4 { margin:0 0 .35rem; font-size:1rem; font-weight:700;
-    letter-spacing:-.01em; }
-  .tg-card p { margin:0; font-size:.89rem; color:#52525b; line-height:1.6; }
+  .tg-card { background:#fff; border:1px solid #ececef; border-radius:14px;
+    padding:1.1rem 1.2rem;
+    box-shadow:0 1px 2px rgba(24,24,27,.05), 0 6px 16px -8px rgba(24,24,27,.10); }
+  .tg-card h4 { margin:0 0 .4rem; font-size:1rem; font-weight:700;
+    letter-spacing:-.01em; color:#18181b; }
+  .tg-card p { margin:0; font-size:.89rem; color:#52525b; line-height:1.62; }
   .tg-step-n { font-size:.66rem; font-weight:800; letter-spacing:.1em; color:#fff;
     background:#b2182b; border-radius:6px; padding:.2rem .42rem; margin-right:.5rem; }
+
+  /* Charts get the same surface treatment as cards, so a figure reads as an
+     object on the page rather than ink floating on the background. */
+  [data-testid="stVegaLiteChart"], .stVegaLiteChart {
+    background:#fff; border:1px solid #ececef; border-radius:14px;
+    padding:1rem .85rem .4rem;
+    box-shadow:0 1px 2px rgba(24,24,27,.05), 0 6px 16px -8px rgba(24,24,27,.10); }
+
+  /* Vertical rhythm: sections need air between them or everything reads as one
+     undifferentiated column. */
+  hr, [data-testid="stDivider"] { margin:2.1rem 0 1.7rem !important; }
 
   /* ---------- pipeline ---------- */
   .tg-flow { display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center;
