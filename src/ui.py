@@ -31,9 +31,11 @@ CSS = """
   .tg-brand { font-size:1.45rem; font-weight:900; letter-spacing:-.04em; }
   .tg-tag { color:#71717a; font-size:.98rem; }
   .tg-pill { font-size:.68rem; font-weight:700; letter-spacing:.09em;
-    text-transform:uppercase; padding:.26rem .66rem; border-radius:999px;
-    background:#18181b; color:#fff; white-space:nowrap; }
-  .tg-pill.ghost { background:#f4f4f5; color:#52525b; border:1px solid #e4e4e7; }
+    text-transform:uppercase; padding:.28rem .7rem; border-radius:999px;
+    background:rgba(255,255,255,.95); color:#27272a; white-space:nowrap;
+    border:1px solid rgba(255,255,255,.6); }
+  .tg-pill.ghost { background:rgba(0,0,0,.22); color:#fff;
+    border:1px solid rgba(255,255,255,.35); }
   .tg-pill.warn { background:#fef3c7; color:#92400e; border:1px solid #fde68a; }
 
   /* ---------- hero ---------- */
@@ -98,26 +100,26 @@ CSS = """
      surfaces of the same colour, so it read as nothing at all. */
   .tg-mast { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;
     padding:.9rem 1.25rem .75rem; margin:0;
-    background:linear-gradient(135deg, var(--tg-nav-a), var(--tg-nav-b));
+    background:linear-gradient(100deg, var(--tg-nav-a) 0%, var(--tg-nav-b) 100%);
     border-radius:16px 16px 0 0; }
   .tg-brand { font-size:1.4rem; font-weight:900; letter-spacing:-.04em;
     color:#fff; }
   .tg-tag { color:rgba(255,255,255,.78); font-size:.97rem; }
 
-  .tg-navwrap { background:linear-gradient(135deg, var(--tg-nav-a), var(--tg-nav-b));
+  .tg-navwrap { background:linear-gradient(100deg, var(--tg-nav-a) 0%, var(--tg-nav-b) 100%);
     border-radius:0 0 16px 16px; padding:0 .75rem .7rem; margin-bottom:1.7rem;
     box-shadow:0 10px 30px -18px var(--tg-nav-a); }
 
   [data-testid="stHorizontalBlock"]:has([data-testid="stPageLink"]) {
     gap:.35rem !important; }
-  [data-testid="stPageLink"] a { border:1px solid rgba(255,255,255,.22);
-    border-radius:9px; padding:.5rem .55rem; background:rgba(255,255,255,.10);
+  [data-testid="stPageLink"] a { border:1px solid rgba(255,255,255,.30);
+    border-radius:9px; padding:.5rem .55rem; background:rgba(0,0,0,.20);
     justify-content:center; transition:all .15s; }
   [data-testid="stPageLink"] a p, [data-testid="stPageLink"] a span {
-    color:rgba(255,255,255,.92) !important; font-weight:600 !important;
-    font-size:.82rem !important; }
-  [data-testid="stPageLink"] a:hover { background:rgba(255,255,255,.22);
-    border-color:rgba(255,255,255,.45); }
+    color:#fff !important; font-weight:700 !important;
+    font-size:.82rem !important; text-shadow:0 1px 2px rgba(0,0,0,.35); }
+  [data-testid="stPageLink"] a:hover { background:rgba(0,0,0,.34);
+    border-color:rgba(255,255,255,.6); }
 
   /* ---------- pipeline ---------- */
   .tg-flow { display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center;
@@ -154,31 +156,34 @@ CSS = """
   iframe { border-radius:13px; }
 
   /* ---------- page background ---------- */
-  /* Three blurred shapes drifting slowly behind the content. They sit at low
-     opacity BEHIND every card and chart, which keeps text on a solid surface --
-     decoration must never cost legibility. Motion is slow and non-looping-
-     looking so it reads as depth rather than as something demanding attention.
-     Honours prefers-reduced-motion. */
+  /* An aerial street grid with a few districts running warm over it -- the
+     subject of this project drawn faintly behind it. Two deliberate choices
+     keep it from competing with the real map on the landing page: the grid is
+     regular where a real street network is not, and it is pinned to the
+     viewport so it never scrolls alongside the Folium map.
+
+     Everything above it -- cards, charts, tables -- keeps an opaque surface, so
+     no text is ever read against moving artwork. */
   .tg-bg { position:fixed; inset:0; z-index:0; overflow:hidden;
     pointer-events:none; }
-  .tg-orb { position:absolute; border-radius:50%; filter:blur(70px);
-    opacity:.42; }
-  .tg-orb.a { width:46vw; height:46vw; left:-10vw; top:-12vw;
-    background:var(--tg-nav-a); animation:tgDriftA 34s ease-in-out infinite; }
-  .tg-orb.b { width:38vw; height:38vw; right:-8vw; top:4vh;
-    background:var(--tg-nav-b); animation:tgDriftB 42s ease-in-out infinite; }
-  .tg-orb.c { width:30vw; height:30vw; left:38vw; bottom:-14vw;
-    background:var(--tg-accent); opacity:.22;
-    animation:tgDriftC 50s ease-in-out infinite; }
-  @keyframes tgDriftA { 0%,100%{transform:translate(0,0) scale(1)}
-    50%{transform:translate(6vw,4vh) scale(1.10)} }
-  @keyframes tgDriftB { 0%,100%{transform:translate(0,0) scale(1)}
-    50%{transform:translate(-5vw,6vh) scale(1.14)} }
-  @keyframes tgDriftC { 0%,100%{transform:translate(0,0) scale(1)}
-    50%{transform:translate(-4vw,-5vh) scale(1.08)} }
+  .tg-bg svg { position:absolute; inset:0; width:100%; height:100%; }
+  .tg-district { position:absolute; border-radius:44% 56% 52% 48%;
+    filter:blur(58px); opacity:.20; }
+  .tg-district.d1 { width:34vw; height:26vw; left:6vw; top:8vh;
+    background:var(--tg-nav-b); animation:tgWarm1 46s ease-in-out infinite; }
+  .tg-district.d2 { width:26vw; height:22vw; right:10vw; top:22vh;
+    background:var(--tg-accent); animation:tgWarm2 58s ease-in-out infinite; }
+  .tg-district.d3 { width:30vw; height:20vw; left:40vw; bottom:6vh;
+    background:var(--tg-nav-a); opacity:.13;
+    animation:tgWarm3 64s ease-in-out infinite; }
+  @keyframes tgWarm1 { 0%,100%{transform:translate(0,0) scale(1); opacity:.20}
+    50%{transform:translate(3vw,2vh) scale(1.08); opacity:.26} }
+  @keyframes tgWarm2 { 0%,100%{transform:translate(0,0) scale(1); opacity:.18}
+    50%{transform:translate(-2.5vw,3vh) scale(1.10); opacity:.24} }
+  @keyframes tgWarm3 { 0%,100%{transform:translate(0,0) scale(1); opacity:.13}
+    50%{transform:translate(2vw,-2vh) scale(1.06); opacity:.18} }
   @media (prefers-reduced-motion: reduce) {
-    .tg-orb { animation:none !important; } }
-  /* Content rides above the background, on its own opaque surfaces. */
+    .tg-district { animation:none !important; } }
   .stApp > div { position:relative; z-index:1; }
 
   /* ---------- responsive ---------- */
@@ -397,8 +402,25 @@ def theme(page: str) -> None:
       border-color:#fff !important; }
   a[href$="/%(f)s"] p, a[href$="/%(f)s"] span { color:%(na)s !important; }
 </style>
-<div class="tg-bg"><div class="tg-orb a"></div><div class="tg-orb b"></div>
-<div class="tg-orb c"></div></div>
+<div class="tg-bg">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <pattern id="tgMinor" width="46" height="46" patternUnits="userSpaceOnUse">
+        <path d="M46 0H0V46" fill="none" stroke="%(na)s" stroke-width="1"
+              stroke-opacity="0.07"/>
+      </pattern>
+      <pattern id="tgMajor" width="230" height="230" patternUnits="userSpaceOnUse">
+        <rect width="230" height="230" fill="url(#tgMinor)"/>
+        <path d="M230 0H0V230" fill="none" stroke="%(na)s" stroke-width="2.5"
+              stroke-opacity="0.10"/>
+      </pattern>
+    </defs>
+    <rect width="100%%" height="100%%" fill="url(#tgMajor)"/>
+  </svg>
+  <div class="tg-district d1"></div>
+  <div class="tg-district d2"></div>
+  <div class="tg-district d3"></div>
+</div>
 """ % {"a": t["accent"], "g": t["glow"], "na": t["nav_a"], "nb": t["nav_b"],
        "f": t["file"]}
     st.markdown(css, unsafe_allow_html=True)

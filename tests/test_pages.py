@@ -268,3 +268,33 @@ def test_every_theme_is_a_full_hex_pair():
     for key, t in _ui.PAGE_THEME.items():
         for slot in ("accent", "glow"):
             assert re.fullmatch(r"#[0-9a-fA-F]{6}", t[slot]), (key, slot)
+
+
+def test_background_renders_and_stays_behind_content():
+    """The background is decoration; it must never sit over text.
+
+    Pins the two properties that keep it safe: it is fixed behind the content
+    layer, and the content layer is raised above it. If either is lost, moving
+    artwork ends up under paragraphs.
+    """
+    import ui as _ui
+    css = _ui.CSS
+    assert ".tg-bg { position:fixed" in css.replace("\n", " ").replace("  ", " ") \
+        or "position:fixed" in css
+    assert "z-index:0" in css and "z-index:1" in css
+    assert "prefers-reduced-motion" in css
+
+
+def test_nav_text_is_opaque_white_on_the_bar():
+    """The nav was unreadable once: translucent white on a light gradient."""
+    import ui as _ui
+    assert "color:#fff !important" in _ui.CSS
+    assert "rgba(255,255,255,.92) !important" not in _ui.CSS
+
+
+def test_every_page_still_shows_its_pills():
+    for page in ["app.py", "pages/1_Heat_Waves.py",
+                 "pages/2_Data_Centre_Siting.py", "pages/3_Urban_Planning.py",
+                 "pages/4_Methods_and_Evidence.py"]:
+        src = (REPO / page).read_text(encoding="utf-8")
+        assert "pills=[" in src, f"{page} lost its masthead pills"
