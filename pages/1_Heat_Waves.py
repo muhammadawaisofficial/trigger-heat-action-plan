@@ -33,9 +33,7 @@ city_name, city = ui.city_picker("hw_city")
 guide = ui.guidance()
 national = ui.results("national.json")
 
-ui.masthead("Heat waves",
-            pills=[city["short"], "per-neighbourhood detection",
-                   "absolute vs percentile basis"])
+ui.masthead("Heat waves")
 ui.topnav()
 
 st.title("Which neighbourhoods are in a heat wave — and since when")

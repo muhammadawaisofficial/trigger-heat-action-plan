@@ -28,9 +28,7 @@ ui.theme("planning")
 city_name, city = ui.city_picker("up_city")
 national = ui.results("national.json")
 
-ui.masthead("Urban planning",
-            pills=["30 US metros", "measured gap × published effect size",
-                   "intervention magnitude, not advice"])
+ui.masthead("Urban planning")
 ui.topnav()
 
 st.title("How much intervention, and exactly where")

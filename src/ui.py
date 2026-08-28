@@ -93,25 +93,31 @@ CSS = """
   hr, [data-testid="stDivider"] { margin:2.1rem 0 1.7rem !important; }
 
   /* ---------- the navbar ---------- */
-  /* Masthead and nav are one object. Previously they were two strips with a
-     gap, which read as a header and then some buttons rather than as a bar. */
+  /* One coloured bar carrying the brand and the page links. Previously this was
+     a white masthead above a row of white boxes on a white page -- three
+     surfaces of the same colour, so it read as nothing at all. */
   .tg-mast { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;
-    padding:.85rem 1.1rem .8rem; margin-bottom:0;
-    background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
-    border:1px solid #ececef; border-bottom:none;
-    border-radius:14px 14px 0 0; }
-  .tg-navwrap { background:rgba(255,255,255,.92); border:1px solid #ececef;
-    border-top:none; border-radius:0 0 14px 14px; padding:.15rem .6rem .6rem;
-    margin-bottom:1.6rem;
-    box-shadow:0 1px 2px rgba(24,24,27,.05), 0 10px 26px -18px rgba(24,24,27,.3); }
+    padding:.9rem 1.25rem .75rem; margin:0;
+    background:linear-gradient(135deg, var(--tg-nav-a), var(--tg-nav-b));
+    border-radius:16px 16px 0 0; }
+  .tg-brand { font-size:1.4rem; font-weight:900; letter-spacing:-.04em;
+    color:#fff; }
+  .tg-tag { color:rgba(255,255,255,.78); font-size:.97rem; }
+
+  .tg-navwrap { background:linear-gradient(135deg, var(--tg-nav-a), var(--tg-nav-b));
+    border-radius:0 0 16px 16px; padding:0 .75rem .7rem; margin-bottom:1.7rem;
+    box-shadow:0 10px 30px -18px var(--tg-nav-a); }
 
   [data-testid="stHorizontalBlock"]:has([data-testid="stPageLink"]) {
-    gap:.4rem !important; }
-  [data-testid="stPageLink"] a { border:1px solid transparent; border-radius:9px;
-    padding:.48rem .6rem; background:transparent; font-size:.83rem;
-    font-weight:600; color:#6b7280; justify-content:center; transition:all .14s; }
-  [data-testid="stPageLink"] a:hover { background:#f4f4f5; }
-  [data-testid="stPageLink"] a p { font-weight:600 !important; font-size:.83rem; }
+    gap:.35rem !important; }
+  [data-testid="stPageLink"] a { border:1px solid rgba(255,255,255,.22);
+    border-radius:9px; padding:.5rem .55rem; background:rgba(255,255,255,.10);
+    justify-content:center; transition:all .15s; }
+  [data-testid="stPageLink"] a p, [data-testid="stPageLink"] a span {
+    color:rgba(255,255,255,.92) !important; font-weight:600 !important;
+    font-size:.82rem !important; }
+  [data-testid="stPageLink"] a:hover { background:rgba(255,255,255,.22);
+    border-color:rgba(255,255,255,.45); }
 
   /* ---------- pipeline ---------- */
   .tg-flow { display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center;
@@ -146,6 +152,34 @@ CSS = """
     border-right:1px solid #e4e4e7; }
   code, .stCode { font-family:'JetBrains Mono',monospace !important; }
   iframe { border-radius:13px; }
+
+  /* ---------- page background ---------- */
+  /* Three blurred shapes drifting slowly behind the content. They sit at low
+     opacity BEHIND every card and chart, which keeps text on a solid surface --
+     decoration must never cost legibility. Motion is slow and non-looping-
+     looking so it reads as depth rather than as something demanding attention.
+     Honours prefers-reduced-motion. */
+  .tg-bg { position:fixed; inset:0; z-index:0; overflow:hidden;
+    pointer-events:none; }
+  .tg-orb { position:absolute; border-radius:50%; filter:blur(70px);
+    opacity:.42; }
+  .tg-orb.a { width:46vw; height:46vw; left:-10vw; top:-12vw;
+    background:var(--tg-nav-a); animation:tgDriftA 34s ease-in-out infinite; }
+  .tg-orb.b { width:38vw; height:38vw; right:-8vw; top:4vh;
+    background:var(--tg-nav-b); animation:tgDriftB 42s ease-in-out infinite; }
+  .tg-orb.c { width:30vw; height:30vw; left:38vw; bottom:-14vw;
+    background:var(--tg-accent); opacity:.22;
+    animation:tgDriftC 50s ease-in-out infinite; }
+  @keyframes tgDriftA { 0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(6vw,4vh) scale(1.10)} }
+  @keyframes tgDriftB { 0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-5vw,6vh) scale(1.14)} }
+  @keyframes tgDriftC { 0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-4vw,-5vh) scale(1.08)} }
+  @media (prefers-reduced-motion: reduce) {
+    .tg-orb { animation:none !important; } }
+  /* Content rides above the background, on its own opaque surfaces. */
+  .stApp > div { position:relative; z-index:1; }
 
   /* ---------- responsive ---------- */
   @media (max-width: 900px) {
@@ -310,48 +344,61 @@ def tier_for(overnight_low_f: float | None, daily_high_f: float | None = None) -
 # would mean "you are on the siting page" in one place and a measured value in
 # another, which is the fastest way to make a chart lie.
 PAGE_THEME = {
-    "home":     {"accent": "#b2182b", "glow": "#ffe6e3", "file": "app"},
-    "heat":     {"accent": "#c2410c", "glow": "#ffeadf", "file": "1_Heat_Waves"},
-    "siting":   {"accent": "#1d6a96", "glow": "#e3f1f9", "file": "2_Data_Centre_Siting"},
-    "planning": {"accent": "#2d6a4f", "glow": "#e4f2ea", "file": "3_Urban_Planning"},
-    "methods":  {"accent": "#4a4458", "glow": "#eeedf3", "file": "4_Methods_and_Evidence"},
+    "home":     {"accent": "#b2182b", "nav_a": "#8c1220", "nav_b": "#c9455a",
+                 "glow": "#ffe6e3", "file": "app"},
+    "heat":     {"accent": "#c2410c", "nav_a": "#9a3412", "nav_b": "#ea7317",
+                 "glow": "#ffeadf", "file": "1_Heat_Waves"},
+    "siting":   {"accent": "#1d6a96", "nav_a": "#14506f", "nav_b": "#3d8cb8",
+                 "glow": "#e3f1f9", "file": "2_Data_Centre_Siting"},
+    "planning": {"accent": "#2d6a4f", "nav_a": "#1f4f3a", "nav_b": "#4f9b73",
+                 "glow": "#e4f2ea", "file": "3_Urban_Planning"},
+    "methods":  {"accent": "#4a4458", "nav_a": "#39344a", "nav_b": "#6d6484",
+                 "glow": "#eeedf3", "file": "4_Methods_and_Evidence"},
 }
 
 
 def theme(page: str) -> None:
-    """Tint the page's chrome, and lay a soft wash behind it.
+    """Tint this page's chrome and lay a moving background behind it.
 
-    Flat white against flat white is what made the pages read as unfinished.
-    Two low-opacity radial washes in the page's own accent give the content
-    something to sit on without competing with any chart.
+    Two jobs. First, the navbar and accents take the page's own colour so a
+    reader knows where they are without reading the title. Second, three
+    slow-drifting blurred shapes sit BEHIND the content -- the page was flat
+    white, and flat white against flat white is what made it read as
+    unfinished.
+
+    The background is deliberately weak. Every card, chart and table above it
+    keeps its own opaque surface, so nothing decorative ever lands underneath
+    text. Decoration that costs legibility is a net loss, especially in front of
+    engineer judges.
     """
     t = PAGE_THEME.get(page, PAGE_THEME["home"])
-    a, g = t["accent"], t["glow"]
     css = """
 <style>
-  .stApp { background:
-      radial-gradient(1100px 480px at 10%% -8%%, %(g)s 0%%, transparent 60%%),
-      radial-gradient(900px 420px at 95%% 0%%, %(g)s 0%%, transparent 55%%),
-      linear-gradient(180deg,#fcfcfd 0%%,#f6f6f8 100%%); }
+  :root { --tg-accent:%(a)s; --tg-glow:%(g)s;
+          --tg-nav-a:%(na)s; --tg-nav-b:%(nb)s; }
+  .stApp { background:linear-gradient(180deg,#fbfbfc 0%%,#f5f5f7 100%%); }
   .tg-q, .tg-kicker { color:%(a)s !important; }
   .tg-step-n, .tg-rank { background:%(a)s !important; }
-  .tg-pill { background:%(a)s !important; }
   [data-testid="stMetric"]::before {
-      background:linear-gradient(90deg,%(a)s,%(a)s55) !important; }
+      background:linear-gradient(90deg,%(na)s,%(nb)s) !important; }
   .tg-quote { border-left-color:%(a)s !important; }
   .tg-vs-mid { color:%(a)s !important; }
   .stTabs [aria-selected="true"] { color:%(a)s !important; background:%(g)s !important; }
   .tg-next .tg-card:hover { border-color:%(a)s !important; }
   .tg-hero { background:
       radial-gradient(ellipse 70%% 120%% at 50%% -10%%, %(g)s 0%%, transparent 65%%),
-      linear-gradient(180deg,#fff,#fff) !important;
+      #fff !important;
       border-color:%(a)s33 !important;
       box-shadow:0 2px 4px %(a)s0d, 0 18px 40px -24px %(a)s59 !important; }
-  .tg-hero::before { background:linear-gradient(90deg,%(a)s,%(a)saa,%(a)s44) !important; }
+  .tg-hero::before { background:linear-gradient(90deg,%(na)s,%(nb)s) !important; }
   .tg-num { color:%(a)s !important; }
-  [data-testid="stPageLink"] a:hover { border-color:%(a)s !important; color:%(a)s !important; }
-  a[href$="/%(f)s"] { background:%(a)s !important; border-color:%(a)s !important; }
-  a[href$="/%(f)s"] p, a[href$="/%(f)s"] span { color:#fff !important; }
+  /* the page you are on, filled solid on the bar */
+  a[href$="/%(f)s"] { background:#fff !important;
+      border-color:#fff !important; }
+  a[href$="/%(f)s"] p, a[href$="/%(f)s"] span { color:%(na)s !important; }
 </style>
-""" % {"a": a, "g": g, "f": t["file"]}
+<div class="tg-bg"><div class="tg-orb a"></div><div class="tg-orb b"></div>
+<div class="tg-orb c"></div></div>
+""" % {"a": t["accent"], "g": t["glow"], "na": t["nav_a"], "nb": t["nav_b"],
+       "f": t["file"]}
     st.markdown(css, unsafe_allow_html=True)

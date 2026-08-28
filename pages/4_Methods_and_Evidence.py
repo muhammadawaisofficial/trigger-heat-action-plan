@@ -123,9 +123,7 @@ for _ft in geo.get("features", []):
             _walk(_x)
     _walk(_ft["geometry"]["coordinates"])
 
-ui.masthead("Methods & evidence",
-            pills=[CITY["short"], "clause-level detail",
-                   "replication · API findings · retractions"])
+ui.masthead("Methods & evidence")
 ui.topnav()
 
 st.title("How the number was computed, and what would falsify it")

@@ -23,11 +23,7 @@ ui.style()
 ui.theme("siting")
 
 national = ui.results("national.json")
-ui.masthead("Data centre siting",
-            pills=[f"{national.get('n_metros', 0)} US metros",
-                   "free-cooling hours measured at 100 m",
-                   "ASHRAE 24 °C setpoint"] if national else [],
-            warn=None if national else "data not generated")
+ui.masthead("Data centre siting")
 ui.topnav()
 
 st.title("Where should a data centre go?")

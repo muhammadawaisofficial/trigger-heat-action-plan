@@ -106,10 +106,7 @@ for _c in res["clauses"]:
 exposed = summary.get("population_exposed")
 total_pop = summary.get("population_total")
 
-ui.masthead("who does the heat plan miss?",
-            pills=[CITY["short"], f"{len(res['zones'])} {CITY['unit']}s",
-                   f"{CITY['tiles']} tiles/day at 100 m",
-                   "real API data · reproducible offline"])
+ui.masthead("who does the heat plan miss?")
 ui.topnav()
 
 # ═══════════════════════════════════════════════════ 1 · WHAT IS WRONG
