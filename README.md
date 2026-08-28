@@ -5,6 +5,21 @@
 The live app needs **no API key and no sign-in**. Everything reproduces offline
 too: `python run_demo.py`.
 
+---
+
+## **1,184,971 people — 72% of Phoenix**
+
+live in a neighbourhood that got hot enough to trigger the City's own Heat
+Action Plan, **on nights the citywide reading never did**. So the plan stayed
+off. 10 of 15 urban villages, across one measured heat event.
+
+We compiled Phoenix's published Heat Response Plan into executable rules, then
+re-ran every rule against FortyGuard's 2-metre data at 100 m resolution —
+272,917 tiles a day — and measured what a single station reading misses.
+
+*Verified end to end by `python verify_all.py`. The citywide comparator is a
+**proxy**, and a generous one, so this is a lower bound.*
+
 
 > ## One flaw, two failure modes
 >

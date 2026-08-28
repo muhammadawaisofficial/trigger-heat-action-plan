@@ -113,14 +113,11 @@ ui.topnav()
 # ═══════════════════════════════════════════════════ 1 · WHAT IS WRONG
 st.markdown('<p class="tg-q">1 — The problem</p>', unsafe_allow_html=True)
 st.markdown(
-    f'<p class="tg-lead">{CITY["short"]} has a <b>Heat Action Plan</b>: a legal '
-    f'document that says who must do what when it gets hot enough. '
-    f'"Open cooling centres at {CITY["trigger"]}." Real duties, real budgets, '
-    f'named departments.<br><br>'
-    f'<b>The whole plan is switched on and off by one number</b> — a single '
-    f'reading, usually from the airport weather station. But heat is not one '
-    f'number. On the same night, one neighbourhood can be far hotter than '
-    f'another.</p>', unsafe_allow_html=True)
+    f'<p class="tg-lead">{CITY["short"]} has a <b>Heat Action Plan</b> — a legal '
+    f'document naming who must act, and at what temperature. '
+    f'<b>The whole plan is switched on and off by one number:</b> a single '
+    f'reading, usually from the airport. But heat is not one number.</p>',
+    unsafe_allow_html=True)
 
 st.markdown(
     '<div class="tg-plain"><div class="tg-vs">'
@@ -134,10 +131,9 @@ st.markdown(
     '</div></div>', unsafe_allow_html=True)
 
 st.markdown(
-    "**So here is the question this app answers:** on nights when the airport "
-    "reading stayed below the threshold — so the plan never switched on — were "
-    "there neighbourhoods that had *already* crossed it? And if so, **how many "
-    "people live there?**")
+    "**The question this app answers:** on nights the airport reading stayed "
+    "below the threshold — so the plan never switched on — had any "
+    "neighbourhood *already* crossed it? And how many people live there?")
 
 st.divider()
 
