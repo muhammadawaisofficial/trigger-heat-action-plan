@@ -151,3 +151,70 @@ def missing(what: str, how: str) -> None:
     st.info(f"**{what}** has not been generated in this checkout.\n\n"
             f"Run `{how}` to produce it. Every other page works without it.",
             icon="ℹ️")
+
+
+# --------------------------------------------------------------------- cities
+# The pipeline is city-agnostic, so the interface is too. This lives here rather
+# than in any one page so every page offers the same cities from one definition.
+
+CITIES = {
+    "Phoenix, Arizona": {
+        "results": REPO / "data" / "results" / "divergence.json",
+        "zones":   REPO / "data" / "zones" / "phoenix_villages_raw.geojson",
+        "pop":     REPO / "data" / "zones" / "phoenix_villages_population.json",
+        "unit": "urban village", "short": "Phoenix",
+        "trigger": "90 °F overnight low",
+        "plan_url": "https://www.phoenix.gov/content/dam/phoenix/heatsite/documents/2026%20Heat%20Response%20Plan.pdf",
+        "plan": "City of Phoenix 2026 Heat Response Plan",
+        "centre": [33.55, -112.09], "tiles": "272,917", "aoi": "1,053",
+        "note": "Arid. Heat index sits BELOW air temperature here, so Phoenix "
+                "triggers on dry-bulb — the right choice for its climate.",
+    },
+    "New York City": {
+        "results": REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json",
+        "zones":   REPO / "data" / "zones" / "nyc_cd.geojson",
+        "pop":     REPO / "data" / "zones" / "nyc_cd_population.json",
+        "unit": "community district", "short": "New York",
+        "trigger": "100 °F heat index",
+        "plan_url": "https://home3.nyc.gov/site/em/ready/extreme-heat.page",
+        "plan": "NYC Heat Emergency Plan (NYCEM / DOHMH)",
+        "centre": [40.75, -73.95], "tiles": "71,988", "aoi": "346",
+        "note": "Humid. Heat index sits ABOVE air temperature here, so New York "
+                "triggers on heat index — also the right choice for its climate.",
+    },
+}
+
+
+def city_picker(key: str = "city") -> tuple[str, dict]:
+    """Sidebar city selector, identical on every page that offers one."""
+    with st.sidebar:
+        st.markdown("### City")
+        name = st.radio("City", list(CITIES), label_visibility="collapsed",
+                        key=key)
+        st.caption(CITIES[name]["note"])
+    return name, CITIES[name]
+
+
+def guidance() -> dict:
+    return load(str(REPO / "data" / "heat_guidance.json"))
+
+
+def tier_for(overnight_low_f: float | None, daily_high_f: float | None = None) -> dict:
+    """The danger tier a measurement falls in.
+
+    Overnight low governs where the two disagree, because the epidemiological
+    literature ties mortality to the failure to cool at night rather than to the
+    daytime peak -- the reason that rule exists is recorded in the data file.
+    """
+    levels = guidance().get("levels", [])
+    if not levels:
+        return {}
+    chosen = levels[0]
+    for lv in levels:
+        lo_ok = (overnight_low_f is not None
+                 and lv["overnight_low_f"][0] <= overnight_low_f < lv["overnight_low_f"][1])
+        hi_ok = (overnight_low_f is None and daily_high_f is not None
+                 and lv["daily_high_f"][0] <= daily_high_f < lv["daily_high_f"][1])
+        if lo_ok or hi_ok:
+            chosen = lv
+    return chosen

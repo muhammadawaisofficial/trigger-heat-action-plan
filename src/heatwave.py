@@ -83,6 +83,44 @@ class HeatWave:
         }
 
 
+#: Units that carry a TEMPERATURE. Anything else is a different physical
+#: quantity and cannot be compared against a degF threshold -- see _guard_units.
+TEMPERATURE_UNITS = {"degC", "degF", "celsius", "fahrenheit", "C", "F"}
+
+
+def _villages(population: dict | None) -> dict:
+    """Accept either the population file or its inner ``villages`` mapping.
+
+    The population files are ``{"meta": {...}, "villages": {zone_id: {...}}}``.
+    Passing the whole file where the inner mapping was wanted looks up zone ids
+    against the keys ``meta`` and ``villages``, finds nothing, and silently
+    reports every population as zero -- a wrong number rather than an error.
+    """
+    if not population:
+        return {}
+    inner = population.get("villages")
+    return inner if isinstance(inner, dict) else population
+
+
+def _guard_units(units: str, clause_id: str) -> None:
+    """Refuse to treat a non-temperature series as a temperature.
+
+    Exceedance clauses come back in ``hours`` -- a value of 5.8 means the zone
+    spent 5.8 hours past its threshold. Comparing that to a 105 degF heat-wave
+    threshold is arithmetic on two different physical quantities: it raises no
+    error, returns zero waves, and reads as "no heat wave here". This is the
+    unit-chain trap the project documents, so it is enforced rather than
+    trusted.
+    """
+    if units not in TEMPERATURE_UNITS:
+        raise ValueError(
+            f"{clause_id}: series is in '{units}', not a temperature. Heat-wave "
+            f"detection needs a temperature per day; an exceedance clause "
+            f"measures HOURS past a threshold and cannot be compared against a "
+            f"degF heat-wave threshold. Select a clause whose analytic returns "
+            f"a temperature.")
+
+
 def detect_waves(series: dict[str, list[tuple[str, float]]],
                  names: dict[str, str],
                  threshold_f: float,
@@ -95,7 +133,7 @@ def detect_waves(series: dict[str, list[tuple[str, float]]],
     calendar days for the run logic to mean what it says; the caller supplies
     them in order from a contiguous study window.
     """
-    population = population or {}
+    population = _villages(population)
     out: list[HeatWave] = []
 
     for zid, rows in series.items():
@@ -168,6 +206,8 @@ def from_results(results: dict, clause_id: str | None = None,
             names[z["zone_id"]] = z["name"]
             pooled.append(val)
 
+    _guard_units(units, clause.get("clause_id", "clause"))
+
     thr_abs = clause.get("threshold_f", 0.0)
     thr_pct = percentile(pooled, pct) if pooled else thr_abs
 
@@ -193,3 +233,20 @@ def from_results(results: dict, clause_id: str | None = None,
                      f"distribution, not a rule a city could adopt as written."),
         },
     }
+
+
+def temperature_clauses(results: dict) -> list[dict]:
+    """Clauses whose series is a temperature, so heat-wave detection applies.
+
+    Exposed so a caller can offer only the clauses this analysis is valid for,
+    rather than offering all of them and raising on the ones that are not.
+    """
+    out = []
+    for c in results.get("clauses", []):
+        det = c.get("determinations") or []
+        zones = det[0].get("zones") if det else None
+        if not zones:
+            continue
+        if zones[0].get("units") in TEMPERATURE_UNITS:
+            out.append(c)
+    return out

@@ -23,6 +23,7 @@ from streamlit_folium import st_folium
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import study  # noqa: E402
+import ui  # noqa: E402
 from alerts import detect, summarise  # noqa: E402
 
 REPO = Path(__file__).parent
@@ -40,126 +41,10 @@ st.set_page_config(page_title="TRIGGER — Heat Action Plan Compiler",
                    initial_sidebar_state="expanded")
 
 # --------------------------------------------------------------------- styling
-# One stylesheet, applied once. Streamlit's defaults read as a prototype; a
-# judge sees the page before they read a word of it.
-st.markdown("""
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-
-  html, body, [class*="css"] { font-family: 'Inter', -apple-system, sans-serif; }
-
-  .block-container { padding-top: 2.2rem; padding-bottom: 3rem; max-width: 1400px; }
-
-  /* Kill the default Streamlit chrome that reads as "unfinished demo". */
-  #MainMenu, footer, header { visibility: hidden; }
-
-  h1 { font-weight: 800 !important; letter-spacing: -0.03em; font-size: 2.1rem !important; }
-  h2, h3 { font-weight: 700 !important; letter-spacing: -0.02em; }
-
-  /* ---- masthead */
-  .tg-mast {
-    display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;
-    padding-bottom:0.6rem; border-bottom:1px solid #e4e4e7; margin-bottom:1.6rem;
-  }
-  .tg-pill {
-    font-size:0.7rem; font-weight:700; letter-spacing:0.09em; text-transform:uppercase;
-    padding:0.28rem 0.7rem; border-radius:999px; background:#18181b; color:#fff;
-  }
-  .tg-pill.ghost { background:#f4f4f5; color:#52525b; border:1px solid #e4e4e7; }
-
-  /* ---- what this is */
-  .tg-explain { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
-                gap:1.1rem; margin:0.4rem 0 1.3rem; }
-  .tg-step { display:flex; gap:0.85rem; align-items:flex-start;
-             background:#fff; border:1px solid #e4e4e7; border-radius:12px;
-             padding:1.05rem 1.15rem; }
-  .tg-step-n { font-size:0.68rem; font-weight:800; letter-spacing:0.1em;
-               color:#fff; background:#b2182b; border-radius:6px;
-               padding:0.22rem 0.44rem; flex:none; margin-top:0.15rem; }
-  .tg-step-h { font-weight:700; font-size:1.02rem; margin-bottom:0.3rem;
-               letter-spacing:-0.01em; }
-  .tg-step p { font-size:0.9rem; color:#52525b; line-height:1.6; margin:0; }
-
-  /* ---- pipeline strip */
-  .tg-flow { display:flex; align-items:stretch; gap:0.4rem; flex-wrap:wrap;
-             justify-content:center; padding:1rem; background:#fafafa;
-             border:1px solid #e4e4e7; border-radius:12px; margin-bottom:1.4rem; }
-  .tg-node { display:flex; flex-direction:column; justify-content:center;
-             background:#fff; border:1px solid #d4d4d8; border-radius:9px;
-             padding:0.55rem 0.85rem; font-size:0.84rem; font-weight:600;
-             text-align:center; }
-  .tg-node small { display:block; font-weight:400; font-size:0.7rem;
-                   color:#71717a; margin-top:0.15rem; }
-  .tg-node-api { border-color:#b2182b; background:#fff5f5; color:#b2182b; }
-  .tg-node-out { background:#18181b; color:#fff; border-color:#18181b; }
-  .tg-arr { align-self:center; color:#a1a1aa; font-weight:700; }
-
-  /* ---- hero */
-  .tg-hero {
-    text-align:center; padding:2.4rem 1rem 1.8rem;
-    background:
-      radial-gradient(ellipse 80% 100% at 50% 0%, #fff1f0 0%, transparent 70%),
-      linear-gradient(180deg,#fafafa 0%,#ffffff 100%);
-    border:1px solid #f0d9d7; border-radius:16px; margin-bottom:0.9rem;
-  }
-  .tg-num {
-    font-size:clamp(3.2rem,9vw,6rem); line-height:0.95; font-weight:800;
-    letter-spacing:-0.045em; color:#b2182b;
-    font-variant-numeric:tabular-nums;
-  }
-  .tg-sub { font-size:1.12rem; color:#3f3f46; margin-top:0.9rem; line-height:1.65; }
-  .tg-sub b { color:#18181b; }
-  .tg-kicker {
-    font-size:0.72rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
-    color:#b2182b; margin-bottom:0.9rem;
-  }
-
-  /* ---- metric cards */
-  [data-testid="stMetric"] {
-    background:#fff; border:1px solid #e4e4e7; border-radius:12px;
-    padding:1rem 1.1rem; box-shadow:0 1px 2px rgba(0,0,0,.04);
-  }
-  [data-testid="stMetricValue"] {
-    font-size:clamp(1.15rem,1.6vw,1.75rem) !important; white-space:nowrap; font-weight:700; letter-spacing:-0.02em;
-    font-variant-numeric:tabular-nums;
-  }
-  [data-testid="stMetricLabel"] {
-    font-size:0.74rem !important; font-weight:600; letter-spacing:0.05em;
-    text-transform:uppercase; color:#71717a;
-  }
-
-  .tg-rank { display:inline-block; background:#b2182b; color:#fff;
-             font-weight:800; font-size:0.85rem; border-radius:6px;
-             padding:0.1rem 0.5rem; margin-right:0.5rem; vertical-align:2px; }
-
-  /* ---- legend */
-  .tg-legend {
-    display:flex; gap:1.4rem; flex-wrap:wrap; align-items:center;
-    font-size:0.86rem; color:#52525b; padding:0.8rem 1rem;
-    background:#fafafa; border:1px solid #e4e4e7; border-radius:10px; margin-top:0.6rem;
-  }
-  .tg-sw { display:inline-block; width:15px; height:15px; border-radius:4px;
-           margin-right:0.45rem; vertical-align:-2px; }
-
-  /* ---- source quote */
-  .tg-quote {
-    border-left:3px solid #b2182b; padding:0.9rem 1.2rem; background:#fafafa;
-    border-radius:0 10px 10px 0; font-style:italic; color:#27272a; line-height:1.7;
-  }
-
-  /* ---- tabs */
-  .stTabs [data-baseweb="tab-list"] { gap:0.35rem; border-bottom:1px solid #e4e4e7; }
-  .stTabs [data-baseweb="tab"] {
-    height:44px; padding:0 1.1rem; font-weight:600; font-size:0.92rem;
-    border-radius:8px 8px 0 0;
-  }
-  .stTabs [aria-selected="true"] { background:#fff5f5; color:#b2182b; }
-
-  section[data-testid="stSidebar"] { background:#fafafa; border-right:1px solid #e4e4e7; }
-  code, .stCode { font-family:'JetBrains Mono', monospace !important; }
-  iframe { border-radius:12px; }
-</style>
-""", unsafe_allow_html=True)
+# One stylesheet for the WHOLE app, defined in src/ui.py and applied here and
+# on every page. Defining it per page is how two pages drift into looking like
+# two products.
+ui.style()
 
 
 # ------------------------------------------------------------------- cities
@@ -167,32 +52,7 @@ st.markdown("""
 # re-renders every number on the page from that city's own committed results --
 # which is the portability claim demonstrated rather than asserted.
 
-CITIES = {
-    "Phoenix, Arizona": {
-        "results": REPO / "data" / "results" / "divergence.json",
-        "zones":   REPO / "data" / "zones" / "phoenix_villages_raw.geojson",
-        "pop":     REPO / "data" / "zones" / "phoenix_villages_population.json",
-        "unit": "urban village", "short": "Phoenix",
-        "trigger": "90 °F overnight low",
-        "plan_url": "https://www.phoenix.gov/content/dam/phoenix/heatsite/documents/2026%20Heat%20Response%20Plan.pdf",
-        "plan": "City of Phoenix 2026 Heat Response Plan",
-        "centre": [33.55, -112.09], "tiles": "272,917", "aoi": "1,053",
-        "note": "Arid. Heat index sits BELOW air temperature here, so Phoenix "
-                "triggers on dry-bulb — the right choice for its climate.",
-    },
-    "New York City": {
-        "results": REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json",
-        "zones":   REPO / "data" / "zones" / "nyc_cd.geojson",
-        "pop":     REPO / "data" / "zones" / "nyc_cd_population.json",
-        "unit": "community district", "short": "New York",
-        "trigger": "100 °F heat index",
-        "plan_url": "https://home3.nyc.gov/site/em/ready/extreme-heat.page",
-        "plan": "NYC Heat Emergency Plan (NYCEM / DOHMH)",
-        "centre": [40.75, -73.95], "tiles": "71,988", "aoi": "346",
-        "note": "Humid. Heat index sits ABOVE air temperature here, so New York "
-                "triggers on heat index — also the right choice for its climate.",
-    },
-}
+CITIES = ui.CITIES
 
 
 @st.cache_data
