@@ -165,6 +165,7 @@ quotes and narrates verified results. It decides nothing.
 | [The precedent](#the-precedent-new-york-already-fixed-a-version-of-this) | A documented natural experiment: NYC changed its threshold and hospitalisations fell |
 | [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
 | [What we got wrong](#what-we-got-wrong) | Three corrections, and the mechanism that keeps them honest |
+| [The four pages](#the-four-pages) | Divergence, heat waves, siting, urban planning — and what each is measured from |
 | [5. Limitations](#5-limitations) | What this does not show |
 
 ---
@@ -771,6 +772,85 @@ rather than a retracted claim quietly sitting in the repository as though it wer
 still true.
 
 ---
+
+---
+
+## The four pages
+
+The compiler and the divergence measurement are the project. The other three
+pages apply the same discipline — measure at 100 m, state what is measured and
+what is merely referenced — to three questions the same data can answer.
+
+| Page | Question | Measured by us | Taken from published sources |
+|---|---|---|---|
+| **Divergence** (home) | Who does the citywide trigger miss? | tiles → zones, per clause, per day | plan thresholds, population |
+| **Heat waves** | Which neighbourhoods are in one, since when? | per-zone temperature per day | danger tiers, structured after NWS HeatRisk |
+| **Data centre siting** | Where is cooling cheapest nationally? | free-cooling hours, wet-bulb, overnight low | electricity price, water stress, disaster risk (state level) |
+| **Urban planning** | How much intervention, and where? | thermal gap, per zone and per metro | canopy and albedo effect sizes |
+
+### Heat waves
+
+A heat wave is a **run**, not a hot day, and it does not start on the same night
+across a city. The page leads with a **threshold ladder**: the same week, the
+same zones, the same measurements, detected against each threshold in turn.
+
+> At **90 °F** that week is **10 heat waves covering 1,184,971 residents**.
+> At **110 °F** it is **zero**.
+>
+> Nothing about the weather changes down that table. Only the number written in
+> the plan changes.
+
+It reports two bases side by side — the **absolute** threshold, which is what
+plans govern on, and a **percentile** of the city's own distribution, which is
+what the epidemiological literature uses, because the temperature at which
+people begin dying is relative to what they are acclimatised to. Danger tiers
+are keyed to **overnight low**, since mortality tracks the failure to cool at
+night rather than the daytime peak.
+
+**It does not forecast, and says so.** The API serves measured history and about
+twelve hours ahead; a multi-day heat-wave prediction is not something this data
+supports, so none is shown. A forecast product would need an NWP feed (NWS/NBM
+or ECMWF) joined to the hyperlocal layer — a real design, simply not this one.
+
+### Urban planning
+
+Generic advice — plant trees, raise albedo — is not wrong, it is unquantified.
+It never says how much, or where. This page joins a **measured** thermal gap to
+**published** effect sizes so every recommendation carries a magnitude:
+canopy at **0.3 °C per +10 points of cover**, cool roofs at **0.3 °C**
+residential. Both are the conservative end of the published range, chosen
+because they generalise across a 30-metro panel; Phoenix-specific work reports
+up to 2.0 °C for canopy, and full canopy against treeless ground reaches 5.5 °C.
+
+Ranking a city's own zones weights measured heat **by residents** — temperature
+alone ranks empty ground above a dense neighbourhood. That puts **Maryvale**
+first, the neighbourhood already identified in the literature as Phoenix's most
+heat-vulnerable, reached from measurement rather than assumed.
+
+**One honest limit, stated on the page.** Intra-metro spread is computed over
+every tile in a 10 km box, and that box contains whatever is there. Seattle's
+45.9 °F spread is partly Puget Sound and hills — it is *not* by itself evidence
+of an unjust heat island. What spread reliably measures is the range of thermal
+conditions a single citywide number is standing in for, which is the claim this
+project actually makes.
+
+### Two bugs this wiring exposed
+
+`heatwave.py` existed for several commits before any page imported it. Wiring it
+up surfaced two defects that would each have shipped a **wrong number rather
+than an error** — the failure mode this repo is most concerned with:
+
+- **Units.** `PHX-2026-A1.1` is an exceedance clause measured in **hours**. A
+  zone value of 5.8 means 5.8 hours past its threshold, and it was being
+  compared against 105 °F. That raised nothing and reported *no heat wave*.
+  Now guarded; the page only offers clauses the analysis is valid for.
+- **Population.** The population files are `{meta, villages{...}}` and the
+  lookup ran against the outer mapping, so every population came back **zero** —
+  Phoenix's 1,184,971 reported as 0. Now accepts either shape.
+
+Both are pinned by tests, along with threshold monotonicity and the rule that a
+1 °C improvement converts to **1.8 °F and never 33.8** — a difference converts
+by ratio alone.
 
 ## 5. Limitations
 
