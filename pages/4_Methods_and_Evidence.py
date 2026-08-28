@@ -217,29 +217,27 @@ MISSIONS = {
         "The full compiled clause inventory with provenance.",
 }
 
-with st.sidebar:
-    st.header("Mission")
-    mission = st.radio("Preset mission", list(MISSIONS.keys()),
-                       label_visibility="collapsed")
-    st.caption(MISSIONS[mission])
-
-    st.divider()
-    st.header("Clause")
-    # Default to the clause carrying the headline.
+# These controls change only what THIS section shows, so they live next to it.
+# In the sidebar they read as global settings and leave the reader unsure which
+# part of the page a given knob affects.
+_m1, _m2, _m3 = st.columns([2, 2, 3])
+with _m1:
+    mission = st.radio("Question to ask", list(MISSIONS.keys()))
+with _m2:
     ids = list(clauses.keys())
+    # Default to the clause carrying the headline.
     default = next((i for i, k in enumerate(ids) if clauses[k]["silent_zone_days"]), 0)
-    clause_id = st.selectbox("Evaluable clause", ids, index=default,
+    clause_id = st.selectbox("Rule to test", ids, index=default,
                              format_func=lambda k: f"{k} ({clauses[k]['threshold_f']:g}°F)")
-
     cl = clauses[clause_id]
     days = [d["day"] for d in cl["determinations"]]
     worst = cl.get("worst_false_calm")
     day_default = days.index(worst[0]) if worst and worst[0] in days else len(days) - 1
+with _m3:
     day = st.select_slider("Day", options=days, value=days[day_default])
+    st.caption(MISSIONS[mission])
 
-    st.divider()
-    st.subheader("Baseline")
-    st.info(PROXY_LABEL)
+st.info(PROXY_LABEL)
 
 cl = clauses[clause_id]
 det = next(d for d in cl["determinations"] if d["day"] == day)

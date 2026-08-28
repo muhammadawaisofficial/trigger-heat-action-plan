@@ -195,6 +195,7 @@ def city_picker(key: str = "city") -> tuple[str, dict]:
     return name, CITIES[name]
 
 
+
 def guidance() -> dict:
     return load(str(REPO / "data" / "heat_guidance.json"))
 

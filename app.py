@@ -84,14 +84,6 @@ with st.sidebar:
         st.success("Switching city re-runs every number on this page from that "
                    "city's own data. Same code, one profile file per city.",
                    icon="🔀")
-    st.divider()
-    st.markdown("**More detail**")
-    st.page_link("pages/1_Heat_Waves.py", label="Heat waves", icon="🌡")
-    st.page_link("pages/2_Data_Centre_Siting.py", label="Data centre siting",
-                 icon="🏢")
-    st.page_link("pages/3_Urban_Planning.py", label="Urban planning", icon="🌳")
-    st.page_link("pages/4_Methods_and_Evidence.py",
-                 label="Methods & evidence", icon="🔬")
 
 res = load_json(str(CITY["results"]))
 geo = load_json(str(CITY["zones"]))
@@ -175,6 +167,28 @@ k[3].metric("Typical warning lost",
             f"{summary['median_lead_days']:.0f} days"
             if summary.get("median_lead_days") else "n/a",
             "before the citywide trigger caught up", delta_color="off")
+
+with st.expander(f"Why {summary['days']} days, and not a whole summer?"):
+    st.markdown(
+        f"**These {summary['days']} days were chosen by measurement, not "
+        f"convenience.** We first scanned **1 July – 15 Aug 2025** day by day "
+        f"over a small, cheap area and ranked every day by hours above the "
+        f"105 °F threshold the plan itself names. "
+        f"**{summary['window'][0]} to {summary['window'][1]}** came out as the "
+        f"most severe consecutive stretch of that summer — so the plan is being "
+        f"tested on the days it most needed to work, which is the hardest test "
+        f"for our own argument rather than the easiest.\n\n"
+        f"**Why not run the whole summer at full resolution?** Every full-city "
+        f"request costs the same **4,220 credits flat**, whether it covers 420 "
+        f"tiles or 272,917. Each day of the published analysis needs several "
+        f"such calls, and the run so far has used **125 calls / 527,500 "
+        f"credits** across **58 distinct days** of data. A full summer at "
+        f"1,053 mi² and 100 m resolution would cost several times the entire "
+        f"budget.\n\n"
+        f"The finding does not rest on this one window: the same pipeline, "
+        f"unchanged, was re-run on a **separate 2026 window the analysis had "
+        f"never seen**, and reproduced the result. That replication is on the "
+        f"Methods & evidence page.")
 
 with st.expander("How is this measured, and what is the comparison?"):
     st.markdown(
