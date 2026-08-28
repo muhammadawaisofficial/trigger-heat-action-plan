@@ -107,7 +107,8 @@ total_pop = summary.get("population_total")
 
 ui.masthead("who does the heat plan miss?",
             pills=[CITY["short"], f"{len(res['zones'])} {CITY['unit']}s",
-                   f"{CITY['tiles']} tiles/day at 100 m"])
+                   f"{CITY['tiles']} tiles/day at 100 m",
+                   "real API data · reproducible offline"])
 ui.topnav()
 
 # ═══════════════════════════════════════════════════ 1 · WHAT IS WRONG
@@ -187,6 +188,42 @@ with st.expander(f"Why {summary['days']} days, and not a whole summer?"):
         f"unchanged, was re-run on a **separate 2026 window the analysis had "
         f"never seen**, and reproduced the result. That replication is on the "
         f"Methods & evidence page.")
+
+_api = load_json(str(REPO / "data" / "results" / "api_usage.json"))
+if _api:
+    with st.expander("Is this live data? Where did it come from?"):
+        a1, a2, a3, a4 = st.columns(4)
+        a1.metric("Real API calls made", f"{_api['calls']}", "FortyGuard",
+                  delta_color="off")
+        a2.metric("Tiles fetched", f"{_api['tiles'] / 1e6:.1f}M",
+                  "at 100 m resolution", delta_color="off")
+        a3.metric("Credits spent", f"{_api['credits']:,}",
+                  f"{_api['distinct_days']} distinct days", delta_color="off")
+        a4.metric("Responses committed", f"{_api['cache_mb']:.0f} MB",
+                  "in the repository", delta_color="off")
+        st.markdown(
+            f"**Every number here came from real calls to the FortyGuard "
+            f"Temperature API** — {_api['calls']} of them, covering "
+            f"{_api['tiles']:,} tiles across {_api['distinct_days']} days. "
+            f"Nothing is simulated, and no other weather source is used "
+            f"anywhere in the pipeline.\n\n"
+            f"**The responses are saved and committed to the repository, and "
+            f"the app reads those saved responses rather than calling the API "
+            f"again.** That is a deliberate choice, for three reasons:\n\n"
+            f"- **So you can check us.** Clone the repo and run "
+            f"`python verify_all.py` — it re-derives every published figure "
+            f"from the same saved responses and fails loudly if one has moved. "
+            f"A demo that only works against a live key cannot be audited.\n"
+            f"- **So it always works.** A submitted demo that depends on a live "
+            f"API is one outage or one expired key away from showing a judge an "
+            f"error page.\n"
+            f"- **Because the calls are expensive.** Each full-city request "
+            f"costs a flat 4,220 credits and takes minutes to poll, whatever "
+            f"the area.\n\n"
+            f"The cache is a **saved copy, not baked-in data**: ask the "
+            f"pipeline for a window that is not in it, set an API key, and it "
+            f"calls the API for real. That is exactly how the 2026 replication "
+            f"window was produced — on data this analysis had never seen.")
 
 with st.expander("How is this measured, and what is the comparison?"):
     st.markdown(

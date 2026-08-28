@@ -83,10 +83,19 @@ score; do not rush past it to get to the architecture.
 
 **Screen:** switch to the terminal. Run `python run_demo.py`.
 
-> "No API key. Runs offline from a committed cache. One command, and you get the
-> same number I just showed you."
+> "One hundred and twenty-five real calls to the FortyGuard API produced this —
+> eleven million tiles, five hundred thousand credits. Nothing simulated, no
+> other weather source anywhere in the pipeline.
+>
+> **We committed the responses.** So this runs with no API key, offline, in one
+> command — and you get the same number I just showed you. You can audit it
+> instead of taking my word for it."
 
 **Let the output land on screen.** Reproducibility is the 35%.
+
+Say the call count out loud. "Runs offline" on its own can be misheard as
+"didn't really use the API"; "125 real calls, saved so you can re-run them" is
+the same fact and cannot be misheard that way.
 
 ---
 
@@ -156,3 +165,6 @@ Move quickly — these are breadth, not the argument.
 - Do not claim the national panel is national coverage. It is 30 metros,
   sampled identically — say "panel", not "grid".
 - Do not mention the dwell-time figures. They were retracted.
+- Do not say "offline" without saying "125 real API calls" in the same breath.
+  The data is real and was fetched live; the cache is a saved copy of it, kept
+  so the result can be audited. Said carelessly, it sounds like the opposite.
