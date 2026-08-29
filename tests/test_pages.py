@@ -421,10 +421,23 @@ def test_custom_window_cannot_overwrite_the_published_result():
 
 
 def test_custom_window_only_offers_servable_dates():
+    """The participant handbook, section 7.2, gives the accepted range as
+    2021-01-01 onward. Offering earlier dates would hand a judge a picker that
+    produces API rejections."""
     import customwindow as cw
     from datetime import datetime, timezone
-    assert cw.EARLIEST.isoformat() == "2019-01-01"
+    assert cw.EARLIEST.isoformat() == "2021-01-01"
     assert cw.latest_servable().isoformat() < datetime.now(timezone.utc).date().isoformat()
+
+
+def test_no_analysed_window_predates_the_api_range():
+    """Every window we ship must sit inside the servable range."""
+    import customwindow as cw
+    import json as _json
+    for f in (REPO / "data" / "results").glob("divergence*.json"):
+        w = _json.loads(f.read_text(encoding="utf-8")).get("summary", {}).get("window")
+        if w:
+            assert w[0] >= cw.EARLIEST.isoformat(), (f.name, w[0])
 
 
 def test_custom_window_raises_cleanly_offline():
