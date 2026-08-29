@@ -43,7 +43,7 @@ Verified end to end by `python verify_all.py`. The citywide comparator is a prox
 
 ## How this project uses the FortyGuard API
 
-The API is not a data source this project happens to read. It is the instrument the entire measurement is made with, and the analysis is designed around what it can do.
+Every measurement in this project is made through the FortyGuard API, and the analysis is designed around what that API can do.
 
 ### What we call, and why each call is necessary
 
@@ -66,25 +66,25 @@ Four places, each for a different reason:
 
 **The national panel.** `fetch_national.py` and `fetch_wetbulb.py` measure free-cooling hours, wet-bulb, and overnight lows across 30 US metros for the data-centre siting and urban-planning models.
 
-**Any window, from the app.** Methods & Evidence carries a date-range picker spanning **2021-01-01 to yesterday** — any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day, and the cost is shown before the run starts.
+**Any window, from the app.** Methods & Evidence carries a date-range picker spanning 2021-01-01 to yesterday: any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day, and the cost is shown before the run starts.
 
 ### How the calls are structured
 
 Three measured properties of the API shaped the architecture:
 
-**Credits are flat per call, 4,220, regardless of area.** A 420-tile request and a 272,917-tile request cost exactly the same. There is therefore never a reason to make a small request, and the pipeline makes one call per day covering the entire city rather than one per neighbourhood.
+Credits are flat per call, 4,220, regardless of area. A 420-tile request and a 272,917-tile request cost exactly the same, so there is never a reason to make a small one. The pipeline makes one call per day covering the entire city rather than one per neighbourhood.
 
-**The accepted area exceeds the documented cap.** The participant handbook gives the heatmap AOI limit as roughly 130 km², 50 mi². We measured **1,053 mi² and 272,917 tiles accepted in a single call**, repeatedly and without rejection, which is what makes citywide-in-one-request possible. The full size ladder is in [`docs/api_findings.md`](docs/api_findings.md); we report it because it is a useful measurement for FortyGuard as well as for us, and because a project built on the documented figure would make twenty calls where one suffices.
+The accepted area exceeds the documented cap. The participant handbook gives the heatmap AOI limit as roughly 130 km², 50 mi². We measured 1,053 mi² and 272,917 tiles accepted in a single call, repeatedly and without rejection, which is what makes citywide-in-one-request possible. The full size ladder is in [`docs/api_findings.md`](docs/api_findings.md); we report it because it is a useful measurement for FortyGuard as well as for us, and because a project built on the documented figure would make twenty calls where one suffices.
 
-**The tile grid is byte-identical across calls sharing an AOI and granularity.** Geometry is 87% of the payload, so responses are stored with geometry once per grid and values columnar per request. On the probe set that is 265.7 MB reduced to 11.3 MB, with every response rebuilt into exactly the shape the API returned.
+The tile grid is byte-identical across calls sharing an AOI and granularity. Geometry is 87% of the payload, so responses are stored with geometry once per grid and values columnar per request. On the probe set that is 265.7 MB reduced to 11.3 MB, with every response rebuilt into exactly the shape the API returned.
 
 ### Every response is kept
 
 All 125 responses are committed to this repository, 63.5 MB across 126 files over 8 shared tile grids. Two consequences:
 
-**The analysis is auditable.** `python verify_all.py` re-derives every published figure from those same responses and asserts each one, so a reader can confirm the headline rather than take it on trust.
+The analysis is auditable. `python verify_all.py` re-derives every published figure from those same responses and asserts each one, so a reader can confirm the headline rather than take it on trust.
 
-**The analysis is extensible.** The stored responses are a saved copy of real API results, not baked-in data. Point the pipeline at a window it has not seen, with a key, and it calls the API for real — which is exactly how the August 2026 replication below was produced, on data the analysis had never seen.
+The analysis is extensible. The stored responses are a saved copy of real API results rather than baked-in data. Point the pipeline at a window it has not seen, with a key, and it calls the API for real. That is how the August 2026 replication below was produced, on data the analysis had never seen.
 
 ---
 
@@ -92,23 +92,23 @@ All 125 responses are committed to this repository, 63.5 MB across 126 files ove
 
 ### The user
 
-**A city heat officer or emergency manager**, on the afternoon of a hot day, deciding where to open cooling centres and where to send welfare checks with a finite number of crews.
+A city heat officer or emergency manager, on the afternoon of a hot day, deciding where to open cooling centres and where to send welfare checks with a finite number of crews.
 
 They already hold the legal authority and the budget. The plan already names them: `data/golden/` carries the owning department for every clause, taken from the plan's own department key. What they do not have is evidence about which neighbourhoods their trigger is missing, or a defensible order in which to deploy.
 
-That is the gap this fills. The output is not a temperature map. It is a ranked list of neighbourhoods, each one citing the clause that obliges action, the page it appears on, the verbatim sentence, and the department that owns it.
+The output is a ranked list of neighbourhoods, each citing the clause that obliges action, the page it appears on, the verbatim sentence, and the department that owns it.
 
-Two secondary users, each served by a page of the app: **data-centre siting teams** choosing between US metros on cooling cost, and **urban-planning departments** allocating tree-canopy budgets between neighbourhoods rather than evenly across a city.
+Two secondary users, each served by a page of the app: data-centre siting teams choosing between US metros on cooling cost, and urban-planning departments allocating tree-canopy budgets between neighbourhoods rather than evenly across a city.
 
 ### What adoption looks like
 
 Nothing here requires a city to change its plan. The three steps below are ordered by how much institutional commitment each needs.
 
-**1. Audit, using what already exists.** Point the compiler at a published plan and the pipeline at last summer. It returns which clauses were missed, where, and for how many residents. No new sensors, no new procurement, no change to the plan. This is the state the repository is in today, for Phoenix and New York.
+1. Audit, using what already exists. Point the compiler at a published plan and the pipeline at last summer. It returns which clauses were missed, where, and for how many residents. No new sensors, no new procurement, no change to the plan. This is the state the repository is in today, for Phoenix and New York.
 
-**2. Operate, in parallel with the existing trigger.** Run the analysis nightly on the previous day. Where a clause was met locally while the citywide trigger stayed quiet, that is a documented gap in an obligation the city already holds. The alert payload is machine-readable JSON and already names the department, so it drops into an existing dispatch or work-order system rather than needing a new one.
+2. Operate, in parallel with the existing trigger. Run the analysis nightly on the previous day. Where a clause was met locally while the citywide trigger stayed quiet, that is a documented gap in an obligation the city already holds. The alert payload is machine-readable JSON and already names the department, so it drops into an existing dispatch or work-order system rather than needing a new one.
 
-**3. Re-specify the trigger.** The percentile analysis shows a threshold fitted to a city's own distribution restores targeting in both failure directions. Changing a legal threshold is a policy act, not an engineering one, so this project measures the case for it and stops there.
+3. Re-specify the trigger. The percentile analysis shows a threshold fitted to a city's own distribution restores targeting in both failure directions. Changing a legal threshold is a policy act, not an engineering one, so this project measures the case for it and stops there.
 
 ### Why a city would pay for it
 
@@ -120,7 +120,7 @@ The cost side is small: one API call per day per city at 100 m resolution covers
 
 ## Adding a city
 
-Everything city-specific lives in one JSON profile. Nothing city-specific is baked into the pipeline, so pointing TRIGGER at a new city is five inputs and one environment variable — no code changes.
+Everything city-specific lives in one JSON profile. Pointing TRIGGER at a new city takes five inputs and one environment variable, with no code changes.
 
 | # | Input | Where it comes from |
 |---|---|---|
@@ -137,9 +137,9 @@ FORTYGUARD_API_KEY=... TRIGGER_CITY=<slug> python run_analysis.py --start ... --
 
 The result appears in the app's study-window selector automatically.
 
-**This is demonstrated, not asserted.** New York was added exactly this way, and the same code, unmodified, produced 2,453,713 people across 51 community districts. Porting also exposed three defects Phoenix alone never would have — a hardcoded cache label, a hardcoded population path that overwrote the first city's file, and a single-county Census query that returned nothing for a five-county city. All three are fixed and pinned by tests. A portability claim that has only run on one city is a hypothesis; this one has run on two.
+New York was added exactly this way. The same code, unmodified, produced 2,453,713 people across 51 community districts. Porting exposed three defects Phoenix alone never would have: a hardcoded cache label, a hardcoded population path that overwrote the first city's file, and a single-county Census query that returned nothing for a five-county city. All three are fixed and pinned by tests.
 
-Two constraints are worth knowing before starting. The AOI must be **clipped to land** — New York's full five-borough box is rejected while Phoenix's larger box is accepted, because the former spans open water. And the API covers the **United States only**, so a non-US profile will compile its plan correctly and then fail at evaluation.
+Two constraints are worth knowing before starting. The AOI must be clipped to land: New York's full five-borough box is rejected while Phoenix's larger box is accepted, because the former spans open water. And the API covers the United States only, so a non-US profile will compile its plan correctly and then fail at evaluation.
 
 Full walkthrough: [`docs/adding_a_city.md`](docs/adding_a_city.md).
 
@@ -151,7 +151,7 @@ Full walkthrough: [`docs/adding_a_city.md`](docs/adding_a_city.md).
 
 The track's brief is to "point public resources at the people heat hits hardest — target relief by vulnerability, warn outdoor workers before thresholds are crossed." That is precisely what this measures: which neighbourhoods a city's own relief trigger misses, how many people live in them, and in what order crews should be sent.
 
-The core deliverable is a heat-vulnerability instrument built on the track's own named technologies — Temperature API, policy, GIS, open data.
+The core deliverable is a heat-vulnerability instrument built on the track's own named technologies: Temperature API, policy, GIS, open data.
 
 Three of the handbook's other tracks name examples that this project also delivers, from the same measurement and the same API calls. We list them as evidence that one hyperlocal layer answers several operational questions, not as separate entries:
 
@@ -220,7 +220,7 @@ We compiled all 23 actions plus the plan's own planning benchmarks, 27 clauses i
 
 Twenty of twenty-three actions are not conditioned on heat at all. Of the two that are, both are scoped citywide: one reading decides for all 1,053 mi².
 
-This is not a criticism of Phoenix's plan, which is one of the better heat plans in the United States and is improving. It is a measurement of where the instrumentation stops.
+Phoenix's plan is one of the better heat plans in the United States and it is improving. What this measures is where its instrumentation stops.
 
 ### Trigger Divergence
 
@@ -563,27 +563,27 @@ It reports two bases side by side: the absolute threshold, which is what plans g
 
 ### Data centre siting
 
-**Why it is needed.** Cooling is the largest controllable operating cost in a data centre and the siting term measured worst. Every published free-cooling figure is a city average: Phoenix around 1,000 to 2,000 hours a year, Minneapolis 4,000 to 6,000. Nobody sites a building on a city average, and the difference between two sites inside the same metro is invisible at that resolution.
+Cooling is the largest controllable operating cost in a data centre and the siting term measured worst. Every published free-cooling figure is a city average: Phoenix around 1,000 to 2,000 hours a year, Minneapolis 4,000 to 6,000. Nobody sites a building on a city average, and the difference between two sites inside the same metro is invisible at that resolution.
 
-**How the API answers it.** Every thermal term is measured by us across 30 US metros at full resolution, one call per metro because credits are flat regardless of area:
+Every thermal term is measured by us across 30 US metros at full resolution, one call per metro because credits are flat regardless of area:
 
 | Term | How it is measured |
 |---|---|
-| Free-cooling hours | `exceedance` with `direction="below"` against the ASHRAE 24 °C setpoint — the first use of the below direction in this project |
+| Free-cooling hours | `exceedance` with `direction="below"` against the ASHRAE 24 °C setpoint, the first use of the below direction in this project |
 | Overnight lows and daily highs | `tcm`, per tile, aggregated per metro |
 | Wet-bulb temperature | `/v1/env_params` at each metro centroid |
 
 Wet-bulb is what the evaporative-versus-mechanical decision actually turns on, which is why it is measured rather than assumed. The result is the industry's central trade-off, quantified: the metros where evaporative cooling works best are frequently the ones least able to spare the water.
 
-**The weights are user-controlled.** The model scores each metro on five factors — power, cooling, water, disaster risk, and renewable access — and every weight is a slider on the page. Power is weighted highest by default because published surveys put it first, but a bank, a hyperscaler, and a sovereign-cloud operator weigh these differently. Moving a slider recomputes the ranking, the recommended cooling strategy, and the cost model on the reader's priorities rather than ours.
+The weights are user-controlled. The model scores each metro on five factors (power, cooling, water, disaster risk, and renewable access) and every weight is a slider on the page. Power is weighted highest by default because published surveys put it first, but a bank, a hyperscaler, and a sovereign-cloud operator weigh these differently. Moving a slider recomputes the ranking, the recommended cooling strategy, and the cost model on the reader's priorities rather than ours.
 
 The model emits a recommended cooling strategy per site rather than a single composite score, because the right answer differs by climate: air-side economiser where there are enough hours below the setpoint, evaporative where wet-bulb is low and water is available, air-cooled where wet-bulb is low but water is constrained.
 
 ### Urban planning
 
-**Why it is needed.** Heat kills more people than any other weather hazard, and the remedy is physical: shade, tree canopy, reflective surfaces. Cities already know that. What a citywide average cannot tell them is *how much*, and *in which neighbourhood* — so mitigation budgets get spread evenly across places that are not equally hot, and the hottest blocks stay hottest.
+Heat kills more people than any other weather hazard, and the remedy is physical: shade, tree canopy, reflective surfaces. Cities already know that. What a citywide average cannot tell them is how much, and in which neighbourhood, so mitigation budgets get spread evenly across places that are not equally hot and the hottest blocks stay hottest.
 
-**How the API answers it.** Intervention has to be aimed at a thermal gap, and the gap has to be measured before it can be closed. We measure it through `tcm` at 100 m: per neighbourhood inside a city, and across 30 US metros as the spread between the hottest and coolest ground inside each sample box. That measured gap is then joined to published cooling effect sizes, which is what lets a recommendation carry a magnitude instead of being general advice.
+Intervention has to be aimed at a thermal gap, and the gap has to be measured before it can be closed. We measure it through `tcm` at 100 m: per neighbourhood inside a city, and across 30 US metros as the spread between the hottest and coolest ground inside each sample box. That measured gap is then joined to published cooling effect sizes, which is what lets a recommendation carry a magnitude instead of being general advice.
 
 Generic advice, plant trees, raise albedo, is not wrong. It is unquantified: it never says how much, or where. This page joins a measured thermal gap to published effect sizes so every recommendation carries a magnitude: canopy at 0.3 °C per 10 points of added cover, cool roofs at 0.3 °C in residential deployment. Both are the conservative end of the published range, chosen because they generalise across a 30-metro panel; Phoenix-specific work reports up to 2.0 °C for canopy, and full canopy against treeless ground reaches 5.5 °C.
 
@@ -611,7 +611,7 @@ Written plainly, because these define how the result should be read.
 
 **Population is areally interpolated.** Village populations come from Census block-group totals apportioned by overlap area, which assumes uniform density within a block group. Block groups are small by design (600 to 3,000 people) and Phoenix village boundaries largely follow the same arterial grid. The 15-village total of 1,639,502 against Phoenix's approximately 1,608,000 at the 2020 census is the check on the join.
 
-**Two cities, three analysed windows, one plan format.** The compiler is city-agnostic — only the AOI, the zone file, and the PDF change — and has been demonstrated on Phoenix and New York.
+Two cities, three analysed windows, one plan format. The compiler is city-agnostic (only the AOI, the zone file, and the PDF change) and has been demonstrated on Phoenix and New York.
 
 **Action 4.2 uses a proxy threshold.** The plan states no temperature for "when the National Weather Service issues an Extreme Heat Warning." We map it to 110 °F, anchored to the plan's own pairing on page 6 (37 days at or above 110 °F against 31 Extreme Heat Warning days). The clause carries `extraction_conf = 0.70` and its result should be read as indicative.
 
@@ -633,7 +633,7 @@ Three non-FortyGuard inputs are used, each because it supplies something outside
 
 None of these is a temperature source, and none substitutes for any FortyGuard capability. Each is fetched once and committed, so none is a live dependency.
 
-This division is what the handbook's own track examples describe. Track 4 names "a heat-vulnerability map that combines temperature with demographics"; Track 7 names "a heat-equity analysis that joins historical temperature patterns with demographic or socioeconomic layers"; and the use-case notebooks FortyGuard ships are each built on a user-supplied CSV — bus stops, park inventories, property portfolios — with recommendations citing EPA, USDA, ASHRAE and OSHA programmes. Section 8.3 puts it directly: submissions are "built on your own data, region, problem, and approach."
+This division is what the handbook's own track examples describe. Track 4 names "a heat-vulnerability map that combines temperature with demographics"; Track 7 names "a heat-equity analysis that joins historical temperature patterns with demographic or socioeconomic layers"; and the use-case notebooks FortyGuard ships are each built on a user-supplied CSV (bus stops, park inventories, property portfolios) with recommendations citing EPA, USDA, ASHRAE and OSHA programmes. Section 8.3 puts it directly: submissions are "built on your own data, region, problem, and approach."
 
 FortyGuard supplies every temperature. The three inputs above supply the things temperature alone cannot: where the zone boundaries are, how many people live inside them, and what the plan says.
 

@@ -1,8 +1,8 @@
 """Heat waves, detected per neighbourhood and ranked nationally.
 
-The distinction this page exists to make: a heat wave is not "a hot day", and it
-is not a citywide event. It is a RUN of consecutive qualifying days, and it
-starts on different nights in different neighbourhoods of the same city.
+A heat wave is a RUN of consecutive qualifying days, and it starts on different
+nights in different neighbourhoods of the same city. That is the distinction
+this page exists to make.
 
 Everything here is DETECTED IN MEASURED DATA. Nothing is forecast -- see the
 closing section, which says plainly what this cannot do.

@@ -8,12 +8,12 @@ Every figure below comes from `python run_demo.py` and `python verify_all.py`. C
 
 Two windows, both prepared:
 
-- **Browser** — the deployed app, or `streamlit run app.py`. Open every page once first so nothing renders cold on camera. Start on the home page, scrolled to top.
-- **Terminal** — at the repo root, cleared, ready to run `python run_demo.py`.
+- Browser: the deployed app, or `streamlit run app.py`. Open every page once first so nothing renders cold on camera. Start on the home page, scrolled to top.
+- Terminal: at the repo root, cleared, ready to run `python run_demo.py`.
 
 Close the sidebar before recording. The in-page nav strip is enough, and a closed sidebar gives the charts more width.
 
-Move between pages using the coloured nav strip, not the address bar. Each page carries its own accent on that bar — red, orange, blue, green, violet — so clicking across it reads as one structured app with five rooms. That transition is free production value; use it every time the script says "screen: switch to."
+Move between pages using the coloured nav strip, not the address bar. Each page carries its own accent on that bar (red, orange, blue, green, violet), so clicking across it reads as one structured app with five rooms. That transition is free production value; use it every time the script says "screen: switch to."
 
 ---
 
@@ -23,7 +23,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 > "One-point-one-eight million people. Seventy-two percent of Phoenix.
 >
-> Those are the residents who live in a neighbourhood that got hot enough to trigger the city's Heat Action Plan — on nights the city's own reading never did. So the plan stayed off."
+> Those are the residents who live in a neighbourhood that got hot enough to trigger the city's Heat Action Plan, on nights the city's own reading never did. So the plan stayed off."
 
 **Pause on the number for a full beat before moving.** This is the 40% of the score; do not rush past it to get to the architecture.
 
@@ -35,7 +35,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 > "A Heat Action Plan is a legal document. Twenty-three actions, named departments, numeric thresholds. Open cooling centres at ninety degrees overnight.
 >
-> The whole thing is switched on and off by **one number** — one reading, from one weather station at the airport. But heat isn't one number, and FortyGuard's data is what let us prove that at the resolution people actually live at."
+> The whole thing is switched on and off by one number. One reading, from one weather station at the airport. But heat isn't one number, and FortyGuard's data is what let us prove that at the resolution people actually live at."
 
 ---
 
@@ -43,9 +43,9 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 **Screen:** the gap chart. Let it fill the frame.
 
-> "Here is that night, neighbourhood by neighbourhood — every bar measured through the FortyGuard Temperature API, two metres above the ground, at hundred-metre resolution.
+> "Here is that night, neighbourhood by neighbourhood. Every bar measured through the FortyGuard Temperature API, two metres above the ground, at hundred-metre resolution.
 >
-> The dashed line is the threshold the plan names. The solid line is the single citywide reading. **The solid line sits below the dashed one — so the plan stayed off.**
+> The dashed line is the threshold the plan names. The solid line is the single citywide reading. The solid line sits below the dashed one, so the plan stayed off.
 >
 > And these ten bars are already above it."
 
@@ -57,15 +57,15 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 ## 1:15 – 1:45 · Built on the API, and auditable because of it
 
-**Screen:** home page, open the "Is this live data? Where did it come from?" expander — four metric tiles: real API calls, tiles fetched, credits spent, MB committed.
+**Screen:** home page, open the "Is this live data? Where did it come from?" expander. Four metric tiles: real API calls, tiles fetched, credits spent, MB committed.
 
 > "A hundred and twenty-five calls to the FortyGuard API. Eleven million tiles. Fifty-eight distinct days. Half a million credits. Nothing simulated, and no other weather source anywhere in this pipeline.
 >
-> And because a single call covers the whole city — a thousand square miles, two hundred and seventy thousand tiles, for one flat credit cost — we measure Phoenix in one request per day instead of fifteen."
+> And because a single call covers the whole city, a thousand square miles and two hundred and seventy thousand tiles for one flat credit cost, we measure Phoenix in one request per day instead of fifteen."
 
 **Screen:** switch to Methods & evidence via the nav strip, clause provenance panel with a quote visible.
 
-> "Every rule the plan is built from carries the verbatim sentence and the page it came from. The language model extracts and narrates. It never decides — every fired-or-not call is a plain numeric comparison in Python, against FortyGuard measurements."
+> "Every rule the plan is built from carries the verbatim sentence and the page it came from. The language model extracts and narrates. It never decides; every fired-or-not call is a plain numeric comparison in Python, against FortyGuard measurements."
 
 **Screen:** switch to the terminal. Run `python run_demo.py`.
 
@@ -79,7 +79,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 **Screen:** home page, the Study window selector in the sidebar. Switch to the 2026 window and let the numbers change.
 
-> "This isn't one hardcoded week. We re-ran the identical pipeline on August 2026 — fetched live from the API, a week the analysis had never seen — and the finding reproduced. Nine of fifteen villages. Nine hundred and fifty-eight thousand people. The same near-miss signature."
+> "This isn't one hardcoded week. We re-ran the identical pipeline on August 2026, fetched live from the API on a week the analysis had never seen, and the finding reproduced. Nine of fifteen villages. Nine hundred and fifty-eight thousand people. The same near-miss signature."
 
 **Screen:** Methods & evidence, the date-range picker.
 
@@ -89,7 +89,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 > "Same pipeline, unchanged, on New York's plan and New York's districts. New York triggers on heat index; Phoenix triggers on dry-bulb. Opposite choices, same failure.
 >
-> And adding a city is five files and one environment variable — the plan PDF, the zone boundaries, a forty-line profile, the compiled clauses, and the population join. No code changes. New York is the proof that works, and porting to it is what exposed three bugs Phoenix alone never would have."
+> And adding a city is five files and one environment variable: the plan PDF, the zone boundaries, a forty-line profile, the compiled clauses, and the population join. No code changes. New York is the proof that works, and porting to it is what exposed three bugs Phoenix alone never would have."
 
 ---
 
@@ -97,27 +97,27 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 **Screen:** Heat waves page, the threshold ladder.
 
-> "A heat wave is a run of nights, not a hot day, and it doesn't start city-wide. Same week, same measurements, detected against each threshold in turn — at ninety degrees that's ten heat waves covering 1.18 million residents. At a hundred and ten, zero. Nothing about the weather changes down that table. Only the number in the plan does.
+> "A heat wave is a run of nights, and it doesn't start city-wide. Same week, same measurements, detected against each threshold in turn. At ninety degrees that's ten heat waves covering 1.18 million residents. At a hundred and ten, zero. Nothing about the weather changes down that table. Only the number in the plan does.
 >
-> To be precise about what this does: it **detects** heat waves in measured data and ranks metros by how dangerous their nights run. It does not forecast days ahead — the API serves history and about twelve hours forward, so we don't claim a prediction we can't make."
+> To be precise about what this does: it detects heat waves in measured data and ranks metros by how dangerous their nights run. It does not forecast days ahead. The API serves history and about twelve hours forward, so we don't claim a prediction we can't make."
 
 ---
 
 ## 2:20 – 2:45 · What else the same measurement answers
 
-**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell. Move quickly — these are breadth, not the argument.
+**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell. Move quickly; these are breadth rather than the argument.
 
 > "The same hyperlocal layer answers two more questions.
 >
-> **Where a data centre should go.** Cooling is the biggest controllable cost in a data centre, and every published free-cooling figure is a city average — nobody sites a building on a city average. So we measured it ourselves across thirty US metros through the API: free-cooling hours, overnight lows, and wet-bulb, which is what the evaporative-versus-mechanical decision actually turns on. The result is the industry's central trade-off, quantified — the places where evaporative cooling works best are the places least able to spare the water."
+> Where a data centre should go. Cooling is the biggest controllable cost in a data centre, and every published free-cooling figure is a city average. Nobody sites a building on a city average. So we measured it ourselves across thirty US metros through the API: free-cooling hours, overnight lows, and wet-bulb, which is what the evaporative-versus-mechanical decision actually turns on. That quantifies the industry's central trade-off: the places where evaporative cooling works best are the places least able to spare the water."
 
 **[move a weight slider on camera and let the ranking reorder]**
 
-> "And the weights are yours. Power, cooling, water, risk, renewables — a bank and a hyperscaler weigh these differently, so move a slider and the whole ranking recomputes on your priorities."
+> "And the weights are yours. Power, cooling, water, risk, renewables. A bank and a hyperscaler weigh these differently, so move a slider and the whole ranking recomputes on your priorities."
 
 **Screen:** switch to Urban planning.
 
-> "**And how much tree canopy, and where.** Heat kills more people than any other weather hazard and the fix is physical — but a citywide average never says how much, or which neighbourhood, so budgets get spread evenly across places that aren't equally hot. We measure the thermal gap at a hundred metres, then join it to published cooling effect sizes, so a recommendation carries a magnitude instead of being advice. Weighted by residents, that puts Maryvale first — the neighbourhood the literature already flags as Phoenix's most heat-vulnerable, reached here from measurement."
+> "And how much tree canopy, and where. Heat kills more people than any other weather hazard and the fix is physical, but a citywide average never says how much, or which neighbourhood, so budgets get spread evenly across places that aren't equally hot. We measure the thermal gap at a hundred metres, then join it to published cooling effect sizes, so a recommendation carries a magnitude instead of being advice. Weighted by residents, that puts Maryvale first: the neighbourhood the literature already flags as Phoenix's most heat-vulnerable, reached here from measurement."
 
 ---
 
@@ -125,7 +125,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 **Screen:** back to the home page, open "How is this measured, and what is the comparison?"
 
-> "One thing we put in the interface, not the footnotes. Our citywide comparator is the average across the whole city — a **proxy** for a station feed. It's a *generous* stand-in: a single real sensor would do worse.
+> "One thing we put in the interface, not the footnotes. Our citywide comparator is the average across the whole city, a proxy for a station feed. It's a generous stand-in: a single real sensor would do worse.
 >
 > So 1.18 million is a **lower bound**."
 

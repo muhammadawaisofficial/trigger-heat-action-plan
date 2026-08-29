@@ -3,8 +3,8 @@
 The published result is one week of August 2025. This runs the SAME pipeline --
 evaluate.Evaluator, aggregate.ZoneAggregator, diverge -- over any dates the API
 will serve, and writes a results file in exactly the shape app.py already
-renders. So a custom window is not a second, lesser view of the data. It is the
-headline analysis, pointed somewhere else.
+renders. A custom window runs the headline analysis, pointed at different
+dates.
 
 WHAT IT COSTS, MEASURED RATHER THAN GUESSED
 
