@@ -83,7 +83,7 @@ This asymmetry is the same criticism the whole project makes of heat plans, poin
 
 **Why "whole country" ≠ full 100m grid:** the API's flat 4,220-credit/call cost covers 1,053 mi² per call; continental US is ~3.1M mi², needing ~3,000 calls against a ~472-call remaining budget. Solution: 30 real metros (covers every US climate zone + real data-center markets), sampled identically, so comparisons are sound even though coverage is a sample — not fabricated national coverage.
 
-## 7. FortyGuard API — traps that fail silently (see full detail in root CLAUDE.md §5)
+## 7. FortyGuard API — traps that fail silently (see full detail in root SPEC.md §5)
 
 - `threshold` param is **°C**; the plan's thresholds are written in **°F**. Convert once, in `schema.py`.
 - `time_of_measure` returns **UTC** hour; Phoenix is UTC−7 year-round (no DST).

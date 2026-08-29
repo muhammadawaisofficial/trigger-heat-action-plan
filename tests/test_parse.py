@@ -1,10 +1,10 @@
 """Both tile schemas, one parser -- and the coordinate order that hides bugs.
 
-CLAUDE.md trap 3: code written against ``tcm`` finds nothing in an exceedance
+SPEC.md trap 3: code written against ``tcm`` finds nothing in an exceedance
 response, because the field is ``properties.value`` rather than
 ``properties.average_temperature``. Nothing raises; you just get zeros.
 
-CLAUDE.md geometry rule: GeoJSON coordinates are [lon, lat]. Building a polygon
+SPEC.md geometry rule: GeoJSON coordinates are [lon, lat]. Building a polygon
 in [lat, lon] order is accepted by everything downstream and silently describes
 somewhere in the Indian Ocean.
 """
@@ -132,9 +132,9 @@ def test_a_swapped_polygon_is_visibly_wrong():
 # ------------------------------------------------------------- UTC to local
 
 def test_utc_hour_converts_to_phoenix_local():
-    """CLAUDE.md trap 2: time_of_measure is UTC; Arizona is UTC-7 year-round."""
+    """SPEC.md trap 2: time_of_measure is UTC; Arizona is UTC-7 year-round."""
     set_utc_offset(-7)
-    assert utc_hour_to_local(22) == 15   # the example given in CLAUDE.md
+    assert utc_hour_to_local(22) == 15   # the example given in SPEC.md
     assert utc_hour_to_local(0) == 17    # must wrap, not go negative
     assert utc_hour_to_local(6) == 23
 

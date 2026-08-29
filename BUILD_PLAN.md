@@ -1,9 +1,9 @@
 # TRIGGER — Build Plan
 
-Paste **one phase at a time** into Claude Code. Wait for its stop signal, verify
-the acceptance criterion yourself, then paste the next.
+The build order this project was developed against, kept for the record. Each
+phase has an acceptance criterion that had to pass before the next one started.
 
-`CLAUDE.md` must be in the repo root first — every phase assumes it has been read.
+`SPEC.md` in the repo root is the specification every phase refers to.
 
 **Environment:** `FORTYGUARD_API_KEY`, `GEMINI_API_KEY` in `.env`. `.env` in
 `.gitignore`. Never commit keys.
@@ -13,7 +13,7 @@ the acceptance criterion yourself, then paste the next.
 ## Phase 0 — Verify (30 min) · Day 6
 
 ```
-Read CLAUDE.md.
+Follow SPEC.md.
 
 Set up the repo from the FortyGuard quickstart template. Vendor their
 `fortyguard` client package unmodified. Create .env.example, .gitignore,
@@ -52,7 +52,7 @@ Build the foundation layer. No API calls beyond what the cache wraps.
      key represents in human-readable form.
 
 2. src/schema.py
-   - Clause dataclass exactly as specified in CLAUDE.md.
+   - Clause dataclass exactly as specified in SPEC.md.
    - fahrenheit_to_celsius() lives here and NOWHERE else in the codebase.
    - Validator: threshold_c must equal round((threshold_source - 32) * 5/9, 2);
      source_text and source_page mandatory and non-empty; operator in

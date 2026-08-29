@@ -157,7 +157,7 @@ def percentile_recovery(clause: Clause, hm: Heatmap, tcm_field: str | None,
     An ``exceedance`` clause cannot be re-thresholded this way. Its threshold is
     applied server-side before the response is built, so the tiles carry HOURS
     ABOVE THE OLD THRESHOLD, not temperatures. Comparing those hours to a new
-    temperature is exactly the schema-divergence trap CLAUDE.md warns about: it
+    temperature is exactly the schema-divergence trap SPEC.md warns about: it
     returns a confident, meaningless number rather than an error. So we raise.
     Recovering an exceedance clause costs one API call per candidate threshold.
     """

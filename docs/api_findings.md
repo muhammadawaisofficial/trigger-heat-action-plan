@@ -179,7 +179,7 @@ This is stated in the limitations section of the README, not only here.
 
 ## 7. Aggregation: area weighting matters less than expected at 100 m
 
-CLAUDE.md warns that nearest-tile lookup "silently discards most of a zone." That is true in principle. Measured on Phoenix urban villages at 100 m granularity, the effect is small:
+SPEC.md warns that nearest-tile lookup "silently discards most of a zone." That is true in principle. Measured on Phoenix urban villages at 100 m granularity, the effect is small:
 
 | Village | Area-weighted | Centroid-in-polygon | Difference | Boundary tiles dropped |
 |---|---|---|---|---|

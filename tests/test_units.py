@@ -1,7 +1,7 @@
 """The unit chain: degF as written in the plan, degC as sent to the API.
 
 BUILD_PLAN Phase 1 requires the conversion to exist in exactly one place, and
-CLAUDE.md names this as the first trap that fails silently: sending 95 instead
+SPEC.md names this as the first trap that fails silently: sending 95 instead
 of 35.0 asks for hours above 95 degC and returns all zeros, with no error.
 """
 
