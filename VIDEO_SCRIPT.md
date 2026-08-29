@@ -83,7 +83,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 **Screen:** Methods & evidence, the date-range picker.
 
-> "And you can point it anywhere. Any dates the API serves, back to 2019. Pick a window, and it runs the whole analysis on it."
+> "And you can point it anywhere. Any dates the API serves, back to 2021. Pick a window, and it runs the whole analysis on it."
 
 **Screen:** switch the city selector to New York.
 

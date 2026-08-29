@@ -140,7 +140,7 @@ st.info(
     "it came from, the map at clause resolution, the machine-readable alert "
     "payload, the New York replication, what we measured about the FortyGuard "
     "API, and a date picker that runs the full analysis on **any window you "
-    "choose**, from 2019 to yesterday.",
+    "choose**, from 2021 to yesterday.",
     icon="🔬")
 st.markdown(
     "The landing page answers *what did you find*. This page answers **how, "
@@ -758,7 +758,7 @@ with tab_api:
         "The published result is one week of August 2025. This runs the same "
         "pipeline — the same evaluator, the same aggregation, the same "
         "divergence maths — over any dates the API will serve, from "
-        "2019-01-01 to yesterday. Any year, any month, any week. A finished "
+        "2021-01-01 to yesterday. Any year, any month, any week. A finished "
         "run is saved and joins the **Study window** selector on the home "
         "page, so it becomes a first-class result rather than a one-off view.")
 

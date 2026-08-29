@@ -40,8 +40,8 @@ from evaluate import Evaluator, evaluable
 from parse import parse_heatmap
 from schema import inventory, load_clauses
 
-#: The API serves 2019-01-01 through roughly twelve hours ahead of now.
-EARLIEST = date(2019, 1, 1)
+#: The API serves 2021-01-01 through roughly twelve hours ahead of now (handbook 7.2).
+EARLIEST = date(2021, 1, 1)
 
 #: Flat per call, whatever the area -- see docs/api_findings.md finding 4.
 CREDITS_PER_CALL = 4_220

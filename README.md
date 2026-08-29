@@ -66,7 +66,7 @@ Four places, each for a different reason:
 
 **The national panel.** `fetch_national.py` and `fetch_wetbulb.py` measure free-cooling hours, wet-bulb, and overnight lows across 30 US metros for the data-centre siting and urban-planning models.
 
-**Any window, from the app.** Methods & Evidence carries a date-range picker spanning **2019-01-01 to yesterday** — any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day, and the cost is shown before the run starts.
+**Any window, from the app.** Methods & Evidence carries a date-range picker spanning **2021-01-01 to yesterday** — any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day, and the cost is shown before the run starts.
 
 ### How the calls are structured
 
@@ -74,7 +74,7 @@ Three measured properties of the API shaped the architecture:
 
 **Credits are flat per call, 4,220, regardless of area.** A 420-tile request and a 272,917-tile request cost exactly the same. There is therefore never a reason to make a small request, and the pipeline makes one call per day covering the entire city rather than one per neighbourhood.
 
-**The accepted area is far above the documented cap.** We measured 1,053 mi² and 272,917 tiles accepted in a single call. That is what makes citywide-in-one-request possible.
+**The accepted area exceeds the documented cap.** The participant handbook gives the heatmap AOI limit as roughly 130 km², 50 mi². We measured **1,053 mi² and 272,917 tiles accepted in a single call**, repeatedly and without rejection, which is what makes citywide-in-one-request possible. The full size ladder is in [`docs/api_findings.md`](docs/api_findings.md); we report it because it is a useful measurement for FortyGuard as well as for us, and because a project built on the documented figure would make twenty calls where one suffices.
 
 **The tile grid is byte-identical across calls sharing an AOI and granularity.** Geometry is 87% of the payload, so responses are stored with geometry once per grid and values columnar per request. On the probe set that is 265.7 MB reduced to 11.3 MB, with every response rebuilt into exactly the shape the API returned.
 
@@ -85,6 +85,36 @@ All 125 responses are committed to this repository, 63.5 MB across 126 files ove
 **The analysis is auditable.** `python verify_all.py` re-derives every published figure from those same responses and asserts each one, so a reader can confirm the headline rather than take it on trust.
 
 **The analysis is extensible.** The stored responses are a saved copy of real API results, not baked-in data. Point the pipeline at a window it has not seen, with a key, and it calls the API for real — which is exactly how the August 2026 replication below was produced, on data the analysis had never seen.
+
+---
+
+## Who this is for, and how it deploys
+
+### The user
+
+**A city heat officer or emergency manager**, on the afternoon of a hot day, deciding where to open cooling centres and where to send welfare checks with a finite number of crews.
+
+They already hold the legal authority and the budget. The plan already names them: `data/golden/` carries the owning department for every clause, taken from the plan's own department key. What they do not have is evidence about which neighbourhoods their trigger is missing, or a defensible order in which to deploy.
+
+That is the gap this fills. The output is not a temperature map. It is a ranked list of neighbourhoods, each one citing the clause that obliges action, the page it appears on, the verbatim sentence, and the department that owns it.
+
+Two secondary users, each served by a page of the app: **data-centre siting teams** choosing between US metros on cooling cost, and **urban-planning departments** allocating tree-canopy budgets between neighbourhoods rather than evenly across a city.
+
+### What adoption looks like
+
+Nothing here requires a city to change its plan. The three steps below are ordered by how much institutional commitment each needs.
+
+**1. Audit, using what already exists.** Point the compiler at a published plan and the pipeline at last summer. It returns which clauses were missed, where, and for how many residents. No new sensors, no new procurement, no change to the plan. This is the state the repository is in today, for Phoenix and New York.
+
+**2. Operate, in parallel with the existing trigger.** Run the analysis nightly on the previous day. Where a clause was met locally while the citywide trigger stayed quiet, that is a documented gap in an obligation the city already holds. The alert payload is machine-readable JSON and already names the department, so it drops into an existing dispatch or work-order system rather than needing a new one.
+
+**3. Re-specify the trigger.** The percentile analysis shows a threshold fitted to a city's own distribution restores targeting in both failure directions. Changing a legal threshold is a policy act, not an engineering one, so this project measures the case for it and stops there.
+
+### Why a city would pay for it
+
+Cooling-centre operation, outreach, and emergency medical response are already budgeted. This changes where that spend lands, not how much of it there is. A city that can name the ten neighbourhoods its trigger misses can direct existing crews at them, and can defend that decision afterwards by citing its own plan.
+
+The cost side is small: one API call per day per city at 100 m resolution covers 1,053 mi².
 
 ---
 
@@ -114,6 +144,7 @@ We are not claiming Track 06, Agentic AI. There is no agent here, by design: eve
 | | |
 |---|---|
 | [How this project uses the API](#how-this-project-uses-the-fortyguard-api) | Every call, why it is made, and how the results are kept |
+| [Who this is for, and how it deploys](#who-this-is-for-and-how-it-deploys) | The user, the adoption path, and why a city would pay for it |
 | [1. Impact & relevance](#1-impact--relevance-40) | What we found and why it matters |
 | [2. Technical execution](#2-technical-execution-35) | How it works, and what we measured about the API |
 | [3. Innovation](#3-innovation-15) | Why compiling the document is the whole point |
@@ -262,7 +293,7 @@ Both windows are selectable in the app. The home page carries a study-window sel
 FORTYGUARD_API_KEY=... python run_analysis.py --start 2026-08-16 --end 2026-08-22
 ```
 
-The API accepts any date from 2019-01-01 to twelve hours ahead of now, so this runs on next season as readily as on last. An independently reproduced finding is a research artefact rather than a demo result, which is why it gets its own section. The over-trigger half replicates too; `verify_all.py` asserts both windows.
+The API accepts any date from 2021-01-01 to twelve hours ahead of now, so this runs on next season as readily as on last. An independently reproduced finding is a research artefact rather than a demo result, which is why it gets its own section. The over-trigger half replicates too; `verify_all.py` asserts both windows.
 
 ---
 
@@ -436,7 +467,7 @@ To analyse a window that is not already stored, set `FORTYGUARD_API_KEY` and pas
 FORTYGUARD_API_KEY=... python run_analysis.py --start 2024-07-08 --end 2024-07-14
 ```
 
-The same is available inside the app, on Methods & Evidence, for any dates from 2019-01-01 to yesterday.
+The same is available inside the app, on Methods & Evidence, for any dates from 2021-01-01 to yesterday.
 
 ### Repository
 
@@ -524,7 +555,7 @@ Ranking a city's own zones weights measured heat by residents, since temperature
 
 ### Methods & evidence
 
-The page a reader uses to check the headline rather than trust it. It carries every compiled rule beside the verbatim sentence and page number it came from, the map at clause resolution, the machine-readable alert payload, the New York replication, the five properties we measured about the API, and a date picker that runs the full analysis on any window from 2019-01-01 to yesterday.
+The page a reader uses to check the headline rather than trust it. It carries every compiled rule beside the verbatim sentence and page number it came from, the map at clause resolution, the machine-readable alert payload, the New York replication, the five properties we measured about the API, and a date picker that runs the full analysis on any window from 2021-01-01 to yesterday.
 
 Intra-metro spread is computed over every tile in a 10 km box, and that box contains whatever is inside it, including water and terrain. What spread measures is the range of thermal conditions a single citywide number is standing in for, which is the claim this project makes.
 
