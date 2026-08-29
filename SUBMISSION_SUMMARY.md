@@ -1,6 +1,6 @@
 # TRIGGER — the Heat Action Plan Compiler
 
-**Submission summary · FortyGuard Hackathon '26 · 497 words**
+**Submission summary · FortyGuard Hackathon '26 · Track 4, Government & Environment**
 
 Live demo: https://trigger-heat.streamlit.app/ · Repository: https://github.com/muhammadawaisofficial/trigger-heat-action-plan
 

@@ -55,6 +55,16 @@ st.markdown(
     "products answer *is the city in a heat wave*. This answers **which "
     "neighbourhoods are, and since which night**.")
 
+ui.api_strip(
+    [("POST /v1/heatmap · tcm",
+      "per-zone daily low and high, the run detection is computed from"),
+     ("filter_type 3", "day by day, because a run needs a time axis a "
+                       "multi-day aggregate collapses"),
+     ("granularity 100 m", "so a run can start in one neighbourhood and "
+                           "not another")],
+    note="Detection runs on measured FortyGuard values. The absolute and "
+         "percentile bases below are two ways of reading the same measurements.")
+
 results = ui.load(str(city["results"]))
 population = ui.load(str(city["pop"]))
 

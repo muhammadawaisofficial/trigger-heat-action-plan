@@ -151,6 +151,16 @@ st.markdown(
 
 
 
+ui.api_strip(
+    [("POST /v1/heatmap · tcm · exceedance · persistence",
+      "125 calls, 11,189,301 tiles, 58 distinct days"),
+     ("GET /v1/status/{activity_id}", "submit-then-poll, handled by the "
+                                      "cached client"),
+     ("POST /v1/system/fetch-api-key-usage",
+      "the credit figures reported on this page")],
+    note="This page exists to let a reader check those calls rather than "
+         "trust them. Every response is committed to the repository.")
+
 # Every other heat product alerts on temperature. "It is 108 degrees in your
 # neighbourhood" is true, and an emergency manager already knows it. These
 # alerts fire on an UNEXECUTED LEGAL OBLIGATION instead: a clause of the city's

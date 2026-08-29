@@ -120,11 +120,19 @@ The cost side is small: one API call per day per city at 100 m resolution covers
 
 ## Submission — FortyGuard Hackathon '26
 
-Track 04, Government & Environment, primary.
-Track 07, Data Analysis & Correlation, co-primary.
-Track 05, Model Designing, supporting.
+**Track 4 — Government & Environment.**
 
-Track 04 names its own build examples as Heat Vulnerability Map and Climate Resilience Planner, and its technologies as Temperature API, Policy AI, GIS, Open Data. TRIGGER produces a heat vulnerability map by compiling published policy and evaluating it over GIS and open data, which answers the track's own brief directly.
+The track's brief is to "point public resources at the people heat hits hardest — target relief by vulnerability, warn outdoor workers before thresholds are crossed." That is precisely what this measures: which neighbourhoods a city's own relief trigger misses, how many people live in them, and in what order crews should be sent.
+
+The core deliverable is a heat-vulnerability instrument built on the track's own named technologies — Temperature API, policy, GIS, open data.
+
+Three of the handbook's other tracks name examples that this project also delivers, from the same measurement and the same API calls. We list them as evidence that one hyperlocal layer answers several operational questions, not as separate entries:
+
+| Track | Its own listed example | Where it is in this project |
+|---|---|---|
+| 3 — Industrial & Enterprise | "A data-center siting screener that flags candidate locations with elevated ambient heat (and higher cooling cost)" | The Data centre siting page: 30 US metros, free-cooling hours, wet-bulb, user-set weights |
+| 1 — Resilient Cities | "Rank which public assets need shade first" and "test interventions before a shovel hits the ground" | The Urban planning page: intervention order weighted by residents, with a magnitude per recommendation |
+| 5 — Model Designing | "Package the algorithms that turn raw temperature into vulnerability scores, safety alerts" | The compiler (measured F1 0.962), the divergence-alert model, and the siting model, each importable and tested |
 
 We are not claiming Track 06, Agentic AI. There is no agent here, by design: every number is a deterministic comparison, and the language model's only job is to extract quotes and narrate verified results. It decides nothing.
 
@@ -608,4 +616,4 @@ None of these is a temperature source, and none substitutes for any FortyGuard c
 
 Every temperature measurement in this project was made through the FortyGuard Temperature API, provided by FortyGuard (Abu Dhabi) to participants of FortyGuard Hackathon '26. The API is the sole source of thermal data throughout the pipeline, at every stage from event selection to the published headline to the live views in the app. This project exists because that access was made available for it.
 
-Built for the FortyGuard Hackathon '26. Tracks: 04 Government & Environment (primary), 07 Data Analysis & Correlation (co-primary), 05 Model Designing (compiler extraction score).
+Built for the FortyGuard Hackathon '26, Track 4 — Government & Environment.

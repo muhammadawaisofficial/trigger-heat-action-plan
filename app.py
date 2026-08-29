@@ -138,6 +138,18 @@ st.markdown(
     "below the threshold — so the plan never switched on — had any "
     "neighbourhood *already* crossed it? And how many people live there?")
 
+ui.api_strip(
+    [("POST /v1/heatmap · tcm",
+      f"per-tile min/mean/max over {CITY['tiles']} tiles, the overnight-low "
+      f"benchmark this page's number rests on"),
+     ("POST /v1/heatmap · exceedance",
+      "hours above a clause threshold, per tile, per day"),
+     ("filter_type 3 · granularity 100 m",
+      f"one call per day covering all {CITY['aoi']} mi²")],
+    note=f"Every temperature on this page was measured through the FortyGuard "
+         f"Temperature API. No other weather source is used anywhere in this "
+         f"project.")
+
 st.divider()
 
 # ═══════════════════════════════════════════════════ 2 · WHAT WE FOUND

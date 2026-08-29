@@ -62,6 +62,17 @@ st.markdown(
     "of a metro are not the hours on the other, and nobody sites a building on a "
     "city average.")
 
+ui.api_strip(
+    [("POST /v1/heatmap · exceedance · direction=below",
+      "free-cooling hours under the ASHRAE setpoint, per metro"),
+     ("POST /v1/heatmap · tcm", "overnight lows and daily highs, per metro"),
+     ("POST /v1/env_params", "wet-bulb at each metro centroid, the variable "
+                             "the evaporative decision turns on")],
+    note="30 US metros, each one a full-resolution call, because credits are "
+         "flat per call regardless of area. The thermal terms are measured; "
+         "electricity price, water stress and disaster risk are published "
+         "state-level constants and are labelled as such.")
+
 if not national:
     ui.missing("The national panel", "python fetch_national.py")
     st.stop()

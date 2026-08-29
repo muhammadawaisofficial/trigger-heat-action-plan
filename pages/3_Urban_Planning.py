@@ -50,15 +50,14 @@ st.markdown(
     "and coolest ground inside each sample box. That measured gap is then "
     "joined to published cooling effect sizes, which is what lets a "
     "recommendation carry a magnitude instead of being general advice.")
-st.markdown(
-    "Every city already knows to plant trees and raise roof albedo. What no "
-    "citywide average can tell them is **how much**, and **in which "
-    "neighbourhood**. This page answers both by joining two things that are "
-    "each honest on their own:\n\n"
-    "- **Measured by us, at 100 m** — the thermal gap that needs closing\n"
-    "- **Published effect sizes** — how much intervention closes a degree\n\n"
-    "Neither half is invented, and every recommendation below shows the "
-    "measurement that triggered it.")
+ui.api_strip(
+    [("POST /v1/heatmap · tcm",
+      "hottest and coolest ground inside each metro box, at tile resolution"),
+     ("POST /v1/heatmap · tcm, per zone",
+      "the per-neighbourhood peak the intervention order is ranked on"),
+     ("granularity 100 m", "the resolution the whole targeting argument needs")],
+    note="The thermal gap is measured. The canopy and albedo effect sizes it "
+         "is joined to are published values, and are cited as such.")
 
 # ------------------------------------------------------------------ national
 st.markdown("### 1 · The range a single citywide number stands in for")

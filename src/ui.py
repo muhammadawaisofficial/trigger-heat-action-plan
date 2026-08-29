@@ -155,6 +155,22 @@ CSS = """
   code, .stCode { font-family:'JetBrains Mono',monospace !important; }
   iframe { border-radius:13px; }
 
+  /* ---------- API provenance strip ---------- */
+  .tg-api { background:rgba(255,255,255,.75); border:1px solid #e7e5e4;
+    border-left:3px solid var(--tg-accent, #b2182b); border-radius:10px;
+    padding:.7rem .9rem; margin:.2rem 0 1.1rem; }
+  .tg-api-h { font-size:.66rem; font-weight:800; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--tg-accent, #b2182b);
+    margin-bottom:.5rem; }
+  .tg-api-row { display:flex; flex-wrap:wrap; gap:.5rem; }
+  .tg-api-chip { display:flex; flex-direction:column; gap:.12rem;
+    background:#fff; border:1px solid #ececef; border-radius:8px;
+    padding:.36rem .6rem; }
+  .tg-api-chip code { font-size:.72rem; font-weight:700; color:#18181b;
+    background:none; padding:0; }
+  .tg-api-chip span { font-size:.72rem; color:#6b7280; }
+  .tg-api-n { font-size:.74rem; color:#6b7280; margin-top:.5rem; }
+
   /* ---------- page background ---------- */
   /* Applied as background LAYERS on the app container, not as an injected
      element. An earlier version put a fixed, scrimmed div in the DOM and raised
@@ -433,3 +449,24 @@ def theme(page: str) -> None:
 """ % {"a": t["accent"], "g": t["glow"], "na": t["nav_a"], "nb": t["nav_b"],
        "f": t["file"], "hue": t["hue"]}
     st.markdown(css, unsafe_allow_html=True)
+
+
+# ----------------------------------------------------------- API provenance
+# The handbook's own "what makes a project win" box asks that the platform be
+# central and not decorative. Naming the exact endpoint behind what is on
+# screen, on every page, is how that is shown rather than asserted.
+
+def api_strip(items: list[tuple[str, str]], note: str = "") -> None:
+    """A row of `endpoint · analytic -> what it produced here` chips.
+
+    ``items`` is [(call, what_it_gave), ...] where call is the literal endpoint
+    and analytic, so a reader can match it against the FortyGuard docs.
+    """
+    chips = "".join(
+        f'<div class="tg-api-chip"><code>{c}</code><span>{w}</span></div>'
+        for c, w in items)
+    st.markdown(
+        f'<div class="tg-api"><div class="tg-api-h">Measured with the '
+        f'FortyGuard Temperature API</div><div class="tg-api-row">{chips}</div>'
+        + (f'<div class="tg-api-n">{note}</div>' if note else "")
+        + '</div>', unsafe_allow_html=True)
