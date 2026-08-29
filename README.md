@@ -118,6 +118,33 @@ The cost side is small: one API call per day per city at 100 m resolution covers
 
 ---
 
+## Adding a city
+
+Everything city-specific lives in one JSON profile. Nothing city-specific is baked into the pipeline, so pointing TRIGGER at a new city is five inputs and one environment variable — no code changes.
+
+| # | Input | Where it comes from |
+|---|---|---|
+| 1 | The city's published Heat Action Plan, as a PDF | The city's own website |
+| 2 | Zone boundaries, GeoJSON | The city's open-data portal |
+| 3 | A profile, `data/cities/<slug>.json`, about 40 lines | Copy `nyc.json` and edit |
+| 4 | Compiled clauses | `python compile.py`, every quote verified against its cited page |
+| 5 | Population per zone, optional | `python build_population.py` |
+
+```bash
+TRIGGER_CITY=<slug> python compile.py
+FORTYGUARD_API_KEY=... TRIGGER_CITY=<slug> python run_analysis.py --start ... --end ...
+```
+
+The result appears in the app's study-window selector automatically.
+
+**This is demonstrated, not asserted.** New York was added exactly this way, and the same code, unmodified, produced 2,453,713 people across 51 community districts. Porting also exposed three defects Phoenix alone never would have — a hardcoded cache label, a hardcoded population path that overwrote the first city's file, and a single-county Census query that returned nothing for a five-county city. All three are fixed and pinned by tests. A portability claim that has only run on one city is a hypothesis; this one has run on two.
+
+Two constraints are worth knowing before starting. The AOI must be **clipped to land** — New York's full five-borough box is rejected while Phoenix's larger box is accepted, because the former spans open water. And the API covers the **United States only**, so a non-US profile will compile its plan correctly and then fail at evaluation.
+
+Full walkthrough: [`docs/adding_a_city.md`](docs/adding_a_city.md).
+
+---
+
 ## Submission — FortyGuard Hackathon '26
 
 **Track 4 — Government & Environment.**
@@ -153,6 +180,7 @@ We are not claiming Track 06, Agentic AI. There is no agent here, by design: eve
 |---|---|
 | [How this project uses the API](#how-this-project-uses-the-fortyguard-api) | Every call, why it is made, and how the results are kept |
 | [Who this is for, and how it deploys](#who-this-is-for-and-how-it-deploys) | The user, the adoption path, and why a city would pay for it |
+| [Adding a city](#adding-a-city) | Five files and one environment variable, demonstrated on New York |
 | [1. Impact & relevance](#1-impact--relevance-40) | What we found and why it matters |
 | [2. Technical execution](#2-technical-execution-35) | How it works, and what we measured about the API |
 | [3. Innovation](#3-innovation-15) | Why compiling the document is the whole point |
@@ -603,7 +631,11 @@ Three non-FortyGuard inputs are used, each because it supplies something outside
 | Population | US Census ACS 5-year 2023 + TIGERweb geometry | Converts silent zones into people. Static, committed. |
 | Clause extraction | Google Gemini (free tier) | Reads the PDF. Output is committed; the published analysis runs from it directly. |
 
-None of these is a temperature source, and none substitutes for any FortyGuard capability.
+None of these is a temperature source, and none substitutes for any FortyGuard capability. Each is fetched once and committed, so none is a live dependency.
+
+This division is what the handbook's own track examples describe. Track 4 names "a heat-vulnerability map that combines temperature with demographics"; Track 7 names "a heat-equity analysis that joins historical temperature patterns with demographic or socioeconomic layers"; and the use-case notebooks FortyGuard ships are each built on a user-supplied CSV — bus stops, park inventories, property portfolios — with recommendations citing EPA, USDA, ASHRAE and OSHA programmes. Section 8.3 puts it directly: submissions are "built on your own data, region, problem, and approach."
+
+FortyGuard supplies every temperature. The three inputs above supply the things temperature alone cannot: where the zone boundaries are, how many people live inside them, and what the plan says.
 
 ## Sources
 

@@ -87,7 +87,9 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 **Screen:** switch the city selector to New York.
 
-> "Same pipeline, unchanged, on New York's plan and New York's districts. New York triggers on heat index; Phoenix triggers on dry-bulb. Opposite choices, same failure."
+> "Same pipeline, unchanged, on New York's plan and New York's districts. New York triggers on heat index; Phoenix triggers on dry-bulb. Opposite choices, same failure.
+>
+> And adding a city is five files and one environment variable — the plan PDF, the zone boundaries, a forty-line profile, the compiled clauses, and the population join. No code changes. New York is the proof that works, and porting to it is what exposed three bugs Phoenix alone never would have."
 
 ---
 
