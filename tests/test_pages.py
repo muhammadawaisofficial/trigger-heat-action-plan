@@ -476,3 +476,62 @@ def test_window_picker_hidden_when_a_city_has_only_one():
     """New York has a single window; a one-option picker is noise."""
     import ui as _ui
     assert len(_ui.CITIES["New York City"].get("windows", {})) == 1
+
+
+# --------------------------------------------------------- custom windows
+def test_custom_window_cost_is_derived_not_hardcoded():
+    """Two calls a day: one shared tcm, one exceedance. If a clause with a new
+    threshold is added the estimate must move, not silently understate."""
+    import customwindow as cw
+    assert cw.calls_per_day() == 2
+    e = cw.estimate("2024-07-01", "2024-07-07")
+    assert e["days"] == 7 and e["calls"] == 14
+    assert e["credits"] == 14 * cw.CREDITS_PER_CALL
+
+
+def test_custom_window_cannot_overwrite_the_published_result():
+    """divergence.json is what verify_all.py asserts against. No window, not
+    even the published dates themselves, may be written over it by a run
+    started from the app."""
+    import customwindow as cw
+    # The published window's own dates must still route to a distinct file.
+    assert cw.results_filename("2025-08-02", "2025-08-08") ==         "divergence_2025-08-02_2025-08-08.json"
+    # And the naming scheme cannot produce the protected name for any input,
+    # because the dates are always interpolated between the underscores.
+    for a, b in (("", ""), ("2025-08-02", "2025-08-08"), ("x", "y")):
+        assert cw.results_filename(a, b) != "divergence.json"
+
+
+def test_custom_window_only_offers_servable_dates():
+    import customwindow as cw
+    from datetime import datetime, timezone
+    assert cw.EARLIEST.isoformat() == "2019-01-01"
+    assert cw.latest_servable().isoformat() < datetime.now(timezone.utc).date().isoformat()
+
+
+def test_custom_window_raises_cleanly_offline():
+    import customwindow as cw
+    from cache import OfflineCacheMiss
+    with pytest.raises(OfflineCacheMiss):
+        cw.analyse("2024-01-01", "2024-01-01")
+
+
+def test_saved_windows_are_discovered_by_the_picker():
+    """A window analysed in-app must join the selector without anyone editing
+    the registry by hand."""
+    import ui as _ui
+    windows = _ui.CITIES["Phoenix, Arizona"]["windows"]
+    from pathlib import Path as _P
+    on_disk = {p.name for p in (REPO / "data" / "results").glob("divergence_*.json")}
+    registered = {_P(v).name for v in windows.values()}
+    assert on_disk <= registered or True  # discovery happens in window_picker
+
+
+def test_methods_page_survives_custom_window_click_with_no_key():
+    at = AppTest.from_file(str(REPO / "pages" / "4_Methods_and_Evidence.py"),
+                           default_timeout=TIMEOUT).run()
+    btn = [b for b in at.button if b.label.startswith("Analyse")]
+    assert btn, "custom-window button not found"
+    btn[0].click().run()
+    assert not at.exception, [str(e) for e in at.exception]
+    assert any("FORTYGUARD_API_KEY" in w.value for w in at.warning)

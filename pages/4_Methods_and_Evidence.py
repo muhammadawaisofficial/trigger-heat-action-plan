@@ -21,7 +21,10 @@ from streamlit_folium import st_folium
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+import datetime as _dt  # noqa: E402
+
 import cache as fg_cache  # noqa: E402
+import customwindow  # noqa: E402
 import liveprobe  # noqa: E402
 import study  # noqa: E402
 import ui  # noqa: E402
@@ -738,6 +741,98 @@ with tab_api:
                     f"`docs/api_findings.md` — a 2,400 s poll timeout under "
                     f"load — and exactly why the headline number never "
                     f"depends on a live call succeeding on demand.", icon="⚠️")
+
+    # ------------------------------------------------- any window, on demand
+    st.markdown("---")
+    st.markdown("#### Analyse any window: pick your own dates")
+    st.caption(
+        "The published result is one week of August 2025. This runs the same "
+        "pipeline — the same evaluator, the same aggregation, the same "
+        "divergence maths — over any dates the API will serve, from "
+        "2019-01-01 to yesterday. Any year, any month, any week. A finished "
+        "run is saved and joins the **Study window** selector on the home "
+        "page, so it becomes a first-class result rather than a one-off view.")
+
+    _today = customwindow.latest_servable()
+    _cw1, _cw2 = st.columns(2)
+    _start = _cw1.date_input("From", value=_dt.date(2024, 7, 8),
+                             min_value=customwindow.EARLIEST, max_value=_today,
+                             key="cw_start")
+    _end = _cw2.date_input("To", value=_dt.date(2024, 7, 14),
+                           min_value=customwindow.EARLIEST, max_value=_today,
+                           key="cw_end")
+
+    if _start > _end:
+        st.warning("The start date is after the end date.")
+    else:
+        _est = customwindow.estimate(_start.isoformat(), _end.isoformat())
+        _done = customwindow.already_analysed(_start.isoformat(), _end.isoformat())
+
+        _e1, _e2, _e3, _e4 = st.columns(4)
+        _e1.metric("Days", _est["days"])
+        _e2.metric("API calls", _est["calls"], "2 per day", delta_color="off")
+        _e3.metric("Credits", f"{_est['credits']:,}", "4,220 flat per call",
+                   delta_color="off")
+        _e4.metric("Estimated time",
+                   f"{_est['seconds_low'] // 60}–{_est['seconds_high'] // 60} min",
+                   "if every call is healthy", delta_color="off")
+
+        if _done:
+            st.success(
+                f"**This window is already analysed** — no credits needed. "
+                f"Select it on the home page's Study window selector to view "
+                f"it.", icon="✅")
+
+        st.caption(
+            "Every call is cached as it arrives, so a run that fails partway "
+            "is not wasted: press again and the completed days replay "
+            "instantly while only the missing ones are fetched. Long windows "
+            "are resumable rather than all-or-nothing.")
+
+        if st.button(f"Analyse {_start.isoformat()} to {_end.isoformat()}",
+                     type="primary", key="cw_go"):
+            if not fg_cache.has_key():
+                st.warning(
+                    "No `FORTYGUARD_API_KEY` is configured on this "
+                    "deployment, so no new window can be fetched here. The "
+                    "windows already analysed remain available on the home "
+                    "page. To run your own: set the key and use "
+                    "`python run_analysis.py --start … --end …`, which is the "
+                    "same code path this button calls.", icon="🔑")
+            else:
+                _bar = st.progress(0.0, text="Starting…")
+
+                def _note(msg, i, total):
+                    _bar.progress(min(i / max(total, 1), 1.0), text=msg)
+
+                try:
+                    _res = customwindow.analyse(_start.isoformat(),
+                                                _end.isoformat(), progress=_note)
+                except Exception as exc:  # noqa: BLE001 — never crash the page
+                    _bar.empty()
+                    st.error(
+                        f"That window did not complete: {type(exc).__name__}. "
+                        f"Whatever was fetched before the failure is cached, "
+                        f"so pressing again resumes rather than restarting. "
+                        f"Large windows on a small container are the documented "
+                        f"weak point here — see `docs/api_findings.md`.",
+                        icon="⚠️")
+                else:
+                    _bar.empty()
+                    _path = customwindow.save(_res, _start.isoformat(),
+                                              _end.isoformat())
+                    _s = _res["summary"]
+                    st.success(
+                        f"**Analysed {_est['days']} days.** Saved as "
+                        f"`{_path.name}` — it now appears in the Study window "
+                        f"selector on the home page.", icon="🎉")
+                    _r1, _r2, _r3 = st.columns(3)
+                    _r1.metric("Silent zones",
+                               f"{_s.get('silent_zones', 0)} of "
+                               f"{len(_res.get('zones', []))}")
+                    _r2.metric("Silent zone-days", _s.get("silent_zone_days", 0))
+                    _r3.metric("People exposed",
+                               f"{_s.get('population_exposed', 0):,}")
 
 with tab_retract:
     st.markdown(

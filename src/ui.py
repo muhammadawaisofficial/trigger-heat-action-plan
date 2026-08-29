@@ -263,6 +263,18 @@ def window_picker(city: dict, key: str = "window"):
     """
     windows = {k: v for k, v in (city.get("windows") or {}).items()
                if Path(v).exists()}
+    # Any window analysed from inside the app lands in the same results
+    # directory as divergence_<start>_<end>.json. Discovering them here means a
+    # custom run joins this list the moment it finishes, rather than needing
+    # the registry above to be edited by hand.
+    known = {Path(v).name for v in windows.values()}
+    results_dir = REPO / "data" / "results"
+    if results_dir.exists():
+        for f in sorted(results_dir.glob("divergence_*.json")):
+            if f.name in known:
+                continue
+            stem = f.stem.replace("divergence_", "")
+            windows[f"{stem}  ·  analysed in-app"] = f
     if len(windows) < 2:
         return city["results"], None
     with st.sidebar:
