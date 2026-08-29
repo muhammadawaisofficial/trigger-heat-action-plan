@@ -285,7 +285,7 @@ def test_background_cannot_overlay_the_content():
     # The backdrop is emitted per page by theme(); the shared sheet carries the
     # rest. Both are checked, because the overlay bug could return in either.
     css = _ui.CSS + inspect.getsource(_ui.theme)
-    assert "app/static/phoenix_field.png" in css, "backdrop not applied"
+    assert "app/static/backdrop.jpg" in css, "backdrop not applied"
     assert "background-attachment: fixed" in css
     # No full-viewport overlay elements: that is the shape of the bug.
     for banned in (".tg-scrim", ".tg-bg", ".tg-field", ".tg-orb"):
@@ -308,31 +308,28 @@ def test_every_page_still_shows_its_pills():
 
 
 # --------------------------------------------------------------- the backdrop
-def test_backdrop_is_generated_from_real_cached_tiles():
-    """The background is the project's own measurement, not stock artwork.
-
-    If the generator ever loses its input, the claim in the README and the video
-    ('that is the measured field') stops being true.
-    """
-    import make_backdrop
-    assert make_backdrop.RESPONSE.exists(), "cached tcm response is missing"
-    assert (REPO / "static" / "phoenix_field.png").exists()
-    # Small enough not to hurt first paint on Streamlit Cloud.
-    assert (REPO / "static" / "phoenix_field.png").stat().st_size < 400_000
+def test_backdrop_asset_is_present_and_small():
+    """A real NASA raster, kept small enough not to slow first paint."""
+    out = REPO / "static" / "backdrop.jpg"
+    assert out.exists(), "run python make_backdrop.py"
+    assert out.stat().st_size < 400_000, "backdrop too heavy for first paint"
 
 
-def test_backdrop_transform_preserves_temperature_order():
-    """The rank transform must be monotonic: hotter is darker, always.
+def test_backdrop_frames_the_city_under_study():
+    """Phoenix must actually be inside the crop, or the image is just scenery."""
+    import make_backdrop as mb
+    lon, lat = -112.07, 33.45
+    assert mb.WEST < lon < mb.EAST, "Phoenix is outside the longitude crop"
+    assert mb.SOUTH < lat < mb.NORTH, "Phoenix is outside the latitude crop"
 
-    Ranking is what makes the near-uniform field legible. It is honest only
-    while no two pixels swap order, so this pins that property directly.
-    """
-    import numpy as np
-    field = np.array([[30.0, 31.0, 35.0], [29.0, 33.0, 38.0]])
-    flat = field.ravel()
-    norm = (np.argsort(np.argsort(flat)) / (len(flat) - 1))
-    assert np.all(np.argsort(flat) == np.argsort(norm))
-    assert norm.min() == 0.0 and norm.max() == 1.0
+
+def test_nasa_source_is_credited():
+    """NASA material is public domain; attribution is good practice and we
+    make factual claims about the instrument, so it has to be stated."""
+    src = (REPO / "make_backdrop.py").read_text(encoding="utf-8")
+    assert "NASA Earth Observatory" in src and "VIIRS" in src
+    app = (REPO / "app.py").read_text(encoding="utf-8")
+    assert "NASA" in app, "the interface does not credit the imagery"
 
 
 def test_static_serving_is_enabled():
