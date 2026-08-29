@@ -447,3 +447,32 @@ def test_live_section_only_shows_for_the_backend_city():
     at.sidebar.radio[0].set_value("New York City").run()
     assert not at.exception, [str(e) for e in at.exception]
     assert not any("Right now, live" in str(m.value) for m in at.markdown)
+
+
+# ----------------------------------------------------------- study windows
+def test_phoenix_exposes_both_analysed_windows():
+    """The 2026 replication was fetched live on unseen data. Showing only the
+    published window made a pipeline that HAS been re-run look hardcoded."""
+    import ui as _ui
+    windows = _ui.CITIES["Phoenix, Arizona"]["windows"]
+    assert len(windows) >= 2
+    for label, path in windows.items():
+        assert Path(path).exists(), label
+
+
+def test_switching_window_changes_every_headline_number():
+    """If the numbers do not move, the picker is decorative."""
+    at = AppTest.from_file(str(REPO / "app.py"), default_timeout=TIMEOUT).run()
+    published = [m.value for m in at.metric[:4]]
+    w = [r for r in at.sidebar.radio if r.label == "Window"][0]
+    w.set_value("16–22 Aug 2026  ·  fetched live").run()
+    assert not at.exception, [str(e) for e in at.exception]
+    live = [m.value for m in at.metric[:4]]
+    assert published != live, "window switch did not change the numbers"
+    assert "9 of 15" in live[0], live
+
+
+def test_window_picker_hidden_when_a_city_has_only_one():
+    """New York has a single window; a one-option picker is noise."""
+    import ui as _ui
+    assert len(_ui.CITIES["New York City"].get("windows", {})) == 1

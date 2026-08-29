@@ -221,6 +221,10 @@ def missing(what: str, how: str) -> None:
 CITIES = {
     "Phoenix, Arizona": {
         "results": REPO / "data" / "results" / "divergence.json",
+        "windows": {
+            "2–8 Aug 2025  ·  published": REPO / "data" / "results" / "divergence.json",
+            "16–22 Aug 2026  ·  fetched live": REPO / "data" / "results" / "divergence_2026-08-16_2026-08-22.json",
+        },
         "zones":   REPO / "data" / "zones" / "phoenix_villages_raw.geojson",
         "pop":     REPO / "data" / "zones" / "phoenix_villages_population.json",
         "unit": "urban village", "short": "Phoenix",
@@ -233,6 +237,9 @@ CITIES = {
     },
     "New York City": {
         "results": REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json",
+        "windows": {
+            "22–28 Jun 2025": REPO / "data" / "results" / "nyc" / "divergence_2025-06-22_2025-06-28.json",
+        },
         "zones":   REPO / "data" / "zones" / "nyc_cd.geojson",
         "pop":     REPO / "data" / "zones" / "nyc_cd_population.json",
         "unit": "community district", "short": "New York",
@@ -244,6 +251,25 @@ CITIES = {
                 "triggers on heat index — also the right choice for its climate.",
     },
 }
+
+
+def window_picker(city: dict, key: str = "window"):
+    """Choose which analysed window to display.
+
+    A city can have several: the published one, and any re-run on a later
+    period. Keeping only the first was hiding the fact that this pipeline has
+    been run on data it had never seen -- which is the strongest evidence here
+    that nothing is hardcoded.
+    """
+    windows = {k: v for k, v in (city.get("windows") or {}).items()
+               if Path(v).exists()}
+    if len(windows) < 2:
+        return city["results"], None
+    with st.sidebar:
+        st.markdown("### Study window")
+        label = st.radio("Window", list(windows), label_visibility="collapsed",
+                         key=key)
+    return windows[label], label
 
 
 def city_picker(key: str = "city") -> tuple[str, dict]:

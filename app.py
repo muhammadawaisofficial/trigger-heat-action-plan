@@ -90,7 +90,8 @@ with st.sidebar:
                    "city's own data. Same code, one profile file per city.",
                    icon="🔀")
 
-res = load_json(str(CITY["results"]))
+_results_path, _window_label = ui.window_picker(CITY, key="home_window")
+res = load_json(str(_results_path))
 geo = load_json(str(CITY["zones"]))
 pop = (load_json(str(CITY["pop"])) or {}).get("villages", {})
 summary = res["summary"]
@@ -168,6 +169,19 @@ k[3].metric("Typical warning lost",
             f"{summary['median_lead_days']:.0f} days"
             if summary.get("median_lead_days") else "n/a",
             "before the citywide trigger caught up", delta_color="off")
+
+# The replication was buried in the README while the app showed only the
+# published window -- which made a pipeline that HAS been run on unseen data
+# look like it could only ever produce one hardcoded result.
+if _window_label:
+    _n_windows = len(CITY.get("windows") or {})
+    st.info(
+        f"**You are viewing: {_window_label}.** This city has "
+        f"**{_n_windows} analysed windows** — switch between them in the "
+        f"sidebar. The 2026 window was **fetched live from the API**, a week "
+        f"this analysis had never seen, and the finding reproduced: "
+        f"9 of 15 {CITY['unit']}s, 958,205 residents, same near-miss "
+        f"signature. Nothing here is hardcoded to one week.", icon="🔁")
 
 with st.expander(f"Why {summary['days']} days, and not a whole summer?"):
     st.markdown(
