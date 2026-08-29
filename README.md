@@ -2,7 +2,7 @@
 
 ### **[▶ Open the live demo](https://trigger-heat.streamlit.app/)** · [Repository](https://github.com/muhammadawaisofficial/trigger-heat-action-plan)  ·  Video: _link pending_
 
-No API key needed, no sign-in. Everything below also reproduces offline: `python run_demo.py`.
+Built on the FortyGuard Temperature API, supplied by FortyGuard for FortyGuard Hackathon '26. Every number here comes from 125 real API calls, 527,500 credits, 11,189,301 tiles, not simulated data (details below). The responses are committed to the repository, so the analysis also reproduces offline without a key of your own: `python run_demo.py`.
 
 ---
 
@@ -101,11 +101,14 @@ Track 04 names its own build examples as Heat Vulnerability Map and Climate Resi
 
 We are not claiming Track 06, Agentic AI. There is no agent here, by design: every number is a deterministic comparison, and the language model's only job is to extract quotes and narrate verified results. It decides nothing.
 
+Built entirely on API access FortyGuard provided for this hackathon. No other thermal, weather, or climate data source is used anywhere in the pipeline.
+
 | | |
 |---|---|
 | Thermal data | FortyGuard Temperature API only, no external weather source anywhere |
+| API usage | 125 real calls, 527,500 credits, 11,189,301 tiles, 58 distinct days |
 | Scale | 272,917 tiles/day at 100 m over 1,053 mi² |
-| Reproducibility | committed cache, no API key needed, one command |
+| Reproducibility | those same calls committed to the repository, verifiable in one command |
 | Tests | 59 unit and UI tests, 12 end-to-end checks |
 
 ---
@@ -639,5 +642,9 @@ None of these is a temperature source, and none substitutes for any FortyGuard c
 - Phoenix urban village boundaries, [City of Phoenix Open Data](https://www.phoenixopendata.com/dataset/villages)
 - FortyGuard Temperature API, [api.fortyguard.com](https://api.fortyguard.com)
 - US Census ACS 5-year 2023 (table B01003_001E) and TIGERweb ACS2023 block groups
+
+## Acknowledgment
+
+Every temperature measurement in this project was made possible by API access FortyGuard (Abu Dhabi) provided to participants of FortyGuard Hackathon '26. The Temperature API is the sole source of thermal data throughout the pipeline; this project exists because that access was made available for it.
 
 Built for the FortyGuard Hackathon '26. Tracks: 04 Government & Environment (primary), 07 Data Analysis & Correlation (co-primary), 05 Model Designing (compiler extraction score).
