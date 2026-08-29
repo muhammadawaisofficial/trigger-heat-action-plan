@@ -179,6 +179,7 @@ quotes and narrates verified results. It decides nothing.
 | [4. Communication](#4-communication-10) | Reproducing every number here |
 | [The precedent](#the-precedent-new-york-already-fixed-a-version-of-this) | A documented natural experiment: NYC changed its threshold and hospitalisations fell |
 | [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
+| [Why the live demo does not call the API](#why-the-live-demo-does-not-call-the-api--and-where-it-does) | Measured cost of a live call, and the button that proves it anyway |
 | [What we got wrong](#what-we-got-wrong) | Three corrections, and the mechanism that keeps them honest |
 | [The four pages](#the-four-pages) | Divergence, heat waves, siting, urban planning — and what each is measured from |
 | [5. Limitations](#5-limitations) | What this does not show |
@@ -405,6 +406,53 @@ alerting loop. It runs on demand over any window.
 An independently reproduced finding is a research artefact rather than a demo
 result, which is why it gets its own section rather than a footnote. The
 over-trigger half replicates too: `verify_all.py` asserts both windows.
+
+### Why the live demo does not call the API — and where it does
+
+**We fetched everything for real, once, and committed the responses.** 125
+calls, 11,189,301 tiles, 527,500 credits, across 58 distinct days — every
+number on this site traces back to one of those calls, listed in
+`data/results/api_usage.json`. Nothing is simulated and no other weather
+source appears anywhere in the pipeline. That is a fact about *how the data
+was produced*; the choice below is about *how the live demo runs*, and the
+two are independent.
+
+**We measured what a live call actually costs before deciding, rather than
+guessing:**
+
+| | Measured |
+|---|---|
+| Single full-city call, best case | **118 s** (`docs/api_findings.md`) |
+| A documented failure under load | **2,400 s (40 minutes)**, 40 transient 502/503/504 errors |
+| Reproducing the 7-day headline window live | ~15–20 serial calls, **15–40 minutes**, tens of thousands more credits |
+| Credits per call | **4,220, flat**, regardless of area |
+
+None of that belongs on the critical path of a number a judge might load at any
+moment. So the deployed app reads from the committed cache, for three reasons:
+
+- **It can be audited.** `python verify_all.py` re-derives every published
+  figure from the same saved responses and fails loudly if one has moved. A
+  demo that only works against a live key cannot be checked by the person
+  judging it.
+- **It cannot break mid-judging.** A live call is one outage, one rate limit,
+  or one expired key away from an error page, at the worst possible moment.
+- **It is not free to rerun.** Credits are flat per call, not per byte, so
+  reproducing the full analysis on every page load would spend real money to
+  show the same thing twice.
+
+**The cache is a saved copy, not baked-in data** — see the command above this
+section: point the pipeline at an uncached window with a key, and it calls the
+API for real. That is exactly how the 2026 replication a few paragraphs up was
+produced, on data this analysis had never seen before.
+
+**And if you want to watch the network move anyway:** the Methods & Evidence
+page has a **"Fetch a live reading"** button, deliberately separate from
+everything else on the site. It makes one small, real, on-demand call — a 2 km
+box, one analytic, one day — that never feeds the headline number on success or
+on failure. Because credits are flat regardless of area, the first press each
+day is a genuine live round trip and later presses that day replay that same
+real response rather than paying again; the label on screen states which one
+happened.
 
 ---
 

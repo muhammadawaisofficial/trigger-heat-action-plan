@@ -222,7 +222,12 @@ if _api:
             f"The cache is a **saved copy, not baked-in data**: ask the "
             f"pipeline for a window that is not in it, set an API key, and it "
             f"calls the API for real. That is exactly how the 2026 replication "
-            f"window was produced — on data this analysis had never seen.")
+            f"window was produced — on data this analysis had never seen.\n\n"
+            f"**Want to watch the network move anyway?** The Methods & "
+            f"evidence page has a **\"Fetch a live reading\"** button — a "
+            f"small, real, on-demand call kept deliberately separate from "
+            f"everything on this page, so it can prove liveness without "
+            f"putting a live poll on the critical path of the number above.")
 
 with st.expander("How is this measured, and what is the comparison?"):
     st.markdown(

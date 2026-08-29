@@ -27,6 +27,14 @@ violet), so clicking across it reads as one structured app with five rooms
 rather than five separate tabs. That transition is free production value — use
 it every time the script says "screen: switch to".
 
+**Press "Fetch a live reading" once, off camera, before you start recording.**
+It's on the Methods & Evidence page, API findings tab. That first press is a
+genuine live call to FortyGuard — real credits, real network round trip. During
+the actual take, pressing it again replays that same real response instantly
+(labelled "Replayed today's real fetch" on screen) instead of making the
+audience watch a 5–15 s poll. Both states are true; recording the fast one is
+what keeps 2:40 tight.
+
 ---
 
 ## 0:00 – 0:25 · The number first
@@ -98,9 +106,20 @@ provenance panel with a quote visible.
 
 > "Those calls are committed to the repo. So this runs with no API key, offline,
 > in one command — and you get the same number I just showed you. You can audit
-> it instead of taking my word for it."
+> it instead of taking my word for it.
+>
+> We measured why that matters, rather than assuming it. A live call here can
+> take two minutes best case — and we hit a real failure that hung for forty
+> minutes under load. Neither belongs on the critical path of a number a judge
+> might load at any moment."
 
 **Let the output land on screen.** Reproducibility is the 35%.
+
+**Screen:** scroll to "Fetch a live reading" on the Methods & Evidence page.
+Point at it — no need to click again, you already pressed it off camera.
+
+> "And if you still want to watch the network move — this button does, on
+> demand, separate from everything else on the site."
 
 Don't re-read the call count here — you already showed it on the page a moment
 ago. Repeating it sounds like padding; pointing back to it ("the numbers I just
@@ -171,8 +190,13 @@ comparison?" — the caveat is the last paragraph in it.
 | 90 °F → 10 waves / 110 °F → 0 | Heat waves page, threshold ladder |
 | New York replication | `data/results/nyc/` |
 | 30 metros, wet-bulb measured | `data/results/wetbulb.json` |
+| 118 s best-case live call · 2,400 s documented failure | `docs/api_findings.md` |
 
 ## Things not to say
+
+- Do not describe the offline design as a limitation or a workaround. It is a
+  reproducibility choice, made after measuring the cost of the alternative —
+  say so in those words if asked, don't just say "it's cached."
 
 - Do not call the citywide comparator a station feed. It is a proxy, always.
 - Do not say the app predicts heat waves. It detects them in measured data;
