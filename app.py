@@ -493,6 +493,4 @@ st.caption(
     f"ground at 100 m resolution. Study window {summary['window'][0]} to "
     f"{summary['window'][1]}. Every figure on this page is a deterministic "
     f"comparison of measured values — no language model produces any number "
-    f"here. Runs offline from a committed cache: `python run_demo.py`.  "
-    f"Backdrop: *Earth at Night* — NASA Earth Observatory / NOAA, VIIRS "
-    f"Day-Night Band aboard Suomi NPP, framed on North America. Public domain.")
+    f"here. Runs offline from a committed cache: `python run_demo.py`.")

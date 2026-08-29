@@ -364,10 +364,10 @@ def theme(page: str) -> None:
      than a separate element that could ever land on the wrong side. */
   .stApp {
     background-image:
-      linear-gradient(180deg, rgba(252,252,253,.955) 0%%,
-                              rgba(252,252,253,.930) 40%%,
-                              rgba(252,252,253,.965) 100%%),
-      url(app/static/backdrop.jpg);
+      linear-gradient(180deg, rgba(255,255,255,.90) 0%%,
+                              rgba(255,255,255,.84) 45%%,
+                              rgba(255,255,255,.92) 100%%),
+      url(app/static/phoenix_field.png);
     background-size: cover, cover;
     background-position: center, center;
     background-attachment: fixed, fixed;
@@ -380,23 +380,13 @@ def theme(page: str) -> None:
   .tg-vs-mid { color:%(a)s !important; }
   .stTabs [aria-selected="true"] { color:%(a)s !important; background:%(g)s !important; }
   .tg-next .tg-card:hover { border-color:%(a)s !important; }
-  /* The headline sits on the satellite image itself: a dark panel where the
-     rest of the page is light, so the eye lands on the number first. The
-     gradient over the photograph is what guarantees contrast for the white
-     type -- part of the background, so it can never end up on the wrong side
-     of the text it is protecting. */
   .tg-hero { background:
-      linear-gradient(180deg, rgba(9,12,26,.86) 0%%, rgba(9,12,26,.78) 45%%,
-                              rgba(9,12,26,.90) 100%%),
-      url(app/static/backdrop.jpg) center/cover !important;
-      border:1px solid rgba(255,255,255,.10) !important;
-      box-shadow:0 20px 50px -28px rgba(9,12,26,.75) !important; }
-  .tg-hero .tg-kicker { color:%(nb)s !important; }
-  .tg-hero .tg-sub { color:rgba(255,255,255,.86) !important; }
-  .tg-hero .tg-sub b { color:#fff !important; }
+      radial-gradient(ellipse 70%% 120%% at 50%% -10%%, %(g)s 0%%, transparent 65%%),
+      #fff !important;
+      border-color:%(a)s33 !important;
+      box-shadow:0 2px 4px %(a)s0d, 0 18px 40px -24px %(a)s59 !important; }
   .tg-hero::before { background:linear-gradient(90deg,%(na)s,%(nb)s) !important; }
-  .tg-num { color:#fff !important;
-      text-shadow:0 2px 26px %(a)s, 0 1px 3px rgba(0,0,0,.5) !important; }
+  .tg-num { color:%(a)s !important; }
   /* the page you are on, filled solid on the bar */
   a[href$="/%(f)s"] { background:#fff !important;
       border-color:#fff !important; }
