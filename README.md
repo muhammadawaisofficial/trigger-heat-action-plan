@@ -296,7 +296,13 @@ It is not free to rerun. Credits are flat per call, not per byte, so reproducing
 
 The cache is a saved copy, not baked-in data. Point the pipeline at an uncached window with a key, and it calls the API for real, exactly how the 2026 replication above was produced, on data this analysis had never seen before.
 
-If you want to watch the network move anyway: the Methods & Evidence page has a "Fetch a live reading" button, deliberately separate from everything else on the site. It makes one small, real, on-demand call, a 2 km box, one analytic, one day, that never feeds the headline number on success or on failure. Because credits are flat regardless of area, the first press each day is a genuine live round trip, and later presses that day replay the same real response rather than paying again. The label on screen states which one happened.
+If you want to watch the network move anyway, there are two ways to.
+
+The Methods & Evidence page has a "Fetch a live reading" button, deliberately separate from everything else on the site. It makes one small, real, on-demand call, a 2 km box, one analytic, one day, that never feeds the headline number on success or on failure.
+
+The home page has "Right now, live," which goes further: it runs the same `Evaluator` and `ZoneAggregator` classes the published headline runs on, unmodified, against the most recent complete day fetched live from FortyGuard, across all 15 urban villages. Four of the plan's five evaluable clauses share a single `tcm` product, so evaluating all four for one day costs exactly one live call, full city scale, at the same flat 4,220 credits as any other request. This is not a demonstration of the pipeline. It is the pipeline, pointed at now instead of at 2025.
+
+In both cases, credits are flat regardless of area, so the first press each day is a genuine live round trip and later presses that day replay the same real response rather than paying again. The label on screen states which one happened.
 
 ---
 

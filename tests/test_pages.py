@@ -389,3 +389,61 @@ def test_methods_page_survives_a_probe_click_with_no_key():
     assert not at.exception, [str(e) for e in at.exception]
     text = " ".join(w.value for w in at.warning)
     assert "125 real calls" in text
+
+
+# ------------------------------------------------------------ live conditions
+def test_liveconditions_shares_one_call_across_four_clauses():
+    """The whole point: credits are flat, so evaluate every tcm-backed clause
+    from one fetch rather than pretending four calls are needed."""
+    import liveconditions
+    from schema import load_clauses
+    from evaluate import evaluable
+    import study
+    temp_clauses = [c for c in load_clauses(study.GOLDEN_CLAUSES)
+                    if evaluable(c) and c.metric in liveconditions.TEMPERATURE_METRICS]
+    assert len(temp_clauses) >= 3, "expected several tcm-backed clauses to share the fetch"
+
+
+def test_liveconditions_excludes_the_hours_clause():
+    """PHX-2026-A1.1 is exceedance/hours; mixing it into a degF comparison is
+    the same unit-chain trap heatwave.py already guards against."""
+    import liveconditions
+    from schema import load_clauses
+    from evaluate import evaluable
+    import study
+    ids = [c.clause_id for c in load_clauses(study.GOLDEN_CLAUSES)
+           if evaluable(c) and c.metric in liveconditions.TEMPERATURE_METRICS]
+    assert "PHX-2026-A1.1" not in ids
+
+
+def test_liveconditions_requests_a_day_the_api_can_serve():
+    import liveconditions
+    from datetime import datetime, timezone
+    day = liveconditions.probe_day()
+    assert day < datetime.now(timezone.utc).date().isoformat()
+
+
+def test_liveconditions_raises_cleanly_with_no_key_and_no_cache():
+    import liveconditions
+    from cache import OfflineCacheMiss
+    with pytest.raises(OfflineCacheMiss):
+        liveconditions.run(day="1999-01-01")
+
+
+def test_home_page_survives_live_conditions_click_with_no_key():
+    at = AppTest.from_file(str(REPO / "app.py"), default_timeout=TIMEOUT).run()
+    buttons = [b for b in at.button if "live" in b.label.lower()]
+    assert buttons, "live-conditions button not found on the home page"
+    buttons[0].click().run()
+    assert not at.exception, [str(e) for e in at.exception]
+    text = " ".join(w.value for w in at.warning)
+    assert "125 real API" in text
+
+
+def test_live_section_only_shows_for_the_backend_city():
+    """study.py's active city is fixed at import time (TRIGGER_CITY); the UI
+    must never offer a live button for a city that backend isn't wired to."""
+    at = AppTest.from_file(str(REPO / "app.py"), default_timeout=TIMEOUT).run()
+    at.sidebar.radio[0].set_value("New York City").run()
+    assert not at.exception, [str(e) for e in at.exception]
+    assert not any("Right now, live" in str(m.value) for m in at.markdown)
