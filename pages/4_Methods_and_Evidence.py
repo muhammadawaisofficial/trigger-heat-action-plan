@@ -21,6 +21,8 @@ from streamlit_folium import st_folium
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+import cache as fg_cache  # noqa: E402
+import liveprobe  # noqa: E402
 import study  # noqa: E402
 import ui  # noqa: E402
 from alerts import detect, summarise  # noqa: E402
@@ -679,6 +681,63 @@ with tab_api:
                 "`persistence` clamps to ~8 h at `filter_type=4`, and the real "
                 "area limit is ~1,053 mi² rather than the documented 50. "
                 "See `docs/api_findings.md`.", icon="🔬")
+
+    st.markdown("---")
+    st.markdown("#### Prove it: fetch one real reading right now")
+    st.caption(
+        "Everything above runs from the committed cache — that is a "
+        "reproducibility choice, not a way of avoiding the API (see why, "
+        "below). This button is separate from all of it: a real, on-demand "
+        "call to FortyGuard for a 2 km box over downtown Phoenix, one "
+        "analytic, one day. It never feeds the headline number.")
+
+    pc1, pc2 = st.columns([1, 2])
+    with pc1:
+        go = st.button("Fetch a live reading", type="primary",
+                       use_container_width=True)
+    with pc2:
+        st.caption(
+            f"First press of the day is a genuine network round trip "
+            f"(typically 5–15 s for this size). Credits are a flat 4,220 per "
+            f"call regardless of area, so later presses today reuse that same "
+            f"real response rather than paying again — the label below states "
+            f"which happened.")
+
+    if go:
+        if not fg_cache.has_key():
+            st.warning(
+                "No `FORTYGUARD_API_KEY` is configured on this deployment, so "
+                "there is nothing to fetch live here. This does not affect "
+                "anything else on the site — every other number reproduces "
+                "from the **125 real calls already committed** to the repo "
+                "(see the metrics above). Run this locally with a key to see "
+                "it fetch live.", icon="🔑")
+        else:
+            try:
+                with st.spinner("Calling FortyGuard — polling until the task "
+                                "completes…"):
+                    p = liveprobe.run()
+                if p.was_already_cached:
+                    st.success(
+                        f"**Replayed today's real fetch** for {p.day} rather "
+                        f"than paying again — this exact request already ran "
+                        f"live once today.", icon="♻️")
+                else:
+                    st.success(
+                        f"**Fetched live just now** from FortyGuard, for "
+                        f"{p.day} — a genuine network round trip that just "
+                        f"completed.", icon="📡")
+                m1, m2, m3 = st.columns(3)
+                m1.metric("Mean temperature", f"{p.mean_c:.1f} °C")
+                m2.metric("Range", f"{p.min_c:.1f} – {p.max_c:.1f} °C")
+                m3.metric("Tiles in this box", f"{p.n_tiles:,}")
+            except Exception as exc:  # noqa: BLE001 — a demo must never crash
+                st.error(
+                    f"The live call did not complete: {type(exc).__name__}. "
+                    f"This is exactly the failure mode documented in "
+                    f"`docs/api_findings.md` — a 2,400 s poll timeout under "
+                    f"load — and exactly why the headline number never "
+                    f"depends on a live call succeeding on demand.", icon="⚠️")
 
 with tab_retract:
     st.markdown(

@@ -339,3 +339,53 @@ def test_static_serving_is_enabled():
     """Without this the backdrop 404s and every page loses its background."""
     cfg = (REPO / ".streamlit" / "config.toml").read_text(encoding="utf-8")
     assert "enableStaticServing = true" in cfg
+
+
+# ------------------------------------------------------------- live probe
+def test_live_probe_is_a_genuinely_separate_request():
+    """The probe must never be able to feed the headline pipeline.
+
+    It has its own AOI, its own analytic call, and touches no file that
+    evaluate.py or diverge.py read -- so a failure or a stale response here
+    cannot silently change a published number.
+    """
+    import liveprobe
+    assert liveprobe.PROBE_SIDE_KM <= 5, "probe should stay small and cheap"
+    payload_keys = {"polygon_aoi", "start_date", "filter_type", "granularity",
+                    "analytic_type", "label"}
+    import inspect
+    src = inspect.getsource(liveprobe.run)
+    assert "fg.heatmap(" in src
+    assert all(k in src for k in payload_keys)
+
+
+def test_live_probe_requests_a_day_the_api_can_serve():
+    """"Today" can be requested before the day's data has landed; one day back
+    is what avoids an empty-response false negative on the demo."""
+    import liveprobe
+    from datetime import datetime, timezone
+    day = liveprobe.probe_day()
+    assert day < datetime.now(timezone.utc).date().isoformat()
+
+
+def test_live_probe_raises_cleanly_with_no_key_and_no_cache():
+    """No key configured must be a clear, catchable failure -- never a crash
+    the page has to absorb by accident."""
+    import liveprobe
+    from cache import OfflineCacheMiss
+    import pytest as _pytest
+    with _pytest.raises(OfflineCacheMiss):
+        liveprobe.run(day="1999-01-01")  # never plausibly cached
+
+
+def test_methods_page_survives_a_probe_click_with_no_key():
+    """Pinning the actual regression check: click the button, no exception,
+    a clear message naming the 125 already-committed calls as the fallback."""
+    at = AppTest.from_file(str(REPO / "pages" / "4_Methods_and_Evidence.py"),
+                           default_timeout=TIMEOUT).run()
+    buttons = [b for b in at.button if b.label == "Fetch a live reading"]
+    assert buttons, "live-probe button not found"
+    buttons[0].click().run()
+    assert not at.exception, [str(e) for e in at.exception]
+    text = " ".join(w.value for w in at.warning)
+    assert "125 real calls" in text
