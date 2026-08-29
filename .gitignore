@@ -18,3 +18,9 @@ Thumbs.db
 # Scratch
 _quickstart/
 /tmp/
+
+# Personal deployment helper, not part of the project
+deploy.sh
+
+# Internal onboarding notes, superseded by README.md
+TEAMMATE_GUIDE.md

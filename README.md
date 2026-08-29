@@ -507,31 +507,63 @@ The same is available inside the app, on Methods & Evidence, for any dates from 
 
 ### Repository
 
+The application and the library it runs on:
+
 ```
+app.py                  the landing page
+pages/                  heat waves · data centre siting · urban planning ·
+                        methods & evidence
 src/
-  cache.py           response storage, grid/value split, resilient polling
-  schema.py          Clause dataclass + validation + the only F->C conversion
-  parse.py           both tile schemas on one path
-  geo.py             AOI construction, areas, [lon, lat] discipline
-  aggregate.py       area-weighted tiles -> zones
-  evaluate.py        clause x zone x day -> FIRED / NOT FIRED
-  diverge.py         the three metrics
-  compile.py         LLM extraction with mechanical quote verification
-  study.py           city, AOI, zones, window: one source of truth
-  liveconditions.py  the same evaluator, run on today, from the app
-  customwindow.py    the same pipeline, run on any window, from the app
-  liveprobe.py       one small on-demand call, for a fast liveness check
-data/
-  plan/          the source PDF
-  golden/        27 hand-compiled clauses, every quote verified
-  zones/         15 Phoenix urban villages (City of Phoenix Open Data)
-  cache/         125 committed API responses
-  results/       divergence.json and every analysed window
-docs/
-  trigger_divergence_report.md   the standalone research result
-  action_brief.md                ranked actions, each citing clause/page/owner
-  api_findings.md                everything we measured about the API
+  cache.py              response storage, grid/value split, resilient polling
+  schema.py             Clause dataclass, validation, the only F->C conversion
+  parse.py              both tile schemas on one path
+  geo.py                AOI construction, areas, [lon, lat] discipline
+  aggregate.py          area-weighted tiles -> zones
+  evaluate.py           clause x zone x day -> FIRED / NOT FIRED
+  diverge.py            the three headline metrics
+  compile.py            clause extraction with mechanical quote verification
+  study.py              city, AOI, zones, window: one source of truth
+  city.py               per-city profiles, so nothing city-specific is hardcoded
+  alerts.py             divergence alerts, with the clause and department named
+  heatwave.py           run detection, absolute and percentile bases
+  planning.py           intervention order, thermal gap x published effect size
+  site_model.py         the five-factor siting model
+  siting.py             cooling cost from free-cooling hours
+  charts.py             one chart system, one validated palette
+  ui.py                 shared styling, navigation, city and window pickers
+  customwindow.py       the full pipeline over any window, from the app
+  liveprobe.py          one small on-demand call, for a fast liveness check
 ```
+
+Data and documents:
+
+```
+data/
+  plan/                 the source PDF
+  golden/               27 hand-compiled clauses, every quote verified
+  zones/                city boundaries and the population join
+  cities/               one profile per city
+  cache/                125 committed API responses
+  results/              divergence.json and every analysed window
+docs/
+  api_findings.md       everything we measured about the API
+  adding_a_city.md      how to point this at another city
+  trigger_divergence_report.md   the standalone research result
+  action_brief.md       ranked actions, each citing clause, page and owner
+tests/                  111 automated tests
+```
+
+Scripts, grouped by what they do. Each is runnable on its own and prints what it found:
+
+| Purpose | Scripts |
+|---|---|
+| Reproduce the result | `run_demo.py` (the headline in seconds), `run_analysis.py` (the full pipeline, any window) |
+| Verify every claim | `verify_all.py` (runs everything and asserts the headline), `verify_api.py`, `verify_years.py`, `test_aggregate.py`, `test_claim.py`, `test_brief_guard.py` |
+| Measure the compiler | `eval_compiler.py` (precision / recall / F1), `build_golden.py` (re-verify all 29 quotes against the PDF) |
+| Fetch from the API | `prefetch.py`, `fetch_national.py` (30 metros), `fetch_wetbulb.py`, `fetch_extra.py` |
+| Select and probe | `scan_event.py` (choose the study window by measurement), `sweep_threshold.py`, `sweep_dwell.py` (the retracted derivation, kept failing on purpose) |
+| Build static inputs | `build_population.py` (Census join), `make_backdrop.py` |
+| Regenerate documents | `make_report.py`, `make_brief.py` |
 
 ### Timezone
 
