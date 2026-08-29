@@ -1,39 +1,19 @@
 # Video script — 2:40
 
-Rewritten for the five-page app. **The previous version described a single-page
-layout that no longer exists** and opened by scrolling to a hero number that is
-now the *second* thing on the page, after the problem it answers.
+Rewritten to lead with the finding and to make the FortyGuard API's role explicit throughout, rather than mentioning it once and moving on.
 
-Every figure below is produced by `python run_demo.py` and `python verify_all.py`.
-Check them the morning you record; if one has moved, change the script, not the
-number.
+Every figure below comes from `python run_demo.py` and `python verify_all.py`. Check them the morning you record; if one has moved, change the script, not the number.
 
 ## Before you hit record
 
 Two windows, both prepared:
 
-- **Browser** — the deployed app, or `streamlit run app.py`. Open every page once
-  first so nothing renders cold on camera. Start on the home page, scrolled to top.
+- **Browser** — the deployed app, or `streamlit run app.py`. Open every page once first so nothing renders cold on camera. Start on the home page, scrolled to top.
 - **Terminal** — at the repo root, cleared, ready to run `python run_demo.py`.
 
-**Never call the API live.** Polling takes minutes and will look broken.
+Close the sidebar before recording. The in-page nav strip is enough, and a closed sidebar gives the charts more width.
 
-Close the sidebar before recording — the in-page nav strip is enough, and a
-closed sidebar gives the charts more width.
-
-**Move between pages using the coloured nav strip, not the address bar.** Each
-page now carries its own accent on that bar (red / orange / blue / green /
-violet), so clicking across it reads as one structured app with five rooms
-rather than five separate tabs. That transition is free production value — use
-it every time the script says "screen: switch to".
-
-**Press "Fetch a live reading" once, off camera, before you start recording.**
-It's on the Methods & Evidence page, API findings tab. That first press is a
-genuine live call to FortyGuard — real credits, real network round trip. During
-the actual take, pressing it again replays that same real response instantly
-(labelled "Replayed today's real fetch" on screen) instead of making the
-audience watch a 5–15 s poll. Both states are true; recording the fast one is
-what keeps 2:40 tight.
+Move between pages using the coloured nav strip, not the address bar. Each page carries its own accent on that bar — red, orange, blue, green, violet — so clicking across it reads as one structured app with five rooms. That transition is free production value; use it every time the script says "screen: switch to."
 
 ---
 
@@ -43,12 +23,9 @@ what keeps 2:40 tight.
 
 > "One-point-one-eight million people. Seventy-two percent of Phoenix.
 >
-> Those are the residents who live in a neighbourhood that got hot enough to
-> trigger the city's Heat Action Plan — on nights the city's own reading never
-> did. So the plan stayed off."
+> Those are the residents who live in a neighbourhood that got hot enough to trigger the city's Heat Action Plan — on nights the city's own reading never did. So the plan stayed off."
 
-**Pause on the number for a full beat before moving.** This is the 40% of the
-score; do not rush past it to get to the architecture.
+**Pause on the number for a full beat before moving.** This is the 40% of the score; do not rush past it to get to the architecture.
 
 ---
 
@@ -56,12 +33,9 @@ score; do not rush past it to get to the architecture.
 
 **Screen:** scroll up to the "What the plan sees / What people live in" panel.
 
-> "A Heat Action Plan is a legal document. Twenty-three actions, named
-> departments, numeric thresholds. Open cooling centres at ninety degrees
-> overnight.
+> "A Heat Action Plan is a legal document. Twenty-three actions, named departments, numeric thresholds. Open cooling centres at ninety degrees overnight.
 >
-> The whole thing is switched on and off by **one number** — one reading, from
-> one weather station at the airport. But heat isn't one number."
+> The whole thing is switched on and off by **one number** — one reading, from one weather station at the airport. But heat isn't one number, and FortyGuard's data is what let us prove that at the resolution people actually live at."
 
 ---
 
@@ -69,110 +43,69 @@ score; do not rush past it to get to the architecture.
 
 **Screen:** the gap chart. Let it fill the frame.
 
-> "Here is that night, neighbourhood by neighbourhood.
+> "Here is that night, neighbourhood by neighbourhood — every bar measured through the FortyGuard Temperature API, two metres above the ground, at hundred-metre resolution.
 >
-> The dashed line is the threshold the plan names. The solid line is the single
-> citywide reading. **The solid line sits below the dashed one — so the plan
-> stayed off.**
+> The dashed line is the threshold the plan names. The solid line is the single citywide reading. **The solid line sits below the dashed one — so the plan stayed off.**
 >
 > And these ten bars are already above it."
 
 **[trace the red bars crossing the dashed line with the cursor]**
 
-> "One number cannot be above and below the same line at once. That is the
-> entire failure, in one picture."
+> "One number cannot be above and below the same line at once. That is the entire failure of the trigger, in one picture."
 
 ---
 
-## 1:15 – 1:40 · Why you can believe it
+## 1:15 – 1:45 · Built on the API, and auditable because of it
 
-**Screen:** back on the home page, open the "Is this live data? Where did it
-come from?" expander — it sits right under the hero number now, with four
-metric tiles: real API calls, tiles fetched, credits spent, MB committed.
+**Screen:** home page, open the "Is this live data? Where did it come from?" expander — four metric tiles: real API calls, tiles fetched, credits spent, MB committed.
 
-> "Before anything else — is this real? A hundred and twenty-five real calls to
-> the FortyGuard API. Eleven million tiles. Nothing simulated, no other weather
-> source anywhere in this pipeline. That's on the page, not in a footnote."
+> "A hundred and twenty-five calls to the FortyGuard API. Eleven million tiles. Fifty-eight distinct days. Half a million credits. Nothing simulated, and no other weather source anywhere in this pipeline.
+>
+> And because a single call covers the whole city — a thousand square miles, two hundred and seventy thousand tiles, for one flat credit cost — we measure Phoenix in one request per day instead of fifteen."
 
-**Screen:** switch to Methods & evidence (click the nav strip), clause
-provenance panel with a quote visible.
+**Screen:** switch to Methods & evidence via the nav strip, clause provenance panel with a quote visible.
 
-> "Every rule the plan is built from carries the verbatim sentence and the page
-> it came from, so any number here walks back to the document. The language
-> model extracts and narrates. It never decides — every fired/not-fired call is
-> a plain numeric comparison in Python."
+> "Every rule the plan is built from carries the verbatim sentence and the page it came from. The language model extracts and narrates. It never decides — every fired-or-not call is a plain numeric comparison in Python, against FortyGuard measurements."
 
 **Screen:** switch to the terminal. Run `python run_demo.py`.
 
-> "Those calls are committed to the repo. So this runs with no API key, offline,
-> in one command — and you get the same number I just showed you. You can audit
-> it instead of taking my word for it.
->
-> We measured why that matters, rather than assuming it. A live call here can
-> take two minutes best case — and we hit a real failure that hung for forty
-> minutes under load. Neither belongs on the critical path of a number a judge
-> might load at any moment."
+> "And we kept every response. So you can re-derive that number yourself, in one command, and check us instead of taking my word for it."
 
 **Let the output land on screen.** Reproducibility is the 35%.
 
-**Screen:** scroll to "Fetch a live reading" on the Methods & Evidence page.
-Point at it — no need to click again, you already pressed it off camera.
-
-> "And if you still want to watch the network move — this button does, on
-> demand, separate from everything else on the site."
-
-Don't re-read the call count here — you already showed it on the page a moment
-ago. Repeating it sounds like padding; pointing back to it ("the numbers I just
-showed you") lands as continuity instead.
-
-**Never say "offline" alone.** It can be misheard as "didn't really use the
-API" — the opposite of what happened. Anchor it to the receipts you already
-showed: "125 real calls, committed so you can re-run them."
-
 ---
 
-## 1:40 – 2:05 · It is not one clause, and not one city
+## 1:45 – 2:10 · Not one week, and not one city
 
-**Screen:** Heat waves page, the threshold ladder chart.
+**Screen:** home page, the Study window selector in the sidebar. Switch to the 2026 window and let the numbers change.
 
-> "Same week, same measurements, same neighbourhoods — detected against each
-> threshold in turn. At ninety degrees this week is ten heat waves covering
-> 1.18 million residents. At a hundred and ten, it's zero.
->
-> Nothing about the weather changes down that table. Only the number written in
-> the plan changes."
+> "This isn't one hardcoded week. We re-ran the identical pipeline on August 2026 — fetched live from the API, a week the analysis had never seen — and the finding reproduced. Nine of fifteen villages. Nine hundred and fifty-eight thousand people. The same near-miss signature."
+
+**Screen:** Methods & evidence, the date-range picker.
+
+> "And you can point it anywhere. Any dates the API serves, back to 2019. Pick a window, and it runs the whole analysis on it."
 
 **Screen:** switch the city selector to New York.
 
-> "Same pipeline, unchanged, on New York's plan and New York's districts. The
-> finding reproduces."
+> "Same pipeline, unchanged, on New York's plan and New York's districts. New York triggers on heat index; Phoenix triggers on dry-bulb. Opposite choices, same failure."
 
 ---
 
-## 2:05 – 2:25 · What else the same measurement answers
+## 2:10 – 2:30 · What else the same measurement answers
 
-**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell.
-Move quickly — these are breadth, not the argument.
+**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell. Move quickly — these are breadth, not the argument.
 
-> "The same hyperlocal layer answers two more questions. Where a data centre
-> should go — measured free-cooling hours and wet-bulb across thirty US metros,
-> where the places evaporative cooling works best are exactly the places that
-> can least spare the water.
+> "The same hyperlocal layer answers two more questions. Where a data centre should go — free-cooling hours and wet-bulb measured across thirty US metros, where the places evaporative cooling works best are exactly the places that can least spare the water.
 >
-> And how much tree canopy, and where — a measured thermal gap joined to
-> published cooling effect sizes, so a recommendation carries a magnitude."
+> And how much tree canopy, and where — a measured thermal gap joined to published cooling effect sizes, so a recommendation carries a magnitude."
 
 ---
 
-## 2:25 – 2:40 · The honest close
+## 2:30 – 2:40 · The honest close
 
-**Screen:** back to the home page, open "How is this measured, and what is the
-comparison?" — the caveat is the last paragraph in it.
+**Screen:** back to the home page, open "How is this measured, and what is the comparison?"
 
-> "One caveat we put in the interface, not the footnotes. Our citywide
-> comparator is the average across the whole city — a **proxy** for a station
-> feed, not a real one. It's a *generous* stand-in: a single real sensor would
-> do worse.
+> "One thing we put in the interface, not the footnotes. Our citywide comparator is the average across the whole city — a **proxy** for a station feed. It's a *generous* stand-in: a single real sensor would do worse.
 >
 > So 1.18 million is a **lower bound**."
 
@@ -186,24 +119,15 @@ comparison?" — the caveat is the last paragraph in it.
 |---|---|
 | 1,184,971 · 72% of Phoenix | `run_demo.py` |
 | 10 of 15 urban villages | `run_demo.py` |
-| 125 calls · 11.19M tiles · 527,500 credits | `data/results/api_usage.json`, or the home page expander |
+| 125 calls · 11.19M tiles · 527,500 credits · 58 days | `data/results/api_usage.json`, or the home page expander |
+| 2026 replication: 9 of 15, 958,205 | Study window selector, or the README |
 | 90 °F → 10 waves / 110 °F → 0 | Heat waves page, threshold ladder |
-| New York replication | `data/results/nyc/` |
 | 30 metros, wet-bulb measured | `data/results/wetbulb.json` |
-| 118 s best-case live call · 2,400 s documented failure | `docs/api_findings.md` |
 
-## Things not to say
+## Things to keep straight on camera
 
-- Do not describe the offline design as a limitation or a workaround. It is a
-  reproducibility choice, made after measuring the cost of the alternative —
-  say so in those words if asked, don't just say "it's cached."
-
-- Do not call the citywide comparator a station feed. It is a proxy, always.
-- Do not say the app predicts heat waves. It detects them in measured data;
-  there is no forecast horizon in the API beyond about twelve hours.
-- Do not claim the national panel is national coverage. It is 30 metros,
-  sampled identically — say "panel", not "grid".
-- Do not mention the dwell-time figures. They were retracted.
-- Do not say "offline" without saying "125 real API calls" in the same breath.
-  The data is real and was fetched live; the cache is a saved copy of it, kept
-  so the result can be audited. Said carelessly, it sounds like the opposite.
+- The citywide comparator is a **proxy**, always. Never call it a station feed.
+- The app **detects** heat waves in measured data and ranks metros climatologically. The API serves history and about twelve hours ahead, so do not describe it as a multi-day forecast.
+- The national work is a **30-metro panel**, sampled identically. Say "panel," not "grid."
+- Say "125 real API calls" in the same breath as anything about the stored responses. The data is real and was fetched through the API; the responses are kept so the result can be audited.
+- The headline is a **lower bound**. That is a strength, and it is worth saying out loud.

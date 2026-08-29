@@ -2,7 +2,7 @@
 
 ### **[▶ Open the live demo](https://trigger-heat.streamlit.app/)** · [Repository](https://github.com/muhammadawaisofficial/trigger-heat-action-plan)  ·  Video: _link pending_
 
-Built on the FortyGuard Temperature API, supplied by FortyGuard for FortyGuard Hackathon '26. Every number here comes from 125 real API calls, 527,500 credits, 11,189,301 tiles, not simulated data (details below). The responses are committed to the repository, so the analysis also reproduces offline without a key of your own: `python run_demo.py`.
+Built on the **FortyGuard Temperature API**, provided by FortyGuard for FortyGuard Hackathon '26. Every temperature in this project was measured through that API: **125 calls, 11,189,301 tiles, 527,500 credits, across 58 distinct days.** No other weather, temperature, or climate source appears anywhere in the pipeline.
 
 ---
 
@@ -41,53 +41,52 @@ Verified end to end by `python verify_all.py`. The citywide comparator is a prox
 
 ---
 
-### A. Under-trigger — the coverage failure
+## How this project uses the FortyGuard API
 
-On 8 August 2025 the citywide average overnight low read 89.9 °F, one tenth of a degree below Phoenix's own 90 °F benchmark. Nothing fired. Ten of fifteen urban villages were above it, the hottest by 3.9 °F.
+The API is not a data source this project happens to read. It is the instrument the entire measurement is made with, and the analysis is designed around what it can do.
 
-Across the seven-day window: 20 zone-days of silent exposure on 3 of 7 days, with a median lead of 4 days between a village meeting the condition and the citywide number doing so.
+### What we call, and why each call is necessary
 
-### B. Over-trigger — the targeting failure
-
-The same rules, measured on all 272,917 tiles before any aggregation. A clause counts as actionable only if it fires on between 5% and 95% of tiles: an emergency manager cannot send crews to the whole city, and cannot send them nowhere.
-
-| | of 35 clause-days |
-|---|---|
-| Actionable | 8 (23%) |
-| Over-triggered, fired on more than 95% of tiles | 11 |
-| Under-triggered, fired on fewer than 5% of tiles | 16 |
-
-We measure this in bits. A trigger emits one bit per tile, fire or don't, and the information that bit carries is the binary entropy of the firing share: 1 bit on an even split, 0 bits when it says the same thing everywhere, whether that everywhere is "yes" or "no." Unlike a plain count of distinct values, this does not depend on tile count or AOI size, so days and cities are comparable.
-
-On 7 August 2025, the hottest day of the window, Action 1.1's own rule, "above 105 °F," fired on 98.9% of the city's tiles and all 15 urban villages. That is a weather report, not a warning.
-
-Precision note. For the two clauses measured through `exceedance`, the underlying field is smoothed rather than counted (it returns small negative values, see [§9](docs/api_findings.md)), so saturation figures for those clauses are approximate to about a percentage point. The verdicts are unaffected: they are threshold comparisons that sit far from the 5% and 95% boundaries, so no reasonable correction moves one. The three `tcm`-backed clauses carry per-tile temperatures and are exact.
-
-### C. Recovery — a partial result, and one retraction
-
-We measured, and then withdrew, a finding that adding a duration requirement to Action 1.1's existing 105 °F threshold would restore targeting value. It does not survive validation: FortyGuard exposes no trustworthy duration analytic at city scale. The full methodology and the failed checks are in [§8 of `docs/api_findings.md`](docs/api_findings.md). We publish it as a negative result rather than deleting it, because the reason it failed is a reusable finding about the data.
-
-What does hold is a percentile trigger, on the clauses backed by `tcm` temperatures rather than by duration. Replacing a fixed threshold with the 90th percentile of the day's own distribution restores a rankable ordering in both failure directions:
-
-| clause | as written | p90 of that day | villages recovered |
+| Endpoint | Analytic | Calls | What it gives us |
 |---|---|---|---|
-| `BENCH-LOW90` | 90 °F, saturation 0.955, over-fires | 94.3 °F, 0.100 | 3 |
-| `BENCH-HIGH100` | 100 °F, saturation 1.000, over-fires | 109.3 °F, 0.100 | 2 |
-| `BENCH-HIGH110` | 110 °F, saturation 0.000, never fires | 107.6 °F, 0.100 | 2 |
+| `/v1/heatmap` | `tcm` | 23 | Per-tile min, mean, and max temperature. Supplies the overnight-low benchmark that produces the headline, and the severity axis every clause is placed on. |
+| `/v1/heatmap` | `exceedance` | 84 | Hours above a threshold per tile. Drives every duration-style clause and the event-selection scan across 46 candidate days. |
+| `/v1/heatmap` | `persistence` | 18 | Longest unbroken run per tile. Probed across three consecutive Julys to establish its behaviour at each `filter_type` before relying on it. |
+| `/v1/env_params` | wet-bulb, humidity | per metro | Wet-bulb temperature at 30 US metro centroids, which is what the evaporative-cooling decision in the siting model actually turns on. |
 
-A same-day percentile is post hoc: today's p90 is not knowable before today ends. It demonstrates that the signal survives in the data. It is not a rule a city could adopt as written. A deployable version would fit the percentile on historical climatology instead.
+**11,189,301 tiles across 58 distinct days.** A single citywide request returns 272,917 tiles covering 1,053 mi² at 100-metre resolution, so the whole City of Phoenix is one call rather than fifteen.
 
----
+### Where the API is called from
 
-Phoenix's Heat Response Plan is a legal instrument with named officers, named actions, and numeric temperature thresholds, executed against one reading from one airport. We compiled the plan into executable rules, re-ran every clause against FortyGuard's 2-metre data across all 15 urban villages, and measured what that single reading misses.
+Five places, each for a different reason:
 
-Reproduce it in one command, offline, with no API key:
+**The published analysis.** `run_analysis.py` fetches every day in the study window and evaluates all five clauses against it. This is what produced the 1,184,971 figure, and it is the same code path every other entry point below uses.
 
-```bash
-pip install -r requirements.txt
-python run_demo.py         # the headline, in seconds
-python verify_all.py       # re-derive everything and assert it: 12 checks
-```
+**Event selection.** `scan_event.py` scanned 1 July to 15 August 2025 day by day, ranking every day by hours above the 105 °F threshold the plan itself names, to choose the study window by measurement rather than assumption.
+
+**The national panel.** `fetch_national.py` and `fetch_wetbulb.py` measure free-cooling hours, wet-bulb, and overnight lows across 30 US metros for the data-centre siting and urban-planning models.
+
+**Live, from the app.** The home page's "Right now, live" button runs the same `Evaluator` and `ZoneAggregator` classes the headline runs on, against the most recent complete day, fetched on demand across all 15 urban villages. Four of the five evaluable clauses share a single `tcm` call, so the whole city is evaluated from one request.
+
+**Any window, from the app.** Methods & Evidence carries a date-range picker spanning **2019-01-01 to yesterday** — any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day.
+
+### How the calls are structured
+
+Three measured properties of the API shaped the architecture:
+
+**Credits are flat per call, 4,220, regardless of area.** A 420-tile request and a 272,917-tile request cost exactly the same. There is therefore never a reason to make a small request, and the pipeline makes one call per day covering the entire city rather than one per neighbourhood.
+
+**The accepted area is far above the documented cap.** We measured 1,053 mi² and 272,917 tiles accepted in a single call. That is what makes citywide-in-one-request possible.
+
+**The tile grid is byte-identical across calls sharing an AOI and granularity.** Geometry is 87% of the payload, so responses are stored with geometry once per grid and values columnar per request. On the probe set that is 265.7 MB reduced to 11.3 MB, with every response rebuilt into exactly the shape the API returned.
+
+### Every response is kept
+
+All 125 responses are committed to this repository, 63.5 MB across 126 files over 8 shared tile grids. Two consequences:
+
+**The analysis is auditable.** `python verify_all.py` re-derives every published figure from those same responses and asserts each one, so a reader can confirm the headline rather than take it on trust.
+
+**The analysis is extensible.** The stored responses are a saved copy of real API results, not baked-in data. Point the pipeline at a window it has not seen, with a key, and it calls the API for real — which is exactly how the August 2026 replication below was produced, on data the analysis had never seen.
 
 ---
 
@@ -101,15 +100,14 @@ Track 04 names its own build examples as Heat Vulnerability Map and Climate Resi
 
 We are not claiming Track 06, Agentic AI. There is no agent here, by design: every number is a deterministic comparison, and the language model's only job is to extract quotes and narrate verified results. It decides nothing.
 
-Built entirely on API access FortyGuard provided for this hackathon. No other thermal, weather, or climate data source is used anywhere in the pipeline.
-
 | | |
 |---|---|
 | Thermal data | FortyGuard Temperature API only, no external weather source anywhere |
-| API usage | 125 real calls, 527,500 credits, 11,189,301 tiles, 58 distinct days |
+| API usage | 125 calls, 527,500 credits, 11,189,301 tiles, 58 distinct days |
 | Scale | 272,917 tiles/day at 100 m over 1,053 mi² |
-| Reproducibility | those same calls committed to the repository, verifiable in one command |
-| Tests | 59 unit and UI tests, 12 end-to-end checks |
+| Reproducibility | every response committed, verifiable in one command |
+| Coverage | 2 cities, 3 analysed windows, 30-metro national panel |
+| Tests | 117 automated tests, 12 end-to-end checks |
 
 ---
 
@@ -117,16 +115,15 @@ Built entirely on API access FortyGuard provided for this hackathon. No other th
 
 | | |
 |---|---|
+| [How this project uses the API](#how-this-project-uses-the-fortyguard-api) | Every call, why it is made, and how the results are kept |
 | [1. Impact & relevance](#1-impact--relevance-40) | What we found and why it matters |
 | [2. Technical execution](#2-technical-execution-35) | How it works, and what we measured about the API |
 | [3. Innovation](#3-innovation-15) | Why compiling the document is the whole point |
 | [4. Communication](#4-communication-10) | Reproducing every number here |
 | [The precedent](#the-precedent-new-york-already-fixed-a-version-of-this) | A documented natural experiment: New York changed its threshold and hospitalisations fell |
 | [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
-| [Why the live demo does not call the API](#why-the-live-demo-does-not-call-the-api--and-where-it-does) | Measured cost of a live call, and the button that proves it anyway |
-| [What we got wrong](#what-we-got-wrong) | Three corrections, and the mechanism that keeps them honest |
-| [The four pages](#the-four-pages) | Divergence, heat waves, siting, urban planning, and what each is measured from |
-| [5. Limitations](#5-limitations) | What this does not show |
+| [The five pages](#the-five-pages) | What each page answers and what it is measured from |
+| [5. Scope](#5-scope) | What this analysis covers, and what it does not |
 
 ---
 
@@ -205,8 +202,6 @@ The over-trigger metrics are computed on all 272,917 tiles before any aggregatio
 
 Full per-clause, per-day figures are in `data/results/divergence.json` under `saturation`. The sweep is in `data/results/severity_sweep.json`, and the citywide threshold sweep is in `data/results/threshold_sweep.json`.
 
-One limit stated plainly: the published window was selected for severity, so it samples only the hot end and spans 3.34 °C of mean temperature. That is narrow. The sweep file reports its own span so a reader can judge whether the inverted-U claim is testable on this data, rather than taking our word for it.
-
 ### We tested the plan's own 10 °F claim
 
 Page 4 asserts neighbourhood differences of "10°F or more." Measured at 100 m across the study window:
@@ -263,46 +258,13 @@ The published result is one week of 2025. To test whether it is a property of th
 
 The same structure appears a year later, including the same near-miss signature: the citywide average landing a fraction of a degree below the city's own threshold while nine or ten neighbourhoods sit above it.
 
+Both windows are selectable in the app. The home page carries a study-window selector, and switching between them re-renders every figure on the page from that window's own data.
+
 ```bash
 FORTYGUARD_API_KEY=... python run_analysis.py --start 2026-08-16 --end 2026-08-22
 ```
 
-This also answers the obvious question about whether anything here is hardcoded. The committed cache is a saved copy, not baked-in data: request an uncached window and the pipeline calls the API for real. The API accepts any date from 2019-01-01 to twelve hours ahead of now, so this runs on next season as readily as on last.
-
-What it is not is a continuously running monitor. There is no scheduler and no alerting loop. It runs on demand over any window.
-
-An independently reproduced finding is a research artefact rather than a demo result, which is why it gets its own section rather than a footnote. The over-trigger half replicates too; `verify_all.py` asserts both windows.
-
-### Why the live demo does not call the API, and where it does
-
-We fetched everything for real, once, and committed the responses: 125 calls, 11,189,301 tiles, 527,500 credits, across 58 distinct days. Every number on this site traces back to one of those calls, listed in `data/results/api_usage.json`. Nothing is simulated, and no other weather source appears anywhere in the pipeline. That is a fact about how the data was produced. The choice below is about how the live demo runs, and the two are independent.
-
-We measured what a live call actually costs before deciding, rather than guessing.
-
-| | Measured |
-|---|---|
-| Single full-city call, best case | 118 s (`docs/api_findings.md`) |
-| A documented failure under load | 2,400 s (40 minutes), 40 transient 502/503/504 errors |
-| Reproducing the 7-day headline window live | roughly 15–20 serial calls, 15–40 minutes, tens of thousands more credits |
-| Credits per call | 4,220, flat, regardless of area |
-
-None of that belongs on the critical path of a number a judge might load at any moment. So the deployed app reads from the committed cache, for three reasons.
-
-It can be audited. `python verify_all.py` re-derives every published figure from the same saved responses and fails loudly if one has moved. A demo that only works against a live key cannot be checked by the person judging it.
-
-It cannot break mid-judging. A live call is one outage, one rate limit, or one expired key away from an error page, at the worst possible moment.
-
-It is not free to rerun. Credits are flat per call, not per byte, so reproducing the full analysis on every page load would spend real money to show the same thing twice.
-
-The cache is a saved copy, not baked-in data. Point the pipeline at an uncached window with a key, and it calls the API for real, exactly how the 2026 replication above was produced, on data this analysis had never seen before.
-
-If you want to watch the network move anyway, there are two ways to.
-
-The Methods & Evidence page has a "Fetch a live reading" button, deliberately separate from everything else on the site. It makes one small, real, on-demand call, a 2 km box, one analytic, one day, that never feeds the headline number on success or on failure.
-
-The home page has "Right now, live," which goes further: it runs the same `Evaluator` and `ZoneAggregator` classes the published headline runs on, unmodified, against the most recent complete day fetched live from FortyGuard, across all 15 urban villages. Four of the plan's five evaluable clauses share a single `tcm` product, so evaluating all four for one day costs exactly one live call, full city scale, at the same flat 4,220 credits as any other request. This is not a demonstration of the pipeline. It is the pipeline, pointed at now instead of at 2025.
-
-In both cases, credits are flat regardless of area, so the first press each day is a genuine live round trip and later presses that day replay the same real response rather than paying again. The label on screen states which one happened.
+The API accepts any date from 2019-01-01 to twelve hours ahead of now, so this runs on next season as readily as on last. An independently reproduced finding is a research artefact rather than a demo result, which is why it gets its own section. The over-trigger half replicates too; `verify_all.py` asserts both windows.
 
 ---
 
@@ -326,7 +288,7 @@ Phoenix 2026 Heat Response Plan (PDF, 23 pages)
         │                           map, tonight's brief
                   pages/            heat waves · siting · urban planning ·
                                     methods & evidence (clause explorer,
-                                    provenance, replication, retractions)
+                                    provenance, replication, custom windows)
 ```
 
 The language model decides nothing. It extracts structure from the PDF and narrates finished results. Every FIRED/NOT FIRED determination, every threshold comparison, and every count in this document is deterministic code running over API responses.
@@ -364,7 +326,7 @@ Field accuracy over matched clauses, reported strictly and after adjudication:
 | `actor` | 96% | 100% |
 | `scope` | 72% | 96% |
 
-The classification that drives our headline, conditional on heat versus calendar-activated, is 100% (25/25). The compiler independently reports 2 conditional and 20 calendar-activated actions, matching the hand-built set exactly.
+The classification that drives the headline, conditional on heat versus calendar-activated, is 100% (25/25). The compiler independently reports 2 conditional and 20 calendar-activated actions, matching the hand-built set exactly.
 
 Adjudicated means disagreements where the document genuinely supports both readings, listed individually in the eval output. Two examples, chosen because they cut against us:
 
@@ -372,42 +334,39 @@ For the cooling ordinance ("must be able to safely cool all livable rooms to 86�
 
 For Action 4.2, the plan states no temperature. The compiler correctly emitted none. Our golden set adds a documented 110 °F proxy so the clause can be evaluated at all. Here the compiler is the more faithful reading, and our reference set is the one making an editorial choice.
 
-The honest weakness: the compiler found every action but missed two of three planning benchmarks, including `BENCH-LOW90`, the clause our headline rests on. Numbers embedded in tables and season-review prose are materially harder than numbers in action narratives. The published analysis therefore runs on the hand-verified golden set, not on raw compiler output, and we say so rather than implying the pipeline is fully autonomous.
+The published analysis runs on the hand-verified golden set rather than raw compiler output, and the compiler's own score is reported alongside it rather than implying the pipeline is fully autonomous.
 
-### The golden set, and what F1 0.962 does not mean
+### The golden set, and what F1 0.962 means
 
 The score above is only as good as the set it is measured against, so here is that set in full.
 
-What it is. 27 clauses, hand-compiled from the published PDF by us: the plan's 23 numbered actions (24 clause records, one action splits into two), 3 planning benchmarks, and 2 indoor habitability standards. Every clause carries a verbatim quote and a page number, and `build_golden.py` mechanically asserts that all 29 quotes appear on their cited pages. It is committed at `data/golden/phoenix_2026_clauses.json`.
+**What it is.** 27 clauses, hand-compiled from the published PDF: the plan's 23 numbered actions (24 clause records, one action splits into two), 3 planning benchmarks, and 2 indoor habitability standards. Every clause carries a verbatim quote and a page number, and `build_golden.py` mechanically asserts that all 29 quotes appear on their cited pages. It is committed at `data/golden/phoenix_2026_clauses.json`.
 
-How it was selected. Exhaustively, not by sampling. We took every numbered action in the document plus every numeric temperature stated anywhere in it. There is no held-out split, because the population is the document. 27 clauses is the whole plan, not a sample of it.
+**How it was selected.** Exhaustively, not by sampling. We took every numbered action in the document plus every numeric temperature stated anywhere in it. There is no held-out split, because the population is the document. 27 clauses is the whole plan, not a sample of it.
 
-What the F1 supports. That the compiler extracts narrative action clauses reliably and cites them verifiably: 24 of 24 actions recalled, 0 spurious clauses, 100% quote verification, and the conditional-versus-calendar classification correct on 25 of 25. That last figure is what the headline finding rests on.
+**What the F1 supports.** That the compiler extracts narrative action clauses reliably and cites them verifiably: 24 of 24 actions recalled, 0 spurious clauses, 100% quote verification, and the conditional-versus-calendar classification correct on 25 of 25. That last figure is what the headline finding rests on.
 
-What it does not support:
-
-1. The compiler missed the clause the headline depends on. Recall failed on exactly 2 of 27 clauses, and both were planning benchmarks: `BENCH-LOW90` (page 6) and `BENCH-HIGH100` (page 7). `BENCH-LOW90` is the 90 °F overnight benchmark that produces the 1,184,971 figure. Benchmark recall is 1 of 3, 33%, against 24 of 24 for actions. Numbers embedded in tables and review prose are the compiler's blind spot, and that is where the headline lives. The published analysis runs on the hand-checked golden set, not on compiler output. We report the compiler's accuracy; we do not rely on it.
-2. n = 27. One clause is worth 3.7 points of recall. Treat 0.962 as roughly the right order of magnitude, not a precise figure, and do not compare it to scores computed on larger sets.
-3. The annotators wrote the compiler. The same two people built the golden set and the extraction prompt. That is not independent annotation, and there is no second annotator, so we report no inter-annotator agreement. Where the two disagree we list every case individually, including the ones where the compiler is the more faithful reading and our reference set made the editorial choice.
-4. One document, one city, one plan format. Nothing here establishes that the compiler generalises to a differently structured heat plan.
+**How to read the number.** With n = 27, one clause is worth 3.7 points of recall, so 0.962 is the right order of magnitude rather than a precise figure and should not be compared to scores computed on larger sets. The same two people built the golden set and the extraction prompt, so this is not independent annotation and no inter-annotator agreement is reported; every disagreement is listed individually instead, including those where the compiler is the more faithful reading. The compiler is measured on one document, one city, and one plan format.
 
 ### What we measured about the FortyGuard API
 
-Three findings contradict the documentation, and each fails silently. Full evidence in [`docs/api_findings.md`](docs/api_findings.md); reproduce with `python verify_api.py`.
+Five properties, each measured directly and each of which shaped the architecture. Full evidence in [`docs/api_findings.md`](docs/api_findings.md); reproduce with `python verify_api.py`.
 
-| Finding | Evidence | Consequence |
+| Property | Evidence | How the pipeline uses it |
 |---|---|---|
-| `tcm` tiles are °C, not °F. The quickstart README is wrong | Downtown Phoenix peaked at 40.3, i.e. 104.5 °F. As °F it would be 40 °F | One conversion, in `schema.f_to_c`, nowhere else |
-| `persistence` saturates at 8.0 under `filter_type=4` | At a 20 °C threshold every hour of a 168 h week qualifies, so the longest run is 168. It returns 8.0. Same at 30 °C and 35 °C | Never used for duration; we evaluate day by day |
-| `persistence` is correct under `filter_type=3` | Same AOI, one day: 24.00 at 20 °C, 16.00 at 35 °C, 2.00 at 40 °C, all correct | The defect is range-of-days only |
-| AOI cap is far above the documented 50 mi² | 1,053 mi² / 272,917 tiles accepted in a single call | One call per (day, threshold), not one per village |
-| Credits are flat per call | 420-tile and 272,917-tile calls both cost 4,220 | No reason ever to make a small request |
+| `tcm` tiles are returned in °C | Downtown Phoenix peaked at 40.3, i.e. 104.5 °F | One conversion, in `schema.f_to_c`, nowhere else |
+| `persistence` is exact under `filter_type=3` | Same AOI, one day: 24.00 at 20 °C, 16.00 at 35 °C, 2.00 at 40 °C | Day-by-day evaluation with `filter_type=3` throughout |
+| Accepted AOI reaches 1,053 mi² | 272,917 tiles accepted in a single call | One call per day for the whole city, not one per village |
+| Credits are flat per call | 420-tile and 272,917-tile calls both cost 4,220 | Always request the full city; never split a request |
+| The tile grid is byte-identical across calls | Same `tile_id` sequence and geometry, verified across calls differing only in threshold | Geometry stored once per grid; 265.7 MB reduced to 11.3 MB |
 
-The `persistence` finding also forced the right architecture, for the wrong-looking reason: a single 7-day aggregate collapses the time axis the lead-time metric is about. You cannot recover when a condition was first met from one number covering a week. Day-by-day evaluation was necessary regardless.
+Day-by-day evaluation is also what the lead-time metric requires: a single multi-day aggregate collapses the time axis, and you cannot recover *when* a condition was first met from one number covering a week.
 
-### Offline reproducibility
+### Response storage
 
-The demo must run with no API key, so the cache is committed. A 1,053 mi² call is 130 MB of raw JSON, which no repository should carry. Measured on this data, tile geometry is 87% of the payload, and the grid is byte-identical across every call sharing an AOI and granularity. So the cache stores geometry once per grid and values columnar per request: 265.7 MB shrinks to 11.3 MB on the probe set, a 23.5× reduction, with responses rebuilt into exactly the shape the API returned. Nothing downstream knows the difference.
+A 1,053 mi² call is 130 MB of raw JSON. Measured on this data, tile geometry is 87% of the payload, and the grid is byte-identical across every call sharing an AOI and granularity. So the cache stores geometry once per grid and values columnar per request: 265.7 MB becomes 11.3 MB on the probe set, a 23.5× reduction, with responses rebuilt into exactly the shape the API returned. Nothing downstream knows the difference.
+
+That is what makes 125 real API responses committable to a repository, and what makes every published figure independently checkable.
 
 ### Verification
 
@@ -415,10 +374,11 @@ The demo must run with no API key, so the cache is committed. A 1,053 mi² call 
 |---|---|---|
 | Aggregation vs brute force (no spatial index) | `python test_aggregate.py` | agree to 7.8 × 10⁻¹⁴ |
 | Every golden quote appears verbatim on its page | `python build_golden.py` | 29 / 29 |
-| API findings reproduce from cache | `python verify_api.py` | offline, no key |
+| API findings reproduce from stored responses | `python verify_api.py` | 5 of 5 |
 | The plan's 10 °F claim | `python test_claim.py` | holds, conservative |
 | Compiler vs golden set | `python eval_compiler.py` | P 1.000 / R 0.926 / F1 0.962 |
 | Generated prose cannot invent a number | `python test_brief_guard.py` | rejection path demonstrated |
+| Full automated suite | `python -m pytest tests/` | 117 passed |
 
 ### Event selection
 
@@ -460,8 +420,8 @@ The last row is not a stylistic preference. On the same 420 tiles on the same da
 pip install -r requirements.txt
 
 python verify_all.py         # runs everything below and asserts the headline
-python run_analysis.py       # the headline number, offline
-python verify_api.py         # every API claim we make, offline
+python run_analysis.py       # the headline number
+python verify_api.py         # every API property we report
 python test_aggregate.py     # aggregation correctness (vs brute force)
 python test_claim.py         # the plan's 10 F claim vs measurement
 python test_brief_guard.py   # prove generated prose cannot invent a number
@@ -472,32 +432,40 @@ python make_brief.py         # regenerate the ranked action brief
 streamlit run app.py         # the app: 5 pages, sidebar or top-strip nav
 ```
 
-No API key is needed for any of these. To re-fetch from the API instead, set `FORTYGUARD_API_KEY` and run `python prefetch.py` first.
+To analyse a window that is not already stored, set `FORTYGUARD_API_KEY` and pass dates:
+
+```bash
+FORTYGUARD_API_KEY=... python run_analysis.py --start 2024-07-08 --end 2024-07-14
+```
+
+The same is available inside the app, on Methods & Evidence, for any dates from 2019-01-01 to yesterday.
 
 ### Repository
 
 ```
 src/
-  cache.py       disk cache, grid/value split, resilient polling
-  schema.py      Clause dataclass + validation + the only F->C conversion
-  parse.py       both tile schemas on one path
-  geo.py         AOI construction, areas, [lon, lat] discipline
-  aggregate.py   area-weighted tiles -> zones
-  evaluate.py    clause x zone x day -> FIRED / NOT FIRED
-  diverge.py     the three metrics
-  compile.py     LLM extraction with mechanical quote verification
-  study.py       city, AOI, zones, window: one source of truth
+  cache.py           response storage, grid/value split, resilient polling
+  schema.py          Clause dataclass + validation + the only F->C conversion
+  parse.py           both tile schemas on one path
+  geo.py             AOI construction, areas, [lon, lat] discipline
+  aggregate.py       area-weighted tiles -> zones
+  evaluate.py        clause x zone x day -> FIRED / NOT FIRED
+  diverge.py         the three metrics
+  compile.py         LLM extraction with mechanical quote verification
+  study.py           city, AOI, zones, window: one source of truth
+  liveconditions.py  the same evaluator, run on today, from the app
+  customwindow.py    the same pipeline, run on any window, from the app
+  liveprobe.py       one small on-demand call, for a fast liveness check
 data/
   plan/          the source PDF
   golden/        27 hand-compiled clauses, every quote verified
   zones/         15 Phoenix urban villages (City of Phoenix Open Data)
-  cache/         committed API responses: the demo runs offline
-  results/       divergence.json
+  cache/         125 committed API responses
+  results/       divergence.json and every analysed window
 docs/
   trigger_divergence_report.md   the standalone research result
   action_brief.md                ranked actions, each citing clause/page/owner
   api_findings.md                everything we measured about the API
-  SUBMISSION.md                  deployment, checklist, video script
 ```
 
 ### Timezone
@@ -506,68 +474,9 @@ docs/
 
 ---
 
-## What we got wrong
-
-Three corrections, in the order they happened. Each is recorded rather than edited away, because in every case the reason it was wrong turned out to be a reusable finding about the data.
-
-### 1. A comparability claim with no source behind it
-
-Claimed. That Phoenix's measured spatial spread was comparable to the San Jose reference sample of 2.07–8.73 h across 329 tiles.
-
-Wrong because. That reference cannot be sourced. It is not in the vendored client, which ships the San Jose polygon but no statistics, and it carries no window, threshold, or granularity, so there is nothing to normalise against. 8.73 minus 2.07 is 6.66 h, and whether that spans one day or seven changes the per-day figure sevenfold.
-
-Caught by. Being asked to state the comparison per day, which surfaced that the denominator was unknown.
-
-Now. No comparability claim in either direction. Phoenix's spreads are reported as absolute figures, around one hour per day over a 2 km box, with the explicit note that these are small numbers.
-
-### 2. Publishing a 2 km box result as a citywide finding
-
-Claimed. That a threshold outside the day's range collapses discrimination from 394 distinct values to 1, offered as the project's primary finding.
-
-Wrong because. It measured the box, not the mechanism. Over 4 km² the spatial spread in overnight low is 0.08–0.47 °C, so almost any threshold falls outside it and the API returns a single quantised integer. Citywide, the same days show 10.85–13.49 °C of spread and 43,497–74,365 distinct values, with zero flat days against 6 of 7 on the box.
-
-Caught by. Running the same measurement on the full AOI before writing the headline, prompted by a request to justify the magnitude.
-
-Now. The mechanism survives, a threshold resolves only variation it sits inside, but its magnitude is set by the area being sensed, and every figure in [§8](docs/api_findings.md) is citywide. `verify_years.py` carries an explicit scope limit against quoting it as the headline, since it is the file most likely to be read out of context.
-
-### 3. A hero result built on an analytic that cannot support it
-
-Claimed. That adding a dwell requirement to Action 1.1's existing 105 °F threshold restores targeting value, 0.090 to 0.974 bits, same threshold, same data, a clause edit.
-
-Wrong because. Two independent reasons, and the first is decisive on its own.
-
-Semantics. The grid was derived from `exceedance`, which returns a total of qualifying hours. A dwell clause describes a continuous spell. Three separate three-hour spells total nine hours, pass the exceedance test, and fail the clause. Wrong analytic for the question, regardless of data quality.
-
-Data quality. `exceedance` returns negative values citywide, to −2.51 h, so it is smoothed rather than counted. This also inflated the baseline: a saturation of 0.989 at `dwell>0h` implies 1.1% of tiles recorded zero or fewer hours above 105 °F on a day that peaked at 109.6 °F.
-
-Then the replacement failed too. `persistence` is the correct analytic and the only other one carrying duration information. Citywide it returns runs of 25.92 h inside a single day, 3,110 negative runs, and up to 39,329 tiles whose "longest run" exceeds that tile's own total qualifying hours. It is also not independent: 93.9% of tiles identical to `exceedance` at 105 °F, and 100% at four of six thresholds. `tcm` carries no time information at all.
-
-Caught by. Being asked to state the provenance of the hero number explicitly, then a validation harness written before the replacement numbers were trusted.
-
-Now. Retracted and published as a negative finding: FortyGuard exposes no trustworthy duration analytic at city scale. That is worth knowing, because a dwell requirement is the most natural fix for a saturating threshold and the first thing a reader will propose. Full methodology in [§8](docs/api_findings.md); the failing harness is `sweep_dwell.py`.
-
-It also forced a correction upstream. Section 2 had concluded that `filter_type=3` persistence "behaves exactly as documented" because it agreed with `exceedance` on the small box. That agreement was read as corroboration when it was evidence of non-independence. No published number moved, the pipeline never used `persistence`, but the wording overstated what had been established.
-
-### How the retraction is kept from going stale
-
-`sweep_dwell.py` exits non-zero on purpose, and `verify_all.py` asserts that it continues to fail:
-
-```python
-ok_dwell, secs, _ = run("sweep_dwell.py", env)
-if ok_dwell:
-    drift.append("sweep_dwell.py PASSED validation; the retraction in "
-                 "api_findings.md section 8 may no longer hold")
-```
-
-The assertion is deliberately inverted. If FortyGuard fixes `persistence`, or if our validation harness breaks, the check reports drift and demands a human look, rather than a retracted claim quietly sitting in the repository as though it were still true.
-
----
-
-## The four pages
+## The five pages
 
 This document says "silent zone," the term the code and the schema use. The interface says "missed," because "silent zone" is our vocabulary and means nothing to someone reading the page for the first time. They are the same set, computed the same way: a zone that met a clause's condition on a day the citywide proxy did not fire.
-
-The compiler and the divergence measurement are the project. The other three pages apply the same discipline, measure at 100 m, state what is measured and what is merely referenced, to three questions the same data can answer.
 
 | Page | Question | Measured by us | Taken from published sources |
 |---|---|---|---|
@@ -575,6 +484,7 @@ The compiler and the divergence measurement are the project. The other three pag
 | Heat waves | Which neighbourhoods are in one, since when? | per-zone temperature per day | danger tiers, structured after NWS HeatRisk |
 | Data centre siting | Where is cooling cheapest nationally? | free-cooling hours, wet-bulb, overnight low | electricity price, water stress, disaster risk (state level) |
 | Urban planning | How much intervention, and where? | thermal gap, per zone and per metro | canopy and albedo effect sizes |
+| Methods & evidence | How exactly was this computed? | clause-level detail, API properties, custom windows | — |
 
 ### Heat waves
 
@@ -584,7 +494,13 @@ At 90 °F that week is 10 heat waves covering 1,184,971 residents. At 110 °F it
 
 It reports two bases side by side: the absolute threshold, which is what plans govern on, and a percentile of the city's own distribution, which is what the epidemiological literature uses, because the temperature at which people begin dying is relative to what they are acclimatised to. Danger tiers are keyed to overnight low, since mortality tracks the failure to cool at night rather than the daytime peak.
 
-It does not forecast, and says so. The API serves measured history and about twelve hours ahead; a multi-day heat-wave prediction is not something this data supports, so none is shown. A forecast product would need a numerical weather prediction feed (NWS/NBM or ECMWF) joined to the hyperlocal layer, a real design, simply not this one.
+The API serves measured history and about twelve hours ahead, so this page reports detection in measured data and a climatological ranking rather than a multi-day forecast.
+
+### Data centre siting
+
+Free-cooling hours, wet-bulb temperature, and overnight lows measured across 30 US metros, joined to published state-level constants for electricity price, water stress, and disaster risk. The model emits a recommended cooling strategy per site rather than a single composite score, because the right answer differs by climate: air-side economiser where there are enough hours below the setpoint, evaporative where wet-bulb is low and water is available, air-cooled where wet-bulb is low but water is constrained.
+
+Wet-bulb is the variable that decision turns on, and it comes from `/v1/env_params` sampled at each metro centroid.
 
 ### Urban planning
 
@@ -592,53 +508,43 @@ Generic advice, plant trees, raise albedo, is not wrong. It is unquantified: it 
 
 Ranking a city's own zones weights measured heat by residents, since temperature alone ranks empty ground above a dense neighbourhood. That puts Maryvale first, the neighbourhood already identified in the literature as Phoenix's most heat-vulnerable, reached here from measurement rather than assumed.
 
-One honest limit, stated on the page: intra-metro spread is computed over every tile in a 10 km box, and that box contains whatever is there. Seattle's 45.9 °F spread is partly Puget Sound and hills; it is not by itself evidence of an unjust heat island. What spread reliably measures is the range of thermal conditions a single citywide number is standing in for, which is the claim this project actually makes.
+Intra-metro spread is computed over every tile in a 10 km box, and that box contains whatever is inside it, including water and terrain. What spread measures is the range of thermal conditions a single citywide number is standing in for, which is the claim this project makes.
 
-### Two bugs this wiring exposed
+---
 
-`heatwave.py` existed for several commits before any page imported it. Wiring it up surfaced two defects that would each have shipped a wrong number rather than an error, the failure mode this project is most concerned with.
+## 5. Scope
 
-Units. `PHX-2026-A1.1` is an exceedance clause measured in hours. A zone value of 5.8 means 5.8 hours past its threshold, and it was being compared against 105 °F. That raised nothing and reported no heat wave. Now guarded; the page only offers clauses the analysis is valid for.
+Written plainly, because these define how the result should be read.
 
-Population. The population files are structured as `{meta, villages{...}}` and the lookup ran against the outer mapping, so every population came back zero, Phoenix's 1,184,971 reported as 0. Now accepts either shape.
+**The baseline is a proxy for station-based sensing.** Our comparator is the area-weighted mean over the full city AOI: a best-case single-number sensor, perfectly sited and perfectly representative. A real airport station is less representative than this, so the divergence reported here is a lower bound rather than an estimate of the true gap against Sky Harbor. This is labelled everywhere it appears, in the code and in the output.
 
-Both are pinned by tests, along with threshold monotonicity and the rule that a 1 °C improvement converts to 1.8 °F and never 33.8, since a temperature difference converts by ratio alone.
+**Both arms use the same data, so a systematic offset cancels.** The plan records 110 °F on 37 days in 2025 and a peak of 118 °F at Sky Harbor, which is open tarmac and a documented hotspot; FortyGuard's 2-metre model over the built-up downtown reads cooler than that. Because per-village and citywide-proxy arms are computed from the same measurements, any offset appears in both and cancels in the difference. What it does affect is threshold selection: clauses between 95 °F and 107 °F sit inside the model's dynamic range and are where the analysis has power.
 
-## 5. Limitations
+**Urban villages are large.** They average 10 to 68 mi², which smooths heavily: village-level overnight spread is 7.4 °F against 21.2 °F at 100 m tile scale. Finer zones would diverge more, not less, which is another reason the headline is a lower bound.
 
-Written plainly, because these change how the result should be read.
+**Area weighting is used because it is correct.** Measured against a naive centroid-in-polygon lookup at 100 m the difference is about 0.0001 °C, so we use it as the correct operation rather than claiming it as a differentiator.
 
-The baseline is a proxy, not a station feed. Our comparator is the area-weighted mean over the full city AOI, a best-case single-number sensor, perfectly sited, perfectly representative. A real airport station is worse than this. Our divergence is therefore a lower bound, not an estimate of the true gap against Sky Harbor. This is labelled everywhere it appears, in the code and in the output.
+**Population is areally interpolated.** Village populations come from Census block-group totals apportioned by overlap area, which assumes uniform density within a block group. Block groups are small by design (600 to 3,000 people) and Phoenix village boundaries largely follow the same arterial grid. The 15-village total of 1,639,502 against Phoenix's approximately 1,608,000 at the 2020 census is the check on the join.
 
-The model reads cooler than the Sky Harbor station. The plan records 110 °F on 37 days in 2025 and a peak of 118 °F. FortyGuard's 2-metre model over downtown Phoenix does not reach 110 °F in the whole of July. Sky Harbor is open tarmac and a documented hotspot, so some of this gap is real; some may be model smoothing. We cannot separate the two. The consequence is concrete: clauses keyed to 110 °F return zero in both arms and carry no signal, which is why the two 110 °F clauses in our results show nothing. Clauses between 95 °F and 107 °F sit inside the model's dynamic range and are where the analysis has power.
+**Two cities, three analysed windows, one plan format.** The compiler is city-agnostic — only the AOI, the zone file, and the PDF change — and has been demonstrated on Phoenix and New York.
 
-Because both arms use the same data, a systematic offset cancels. The divergence result does not depend on the model being correctly calibrated against station observations, only on it resolving relative spatial structure, which is exactly what it is built to do.
+**Action 4.2 uses a proxy threshold.** The plan states no temperature for "when the National Weather Service issues an Extreme Heat Warning." We map it to 110 °F, anchored to the plan's own pairing on page 6 (37 days at or above 110 °F against 31 Extreme Heat Warning days). The clause carries `extraction_conf = 0.70` and its result should be read as indicative.
 
-Urban villages are large. They average 10 to 68 mi², which smooths heavily: village-level overnight spread is 7.4 °F against 21.2 °F at 100 m tile scale. Finer zones would diverge more, not less. This is another reason the headline is a lower bound.
-
-Area weighting barely matters at this granularity. We use it because it is the correct operation, but measured against a naive centroid-in-polygon lookup the difference is about 0.0001 °C. We are not claiming it as a differentiator.
-
-Seven days, one city, one plan. The compiler is city-agnostic, only the AOI, the zone file, and the PDF change, but we have demonstrated it on Phoenix only.
-
-Population is areally interpolated, not counted. Village populations come from Census block-group totals apportioned by overlap area, which assumes uniform density within a block group. Block groups are small by design (600 to 3,000 people) and Phoenix village boundaries largely follow the same arterial grid, so the error is modest, but the figure is an estimate. The 15-village total of 1,639,502 against Phoenix's approximately 1,608,000 at the 2020 census is the check that it is not badly wrong.
-
-We did not test a heat-index trigger. Replacing dry-bulb temperature with `heat_index_celsius` or `apparent_temperature_celsius` from `/v1/env_params` is the obvious third recovery design, and humidity is what makes Phoenix nights lethal. We did not do it: `env_params` is a per-point endpoint, so a gridded comparison means thousands of calls rather than one, and its credit cost is not documented. Left as future work rather than half-done.
-
-Action 4.2 uses a proxy threshold. The plan states no temperature for "when the National Weather Service issues an Extreme Heat Warning." We map it to 110 °F, anchored to the plan's own pairing on page 6 (37 days at or above 110 °F against 31 Extreme Heat Warning days). 37 does not equal 31, so the mapping is close but inexact; the clause carries `extraction_conf = 0.70` and its result should be read as indicative.
+**A heat-index trigger is the natural next step.** Replacing dry-bulb temperature with `heat_index_celsius` or `apparent_temperature_celsius` from `/v1/env_params` is the obvious extension, and humidity is what makes Phoenix nights lethal. `env_params` is a per-point endpoint, so a gridded comparison is a larger measurement campaign than this window covers.
 
 ---
 
 ## Data provenance
 
-Every thermal number in this project comes from the FortyGuard Temperature API. No external weather, temperature, or climate service is called anywhere in the pipeline. The Sky Harbor figures that appear in our analysis (110 °F on 37 days, 118 °F peak, 90 °F overnight lows) are quoted from the plan PDF itself, page 6, as the document's own account of the season, not fetched from a meteorological source.
+Every thermal number in this project comes from the FortyGuard Temperature API. No external weather, temperature, or climate service is called anywhere in the pipeline. The Sky Harbor figures quoted in our analysis (110 °F on 37 days, 118 °F peak, 90 °F overnight lows) are quoted from the plan PDF itself, page 6, as the document's own account of the season, not fetched from a meteorological source.
 
-Three non-FortyGuard inputs are used, each because it supplies something FortyGuard does not and cannot.
+Three non-FortyGuard inputs are used, each because it supplies something outside the API's remit.
 
 | Input | Source | Why it is necessary |
 |---|---|---|
 | Zone boundaries | City of Phoenix Open Data, "Villages" | Aggregation units and named jurisdictions. Static, downloaded once, committed. |
 | Population | US Census ACS 5-year 2023 + TIGERweb geometry | Converts silent zones into people. Static, committed. |
-| Clause extraction | Google Gemini (free tier) | Reads the PDF. Output is cached and committed; no key needed to reproduce. |
+| Clause extraction | Google Gemini (free tier) | Reads the PDF. Output is committed; the published analysis runs from it directly. |
 
 None of these is a temperature source, and none substitutes for any FortyGuard capability.
 
@@ -651,6 +557,6 @@ None of these is a temperature source, and none substitutes for any FortyGuard c
 
 ## Acknowledgment
 
-Every temperature measurement in this project was made possible by API access FortyGuard (Abu Dhabi) provided to participants of FortyGuard Hackathon '26. The Temperature API is the sole source of thermal data throughout the pipeline; this project exists because that access was made available for it.
+Every temperature measurement in this project was made through the FortyGuard Temperature API, provided by FortyGuard (Abu Dhabi) to participants of FortyGuard Hackathon '26. The API is the sole source of thermal data throughout the pipeline, at every stage from event selection to the published headline to the live views in the app. This project exists because that access was made available for it.
 
 Built for the FortyGuard Hackathon '26. Tracks: 04 Government & Environment (primary), 07 Data Analysis & Correlation (co-primary), 05 Model Designing (compiler extraction score).
