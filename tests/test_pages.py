@@ -270,19 +270,26 @@ def test_every_theme_is_a_full_hex_pair():
             assert re.fullmatch(r"#[0-9a-fA-F]{6}", t[slot]), (key, slot)
 
 
-def test_background_renders_and_stays_behind_content():
-    """The background is decoration; it must never sit over text.
+def test_background_cannot_overlay_the_content():
+    """The backdrop must be a background LAYER, never an element over the page.
 
-    Pins the two properties that keep it safe: it is fixed behind the content
-    layer, and the content layer is raised above it. If either is lost, moving
-    artwork ends up under paragraphs.
+    This is a real regression, not a hypothetical: a fixed, scrimmed div was
+    added to the DOM and the content raised above it with z-index. Streamlit's
+    own wrappers create stacking contexts, so the white scrim landed on top and
+    blanked every page. AppTest did not catch it -- a page covered by an opaque
+    overlay still renders every element and raises nothing -- so the guard has
+    to be on the CSS itself.
     """
+    import inspect
     import ui as _ui
-    css = _ui.CSS
-    assert ".tg-bg { position:fixed" in css.replace("\n", " ").replace("  ", " ") \
-        or "position:fixed" in css
-    assert "z-index:0" in css and "z-index:1" in css
-    assert "prefers-reduced-motion" in css
+    # The backdrop is emitted per page by theme(); the shared sheet carries the
+    # rest. Both are checked, because the overlay bug could return in either.
+    css = _ui.CSS + inspect.getsource(_ui.theme)
+    assert "app/static/phoenix_field.png" in css, "backdrop not applied"
+    assert "background-attachment: fixed" in css
+    # No full-viewport overlay elements: that is the shape of the bug.
+    for banned in (".tg-scrim", ".tg-bg", ".tg-field", ".tg-orb"):
+        assert banned not in css, f"{banned} reintroduces an overlay element"
 
 
 def test_nav_text_is_opaque_white_on_the_bar():

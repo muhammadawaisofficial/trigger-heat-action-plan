@@ -156,29 +156,12 @@ CSS = """
   iframe { border-radius:13px; }
 
   /* ---------- page background ---------- */
-  /* The measured temperature field of Phoenix -- 272,917 real FortyGuard tiles,
-     the same ones the headline number is computed from, rasterised by
-     make_backdrop.py. Not an illustration OF the measurement; the measurement
-     itself.
-
-     It is held far back: low opacity, blurred, under a white scrim, and always
-     beneath opaque cards and charts. Evidence that happens to be beautiful, not
-     something competing with a figure. */
-  .tg-bg { position:fixed; inset:0; z-index:0; overflow:hidden;
-    pointer-events:none; }
-  .tg-field { position:absolute; inset:-6%; background-size:cover;
-    background-position:center; opacity:.30;
-    filter:saturate(.85) var(--tg-hue);
-    animation:tgField 90s ease-in-out infinite; }
-  @keyframes tgField { 0%,100%{transform:scale(1.00) translate(0,0)}
-    50%{transform:scale(1.06) translate(-1.2%,0.8%)} }
-  /* A white scrim so text never sits directly on the field. */
-  .tg-scrim { position:absolute; inset:0;
-    background:linear-gradient(180deg, rgba(255,255,255,.90) 0%,
-      rgba(255,255,255,.82) 45%, rgba(255,255,255,.90) 100%); }
-  .tg-grid { position:absolute; inset:0; opacity:.5; }
-  @media (prefers-reduced-motion: reduce) { .tg-field { animation:none; } }
-  .stApp > div { position:relative; z-index:1; }
+  /* Applied as background LAYERS on the app container, not as an injected
+     element. An earlier version put a fixed, scrimmed div in the DOM and raised
+     the content above it with z-index; Streamlit's own wrappers create their
+     own stacking contexts, so the white scrim ended up over the page and blanked
+     it. Background layers cannot do that -- content is always painted on top of
+     its own container's background, with no stacking to get wrong. */
 
   /* ---------- responsive ---------- */
   @media (max-width: 900px) {
@@ -376,7 +359,19 @@ def theme(page: str) -> None:
   :root { --tg-accent:%(a)s; --tg-glow:%(g)s;
           --tg-nav-a:%(na)s; --tg-nav-b:%(nb)s;
           --tg-hue:%(hue)s; }
-  .stApp { background:linear-gradient(180deg,#fbfbfc 0%%,#f5f5f7 100%%); }
+  /* Two layers: a white scrim first, the measured field beneath it. The scrim
+     is what guarantees text contrast, so it is part of the background rather
+     than a separate element that could ever land on the wrong side. */
+  .stApp {
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.90) 0%%,
+                              rgba(255,255,255,.84) 45%%,
+                              rgba(255,255,255,.92) 100%%),
+      url(app/static/phoenix_field.png);
+    background-size: cover, cover;
+    background-position: center, center;
+    background-attachment: fixed, fixed;
+    background-repeat: no-repeat, no-repeat; }
   .tg-q, .tg-kicker { color:%(a)s !important; }
   .tg-step-n, .tg-rank { background:%(a)s !important; }
   [data-testid="stMetric"]::before {
@@ -397,24 +392,6 @@ def theme(page: str) -> None:
       border-color:#fff !important; }
   a[href$="/%(f)s"] p, a[href$="/%(f)s"] span { color:%(na)s !important; }
 </style>
-<div class="tg-bg">
-  <div class="tg-field" style="background-image:url(app/static/phoenix_field.png)"></div>
-  <div class="tg-scrim"></div>
-  <svg class="tg-grid" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs>
-      <pattern id="tgMinor" width="46" height="46" patternUnits="userSpaceOnUse">
-        <path d="M46 0H0V46" fill="none" stroke="%(na)s" stroke-width="1"
-              stroke-opacity="0.10"/>
-      </pattern>
-      <pattern id="tgMajor" width="230" height="230" patternUnits="userSpaceOnUse">
-        <rect width="230" height="230" fill="url(#tgMinor)"/>
-        <path d="M230 0H0V230" fill="none" stroke="%(na)s" stroke-width="2.5"
-              stroke-opacity="0.13"/>
-      </pattern>
-    </defs>
-    <rect width="100%%" height="100%%" fill="url(#tgMajor)"/>
-  </svg>
-</div>
 """ % {"a": t["accent"], "g": t["glow"], "na": t["nav_a"], "nb": t["nav_b"],
        "f": t["file"], "hue": t["hue"]}
     st.markdown(css, unsafe_allow_html=True)
