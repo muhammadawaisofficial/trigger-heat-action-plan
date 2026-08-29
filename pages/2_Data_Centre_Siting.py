@@ -14,6 +14,14 @@ sys.path.insert(0, str(REPO / "src"))
 
 import charts  # noqa: E402
 import ui  # noqa: E402
+
+#: Provenance strip, resolved defensively. A deployed Streamlit container can
+#: keep an older copy of a helper module in memory after a partial reload, so a
+#: newly added ui function may not exist yet at import time. This strip is
+#: chrome; a missing one is a cosmetic loss, while an AttributeError takes down
+#: the whole page. Chrome must never be able to do that.
+_api_strip = getattr(ui, "api_strip", lambda *a, **k: None)
+
 from site_model import DEFAULT_WEIGHTS, score_metros, tradeoff_table  # noqa: E402
 from siting import compare, rank  # noqa: E402
 
@@ -62,7 +70,7 @@ st.markdown(
     "of a metro are not the hours on the other, and nobody sites a building on a "
     "city average.")
 
-ui.api_strip(
+_api_strip(
     [("POST /v1/heatmap · exceedance · direction=below",
       "free-cooling hours under the ASHRAE setpoint, per metro"),
      ("POST /v1/heatmap · tcm", "overnight lows and daily highs, per metro"),

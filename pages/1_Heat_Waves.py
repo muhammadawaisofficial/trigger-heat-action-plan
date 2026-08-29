@@ -24,6 +24,14 @@ import charts  # noqa: E402
 import heatwave  # noqa: E402
 import ui  # noqa: E402
 
+#: Provenance strip, resolved defensively. A deployed Streamlit container can
+#: keep an older copy of a helper module in memory after a partial reload, so a
+#: newly added ui function may not exist yet at import time. This strip is
+#: chrome; a missing one is a cosmetic loss, while an AttributeError takes down
+#: the whole page. Chrome must never be able to do that.
+_api_strip = getattr(ui, "api_strip", lambda *a, **k: None)
+
+
 st.set_page_config(page_title="TRIGGER — Heat Waves", page_icon="🌡",
                    layout="wide")
 ui.style()
@@ -55,7 +63,7 @@ st.markdown(
     "products answer *is the city in a heat wave*. This answers **which "
     "neighbourhoods are, and since which night**.")
 
-ui.api_strip(
+_api_strip(
     [("POST /v1/heatmap · tcm",
       "per-zone daily low and high, the run detection is computed from"),
      ("filter_type 3", "day by day, because a run needs a time axis a "

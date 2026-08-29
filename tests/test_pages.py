@@ -490,3 +490,20 @@ def test_charts_do_not_force_container_width():
     }
     for name, chart in specs.items():
         assert _json.loads(chart.to_json()).get("width") != "container", name
+
+
+def test_provenance_strip_survives_a_stale_helper_module():
+    """A deployed container can hold an older copy of a helper module after a
+    partial reload. This actually happened: ui.api_strip existed in git and on
+    disk, and the live Methods page still raised AttributeError on it, taking
+    the whole page down over a decorative element.
+
+    Every page must resolve it defensively, so the worst case is a missing
+    strip rather than a traceback where a judge is reading.
+    """
+    for page in ("app.py", "pages/1_Heat_Waves.py",
+                 "pages/2_Data_Centre_Siting.py", "pages/3_Urban_Planning.py",
+                 "pages/4_Methods_and_Evidence.py"):
+        src = (REPO / page).read_text(encoding="utf-8")
+        assert '_api_strip = getattr(ui, "api_strip"' in src, page
+        assert "ui.api_strip(" not in src, f"{page} still calls it directly"
