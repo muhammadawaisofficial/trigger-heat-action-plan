@@ -1,4 +1,4 @@
-# Video script — 2:40
+# Video script — 2:55
 
 Rewritten to lead with the finding and to make the FortyGuard API's role explicit throughout, rather than mentioning it once and moving on.
 
@@ -75,7 +75,7 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 ---
 
-## 1:45 – 2:10 · Not one week, and not one city
+## 1:45 – 2:05 · Not one week, and not one city
 
 **Screen:** home page, the Study window selector in the sidebar. Switch to the 2026 window and let the numbers change.
 
@@ -91,17 +91,35 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 ---
 
-## 2:10 – 2:30 · What else the same measurement answers
+## 2:05 – 2:20 · Heat waves, and what the page actually claims
 
-**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell. Move quickly — these are breadth, not the argument.
+**Screen:** Heat waves page, the threshold ladder.
 
-> "The same hyperlocal layer answers two more questions. Where a data centre should go — free-cooling hours and wet-bulb measured across thirty US metros, where the places evaporative cooling works best are exactly the places that can least spare the water.
+> "A heat wave is a run of nights, not a hot day, and it doesn't start city-wide. Same week, same measurements, detected against each threshold in turn — at ninety degrees that's ten heat waves covering 1.18 million residents. At a hundred and ten, zero. Nothing about the weather changes down that table. Only the number in the plan does.
 >
-> And how much tree canopy, and where — a measured thermal gap joined to published cooling effect sizes, so a recommendation carries a magnitude."
+> To be precise about what this does: it **detects** heat waves in measured data and ranks metros by how dangerous their nights run. It does not forecast days ahead — the API serves history and about twelve hours forward, so we don't claim a prediction we can't make."
 
 ---
 
-## 2:30 – 2:40 · The honest close
+## 2:20 – 2:45 · What else the same measurement answers
+
+**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell. Move quickly — these are breadth, not the argument.
+
+> "The same hyperlocal layer answers two more questions.
+>
+> **Where a data centre should go.** Cooling is the biggest controllable cost in a data centre, and every published free-cooling figure is a city average — nobody sites a building on a city average. So we measured it ourselves across thirty US metros through the API: free-cooling hours, overnight lows, and wet-bulb, which is what the evaporative-versus-mechanical decision actually turns on. The result is the industry's central trade-off, quantified — the places where evaporative cooling works best are the places least able to spare the water."
+
+**[move a weight slider on camera and let the ranking reorder]**
+
+> "And the weights are yours. Power, cooling, water, risk, renewables — a bank and a hyperscaler weigh these differently, so move a slider and the whole ranking recomputes on your priorities."
+
+**Screen:** switch to Urban planning.
+
+> "**And how much tree canopy, and where.** Heat kills more people than any other weather hazard and the fix is physical — but a citywide average never says how much, or which neighbourhood, so budgets get spread evenly across places that aren't equally hot. We measure the thermal gap at a hundred metres, then join it to published cooling effect sizes, so a recommendation carries a magnitude instead of being advice. Weighted by residents, that puts Maryvale first — the neighbourhood the literature already flags as Phoenix's most heat-vulnerable, reached here from measurement."
+
+---
+
+## 2:45 – 2:55 · The honest close
 
 **Screen:** back to the home page, open "How is this measured, and what is the comparison?"
 

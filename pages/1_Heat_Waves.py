@@ -38,6 +38,16 @@ ui.masthead("Heat waves",
 ui.topnav()
 
 st.title("Which neighbourhoods are in a heat wave — and since when")
+
+# The first question anyone asks of a heat page is whether it predicts. Answer
+# it at the top, in one line, rather than leaving it to a caveat at the bottom.
+st.info(
+    "**What this page does, in one line.** It **detects** heat waves in "
+    "measured data — which neighbourhoods were in one, starting which night — "
+    "and ranks 30 US metros by how dangerous their nights run. It does **not** "
+    "forecast days ahead: the API serves measured history and about twelve "
+    "hours forward, so a multi-day prediction is not something this data "
+    "supports and none is shown. Full detail in section 6.", icon="🎯")
 st.markdown(
     "Every operational heat-wave definition has the same three parts: a "
     "**threshold**, a **persistence** requirement, and — in the definitions that "

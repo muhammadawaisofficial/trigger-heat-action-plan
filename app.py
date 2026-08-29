@@ -26,7 +26,6 @@ from streamlit_folium import st_folium
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import charts  # noqa: E402
-import liveconditions  # noqa: E402
 import study  # noqa: E402
 import ui  # noqa: E402
 from alerts import detect, summarise  # noqa: E402
@@ -315,84 +314,6 @@ if _gap_clause:
 
 st.divider()
 
-# ------------------------------------------------------ right now, live
-# Everything above is the published, cached analysis. This runs the SAME
-# evaluation code, not a rebuild of it, against the most recent real day,
-# fetched from FortyGuard on demand. It answers "can this run on live data"
-# by doing it, rather than by arguing that it could.
-if city_name == study.CITY:
-    st.markdown("##### Right now, live")
-    st.caption(
-        "Everything above is the published analysis, re-derivable from the "
-        "committed cache. This is different: it fetches today's real data "
-        "from FortyGuard on demand and runs it through the same evaluator, "
-        "live. One button, one real API call — four clauses share it, "
-        "because credits are flat regardless of area (see the disclosure "
-        "above), so there is no reason to fetch anything smaller than the "
-        "whole city.")
-
-    _live_col1, _live_col2 = st.columns([1, 2])
-    with _live_col1:
-        _go_live = st.button("Check current conditions, live",
-                             use_container_width=True)
-    with _live_col2:
-        st.caption(
-            "First press today makes a real live call and takes roughly "
-            "60-120 s. Later presses today replay that same real response "
-            "instead of paying again — the label states which happened.")
-
-    if _go_live:
-        if not has_key():
-            st.warning(
-                "No `FORTYGUARD_API_KEY` is configured on this deployment, "
-                "so there is nothing to fetch live here. Every number "
-                "elsewhere on this page already comes from 125 real API "
-                "calls, committed to the repo — see the disclosure above.",
-                icon="🔑")
-        else:
-            try:
-                with st.spinner("Calling FortyGuard for today's real "
-                                "reading across all 15 villages…"):
-                    _live = liveconditions.run(population=pop)
-            except Exception as _exc:  # noqa: BLE001 — a demo must never crash
-                st.error(
-                    f"The live call did not complete: "
-                    f"{type(_exc).__name__}. This is the same failure mode "
-                    f"measured in docs/api_findings.md — full reliability "
-                    f"detail is why the headline above never depends on a "
-                    f"live call succeeding on demand.", icon="⚠️")
-            else:
-                if not _live.clauses:
-                    st.info("No temperature-backed clause was evaluable "
-                            "today.")
-                else:
-                    st.success(
-                        (f"**Fetched live just now**, {_live.day}."
-                         if _live.was_fetched_live else
-                         f"**Replayed today's real fetch**, {_live.day} — "
-                         f"this exact request already ran live once today."),
-                        icon="📡" if _live.was_fetched_live else "♻️")
-                    _live_ids = {lc.clause_id: lc for lc in _live.clauses}
-                    _live_pick = st.selectbox(
-                        "Clause", list(_live_ids),
-                        format_func=lambda k: f"{k} ({_live_ids[k].threshold_f:g} °F)",
-                        key="live_clause_pick")
-                    _lc = _live_ids[_live_pick]
-                    st.altair_chart(
-                        charts.zone_gap(_lc.zones, _lc.threshold_f, _lc.proxy_f,
-                                        unit=CITY["unit"]),
-                        use_container_width=True)
-                    _n_live_over = sum(1 for r in _lc.zones
-                                       if r["value_f"] >= _lc.threshold_f)
-                    st.caption(
-                        f"Live citywide reading: {_lc.proxy_f:.1f} °F against "
-                        f"a {_lc.threshold_f:g} °F threshold "
-                        f"({'FIRED' if _lc.proxy_fired else 'did not fire'}). "
-                        f"{_n_live_over} of {len(_lc.zones)} "
-                        f"{CITY['unit']}s were at or above it.")
-
-    st.divider()
-
 # ═══════════════════════════════════════════════════ 3 · WHERE
 st.markdown('<p class="tg-q">3 — Where</p>', unsafe_allow_html=True)
 st.markdown(
@@ -570,22 +491,30 @@ st.divider()
 
 # ═══════════════════════════════════════════════════ WHERE NEXT
 st.markdown('<p class="tg-q">Explore further</p>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="tg-next">'
-    '<div class="tg-card"><h4>🌡 Heat waves</h4><p>A heat wave is a <i>run</i> of '
-    'nights, and it does not start city-wide. See which neighbourhoods were in '
-    'one, since when — and what the threshold choice costs.</p></div>'
-    '<div class="tg-card"><h4>🏢 Data centre siting</h4><p>Where in the US is '
-    'cooling cheapest? 30 metros ranked on free-cooling hours, power, water and '
-    'risk — with the water–energy trade-off made explicit.</p></div>'
-    '<div class="tg-card"><h4>🌳 Urban planning</h4><p>How much tree canopy, and '
-    'where? Measured thermal gaps joined to published cooling effect sizes, so '
-    'each recommendation carries a magnitude.</p></div>'
-    '<div class="tg-card"><h4>🔬 Methods &amp; evidence</h4><p>The full technical '
-    'record: every rule and its source page, the New York replication, what we '
-    'measured about the API, and the claims we retracted.</p></div>'
-    '</div>', unsafe_allow_html=True)
-st.caption("Use the sidebar, or the page list at the top left, to open any of these.")
+
+# Real page links, not styled divs. The cards were markdown, so they looked
+# clickable and were not -- which is worse than not looking clickable at all.
+_next = [
+    ("pages/1_Heat_Waves.py", "🌡", "Heat waves",
+     "A heat wave is a run of nights, and it does not start city-wide. Which "
+     "neighbourhoods were in one, since when, and what the threshold choice costs."),
+    ("pages/2_Data_Centre_Siting.py", "🏢", "Data centre siting",
+     "Where in the US is cooling cheapest? 30 metros ranked on free-cooling "
+     "hours, power, water and risk, with the weights under your control."),
+    ("pages/3_Urban_Planning.py", "🌳", "Urban planning",
+     "How much tree canopy, and where? Measured thermal gaps joined to "
+     "published cooling effect sizes, so each recommendation carries a magnitude."),
+    ("pages/4_Methods_and_Evidence.py", "🔬", "Methods & evidence",
+     "Every rule and its source page, the New York replication, what we "
+     "measured about the API, and a picker to analyse any window you choose."),
+]
+_cols = st.columns(len(_next))
+for _col, (_path, _icon, _title, _blurb) in zip(_cols, _next):
+    with _col:
+        with st.container(border=True):
+            st.markdown(f"**{_icon} {_title}**")
+            st.caption(_blurb)
+            st.page_link(_path, label=f"Open {_title}", icon=_icon)
 
 st.divider()
 st.caption(

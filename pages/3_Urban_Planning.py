@@ -33,6 +33,23 @@ ui.masthead("Urban planning",
 ui.topnav()
 
 st.title("How much intervention, and exactly where")
+
+st.info(
+    "**Why this exists.** Heat kills more people than any other weather "
+    "hazard, and the remedy is physical: shade, tree canopy, reflective "
+    "surfaces. Cities know this. What a citywide average cannot tell them is "
+    "**how much**, and **in which neighbourhood** — so budgets get spread "
+    "evenly across places that are not equally hot, and the hottest blocks "
+    "stay hottest.",
+    icon="🌳")
+st.markdown(
+    "**How the FortyGuard API makes this answerable.** Intervention has to be "
+    "aimed at a thermal gap, and a gap has to be measured before it can be "
+    "closed. We measure it at **100 m** through `tcm`: per neighbourhood "
+    "inside a city, and across 30 US metros as the spread between the hottest "
+    "and coolest ground inside each sample box. That measured gap is then "
+    "joined to published cooling effect sizes, which is what lets a "
+    "recommendation carry a magnitude instead of being general advice.")
 st.markdown(
     "Every city already knows to plant trees and raise roof albedo. What no "
     "citywide average can tell them is **how much**, and **in which "

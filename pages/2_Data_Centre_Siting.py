@@ -28,6 +28,29 @@ ui.masthead("Data centre siting",
 ui.topnav()
 
 st.title("Where should a data centre go?")
+
+st.info(
+    "**Why this exists.** Data centres are sited on power, water and permits, "
+    "and on cooling: the largest controllable operating cost, and the term "
+    "measured worst. Every published free-cooling figure is a *city average* — "
+    "Phoenix around 1,000 to 2,000 hours a year, Minneapolis 4,000 to 6,000. "
+    "Nobody sites a building on a city average.",
+    icon="🏢")
+st.markdown(
+    "**How the FortyGuard API makes this answerable.** Every thermal term "
+    "below is measured by us across 30 US metros, at full resolution: "
+    "**free-cooling hours** below the ASHRAE setpoint through `exceedance` "
+    "with `direction=\"below\"`, **overnight lows and daily highs** through "
+    "`tcm`, and **wet-bulb temperature** through `/v1/env_params` at each "
+    "metro centroid — the variable the evaporative-versus-mechanical decision "
+    "actually turns on. Because credits are flat per call regardless of area, "
+    "each metro is a full-resolution request rather than a sample.")
+st.markdown(
+    "**The weights are yours to set.** Power is weighted highest by default "
+    "because published surveys put it first, but a bank, a hyperscaler and a "
+    "sovereign-cloud operator weigh these differently. Move the sliders below "
+    "and the ranking, the cooling strategy and the cost model all recompute on "
+    "your priorities rather than ours.")
 st.markdown(
     "A facility runs on outside air whenever ambient sits below the economiser "
     "setpoint — **free cooling**. Below that line the chillers idle and the "

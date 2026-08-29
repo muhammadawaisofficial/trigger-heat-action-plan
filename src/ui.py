@@ -298,7 +298,7 @@ def city_picker(key: str = "city") -> tuple[str, dict]:
 
 #: The pages, in reading order. One list, so nav and any page index agree.
 PAGES = [
-    ("app.py", "Who does the plan miss?", "🏠"),
+    ("app.py", "The finding", "🏠"),
     ("pages/1_Heat_Waves.py", "Heat waves", "🌡"),
     ("pages/2_Data_Centre_Siting.py", "Data centre siting", "🏢"),
     ("pages/3_Urban_Planning.py", "Urban planning", "🌳"),

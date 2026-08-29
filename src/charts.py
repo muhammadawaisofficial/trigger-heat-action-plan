@@ -57,9 +57,13 @@ FONT = "Inter, -apple-system, Segoe UI, sans-serif"
 
 def _base(chart: alt.Chart, height: int = 300) -> alt.Chart:
     """Shared configuration: recessive axes, no chart junk, readable type."""
+    # Height only. width="container" silently renders a LAYERED spec at zero
+    # width in Vega-Lite -- the layer children do not inherit the container
+    # size -- which blanked the gap chart, the ladder, the tradeoff scatter and
+    # the dumbbell while leaving the single-mark charts fine. Streamlit sets the
+    # width itself from use_container_width, so the spec must not fight it.
     return (chart
-            .properties(height=height, width="container",
-                        background=SURFACE)
+            .properties(height=height, background=SURFACE)
             .configure_view(stroke=None)
             .configure_axis(labelFont=FONT, titleFont=FONT, labelColor=INK_SOFT,
                             titleColor=INK_SOFT, labelFontSize=11,

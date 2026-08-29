@@ -58,7 +58,7 @@ The API is not a data source this project happens to read. It is the instrument 
 
 ### Where the API is called from
 
-Five places, each for a different reason:
+Four places, each for a different reason:
 
 **The published analysis.** `run_analysis.py` fetches every day in the study window and evaluates all five clauses against it. This is what produced the 1,184,971 figure, and it is the same code path every other entry point below uses.
 
@@ -66,9 +66,7 @@ Five places, each for a different reason:
 
 **The national panel.** `fetch_national.py` and `fetch_wetbulb.py` measure free-cooling hours, wet-bulb, and overnight lows across 30 US metros for the data-centre siting and urban-planning models.
 
-**Live, from the app.** The home page's "Right now, live" button runs the same `Evaluator` and `ZoneAggregator` classes the headline runs on, against the most recent complete day, fetched on demand across all 15 urban villages. Four of the five evaluable clauses share a single `tcm` call, so the whole city is evaluated from one request.
-
-**Any window, from the app.** Methods & Evidence carries a date-range picker spanning **2019-01-01 to yesterday** — any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day.
+**Any window, from the app.** Methods & Evidence carries a date-range picker spanning **2019-01-01 to yesterday** — any year, any month, any week. It runs the full pipeline over the chosen dates and writes a results file in the same shape as the published one, which then joins the study-window selector on the home page. A seven-day window is 14 calls: one shared `tcm` plus one `exceedance` per day, and the cost is shown before the run starts.
 
 ### How the calls are structured
 
@@ -494,19 +492,39 @@ At 90 °F that week is 10 heat waves covering 1,184,971 residents. At 110 °F it
 
 It reports two bases side by side: the absolute threshold, which is what plans govern on, and a percentile of the city's own distribution, which is what the epidemiological literature uses, because the temperature at which people begin dying is relative to what they are acclimatised to. Danger tiers are keyed to overnight low, since mortality tracks the failure to cool at night rather than the daytime peak.
 
-The API serves measured history and about twelve hours ahead, so this page reports detection in measured data and a climatological ranking rather than a multi-day forecast.
+**Detection, not forecast.** The page identifies which neighbourhoods were in a heat wave and from which night, in measured data, and ranks 30 US metros by how dangerous their nights run. The API serves measured history and about twelve hours forward, so a multi-day prediction is not something this data supports and none is shown. A forecast product would need a numerical weather prediction feed joined to the hyperlocal layer, which is a real design and simply not this one.
 
 ### Data centre siting
 
-Free-cooling hours, wet-bulb temperature, and overnight lows measured across 30 US metros, joined to published state-level constants for electricity price, water stress, and disaster risk. The model emits a recommended cooling strategy per site rather than a single composite score, because the right answer differs by climate: air-side economiser where there are enough hours below the setpoint, evaporative where wet-bulb is low and water is available, air-cooled where wet-bulb is low but water is constrained.
+**Why it is needed.** Cooling is the largest controllable operating cost in a data centre and the siting term measured worst. Every published free-cooling figure is a city average: Phoenix around 1,000 to 2,000 hours a year, Minneapolis 4,000 to 6,000. Nobody sites a building on a city average, and the difference between two sites inside the same metro is invisible at that resolution.
 
-Wet-bulb is the variable that decision turns on, and it comes from `/v1/env_params` sampled at each metro centroid.
+**How the API answers it.** Every thermal term is measured by us across 30 US metros at full resolution, one call per metro because credits are flat regardless of area:
+
+| Term | How it is measured |
+|---|---|
+| Free-cooling hours | `exceedance` with `direction="below"` against the ASHRAE 24 °C setpoint — the first use of the below direction in this project |
+| Overnight lows and daily highs | `tcm`, per tile, aggregated per metro |
+| Wet-bulb temperature | `/v1/env_params` at each metro centroid |
+
+Wet-bulb is what the evaporative-versus-mechanical decision actually turns on, which is why it is measured rather than assumed. The result is the industry's central trade-off, quantified: the metros where evaporative cooling works best are frequently the ones least able to spare the water.
+
+**The weights are user-controlled.** The model scores each metro on five factors — power, cooling, water, disaster risk, and renewable access — and every weight is a slider on the page. Power is weighted highest by default because published surveys put it first, but a bank, a hyperscaler, and a sovereign-cloud operator weigh these differently. Moving a slider recomputes the ranking, the recommended cooling strategy, and the cost model on the reader's priorities rather than ours.
+
+The model emits a recommended cooling strategy per site rather than a single composite score, because the right answer differs by climate: air-side economiser where there are enough hours below the setpoint, evaporative where wet-bulb is low and water is available, air-cooled where wet-bulb is low but water is constrained.
 
 ### Urban planning
+
+**Why it is needed.** Heat kills more people than any other weather hazard, and the remedy is physical: shade, tree canopy, reflective surfaces. Cities already know that. What a citywide average cannot tell them is *how much*, and *in which neighbourhood* — so mitigation budgets get spread evenly across places that are not equally hot, and the hottest blocks stay hottest.
+
+**How the API answers it.** Intervention has to be aimed at a thermal gap, and the gap has to be measured before it can be closed. We measure it through `tcm` at 100 m: per neighbourhood inside a city, and across 30 US metros as the spread between the hottest and coolest ground inside each sample box. That measured gap is then joined to published cooling effect sizes, which is what lets a recommendation carry a magnitude instead of being general advice.
 
 Generic advice, plant trees, raise albedo, is not wrong. It is unquantified: it never says how much, or where. This page joins a measured thermal gap to published effect sizes so every recommendation carries a magnitude: canopy at 0.3 °C per 10 points of added cover, cool roofs at 0.3 °C in residential deployment. Both are the conservative end of the published range, chosen because they generalise across a 30-metro panel; Phoenix-specific work reports up to 2.0 °C for canopy, and full canopy against treeless ground reaches 5.5 °C.
 
 Ranking a city's own zones weights measured heat by residents, since temperature alone ranks empty ground above a dense neighbourhood. That puts Maryvale first, the neighbourhood already identified in the literature as Phoenix's most heat-vulnerable, reached here from measurement rather than assumed.
+
+### Methods & evidence
+
+The page a reader uses to check the headline rather than trust it. It carries every compiled rule beside the verbatim sentence and page number it came from, the map at clause resolution, the machine-readable alert payload, the New York replication, the five properties we measured about the API, and a date picker that runs the full analysis on any window from 2019-01-01 to yesterday.
 
 Intra-metro spread is computed over every tile in a 10 km box, and that box contains whatever is inside it, including water and terrain. What spread measures is the range of thermal conditions a single citywide number is standing in for, which is the claim this project makes.
 

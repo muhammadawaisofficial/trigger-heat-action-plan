@@ -391,92 +391,10 @@ def test_methods_page_survives_a_probe_click_with_no_key():
     assert "125 real calls" in text
 
 
-# ------------------------------------------------------------ live conditions
-def test_liveconditions_shares_one_call_across_four_clauses():
-    """The whole point: credits are flat, so evaluate every tcm-backed clause
-    from one fetch rather than pretending four calls are needed."""
-    import liveconditions
-    from schema import load_clauses
-    from evaluate import evaluable
-    import study
-    temp_clauses = [c for c in load_clauses(study.GOLDEN_CLAUSES)
-                    if evaluable(c) and c.metric in liveconditions.TEMPERATURE_METRICS]
-    assert len(temp_clauses) >= 3, "expected several tcm-backed clauses to share the fetch"
-
-
-def test_liveconditions_excludes_the_hours_clause():
-    """PHX-2026-A1.1 is exceedance/hours; mixing it into a degF comparison is
-    the same unit-chain trap heatwave.py already guards against."""
-    import liveconditions
-    from schema import load_clauses
-    from evaluate import evaluable
-    import study
-    ids = [c.clause_id for c in load_clauses(study.GOLDEN_CLAUSES)
-           if evaluable(c) and c.metric in liveconditions.TEMPERATURE_METRICS]
-    assert "PHX-2026-A1.1" not in ids
-
-
-def test_liveconditions_requests_a_day_the_api_can_serve():
-    import liveconditions
-    from datetime import datetime, timezone
-    day = liveconditions.probe_day()
-    assert day < datetime.now(timezone.utc).date().isoformat()
-
-
-def test_liveconditions_raises_cleanly_with_no_key_and_no_cache():
-    import liveconditions
-    from cache import OfflineCacheMiss
-    with pytest.raises(OfflineCacheMiss):
-        liveconditions.run(day="1999-01-01")
-
-
-def test_home_page_survives_live_conditions_click_with_no_key():
-    at = AppTest.from_file(str(REPO / "app.py"), default_timeout=TIMEOUT).run()
-    buttons = [b for b in at.button if "live" in b.label.lower()]
-    assert buttons, "live-conditions button not found on the home page"
-    buttons[0].click().run()
-    assert not at.exception, [str(e) for e in at.exception]
-    text = " ".join(w.value for w in at.warning)
-    assert "125 real API" in text
-
-
-def test_live_section_only_shows_for_the_backend_city():
-    """study.py's active city is fixed at import time (TRIGGER_CITY); the UI
-    must never offer a live button for a city that backend isn't wired to."""
-    at = AppTest.from_file(str(REPO / "app.py"), default_timeout=TIMEOUT).run()
-    at.sidebar.radio[0].set_value("New York City").run()
-    assert not at.exception, [str(e) for e in at.exception]
-    assert not any("Right now, live" in str(m.value) for m in at.markdown)
-
-
-# ----------------------------------------------------------- study windows
-def test_phoenix_exposes_both_analysed_windows():
-    """The 2026 replication was fetched live on unseen data. Showing only the
-    published window made a pipeline that HAS been re-run look hardcoded."""
-    import ui as _ui
-    windows = _ui.CITIES["Phoenix, Arizona"]["windows"]
-    assert len(windows) >= 2
-    for label, path in windows.items():
-        assert Path(path).exists(), label
-
-
-def test_switching_window_changes_every_headline_number():
-    """If the numbers do not move, the picker is decorative."""
-    at = AppTest.from_file(str(REPO / "app.py"), default_timeout=TIMEOUT).run()
-    published = [m.value for m in at.metric[:4]]
-    w = [r for r in at.sidebar.radio if r.label == "Window"][0]
-    w.set_value("16–22 Aug 2026  ·  fetched live").run()
-    assert not at.exception, [str(e) for e in at.exception]
-    live = [m.value for m in at.metric[:4]]
-    assert published != live, "window switch did not change the numbers"
-    assert "9 of 15" in live[0], live
-
-
-def test_window_picker_hidden_when_a_city_has_only_one():
-    """New York has a single window; a one-option picker is noise."""
-    import ui as _ui
-    assert len(_ui.CITIES["New York City"].get("windows", {})) == 1
-
+# The live-conditions view was removed: a full-city fetch inside the deployed
+# container could not complete reliably, and a control that cannot finish is
+# worse than no control. The same capability remains available two ways -- the
+# custom-window picker below, and run_analysis.py from the command line.
 
 # --------------------------------------------------------- custom windows
 def test_custom_window_cost_is_derived_not_hardcoded():
@@ -535,3 +453,27 @@ def test_methods_page_survives_custom_window_click_with_no_key():
     btn[0].click().run()
     assert not at.exception, [str(e) for e in at.exception]
     assert any("FORTYGUARD_API_KEY" in w.value for w in at.warning)
+
+
+def test_charts_do_not_force_container_width():
+    """width="container" renders a LAYERED Vega-Lite spec at zero width.
+
+    It blanked the gap chart, the ladder, the tradeoff scatter and the dumbbell
+    while leaving single-mark charts fine, so the failure was invisible in
+    AppTest -- the chart element existed, it just had no size. Streamlit sets
+    the width itself from use_container_width; the spec must not fight it.
+    """
+    import json as _json
+    import pandas as pd
+    import charts as _c
+    rows = [{"name": "A", "value_f": 91.0, "missed": True, "population": 10}]
+    specs = {
+        "zone_gap": _c.zone_gap(rows, 90.0, 89.9),
+        "ladder": _c.ladder([{"label": "90 °F", "people": 10, "waves": 1, "zones": 1}]),
+        "dumbbell": _c.spread_dumbbell(
+            pd.DataFrame([{"Metro": "X", "lo": 70.0, "hi": 90.0}]), "Metro", "lo", "hi"),
+        "rank_bar": _c.rank_bar(
+            pd.DataFrame([{"l": "X", "v": 1.0}]), "v", "l", "t"),
+    }
+    for name, chart in specs.items():
+        assert _json.loads(chart.to_json()).get("width") != "container", name

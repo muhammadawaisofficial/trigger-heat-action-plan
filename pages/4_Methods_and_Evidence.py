@@ -133,6 +133,15 @@ ui.masthead("Methods & evidence",
 ui.topnav()
 
 st.title("How the number was computed, and what would falsify it")
+
+st.info(
+    "**What this page is for.** Everything needed to check the headline rather "
+    "than trust it: every compiled rule beside the verbatim sentence and page "
+    "it came from, the map at clause resolution, the machine-readable alert "
+    "payload, the New York replication, what we measured about the FortyGuard "
+    "API, and a date picker that runs the full analysis on **any window you "
+    "choose**, from 2019 to yesterday.",
+    icon="🔬")
 st.markdown(
     "The landing page answers *what did you find*. This page answers **how, "
     "exactly** — every rule with the page and sentence it came from, the map at "
