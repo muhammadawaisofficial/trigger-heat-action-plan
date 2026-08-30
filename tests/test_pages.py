@@ -542,3 +542,38 @@ def test_no_page_calls_altair_chart_directly():
                  "pages/2_Data_Centre_Siting.py", "pages/3_Urban_Planning.py"):
         src = (REPO / page).read_text(encoding="utf-8")
         assert "st.altair_chart(" not in src, page
+
+
+def test_charts_carry_their_own_data_not_a_datasets_reference():
+    """Altair hoists layer data into a top-level `datasets` block and leaves
+    each layer pointing at it by name. Streamlit extracts and re-injects chart
+    data on the way to the frontend, and a spec whose layers own no data comes
+    out with nothing to draw: full-size container, no marks, no error.
+
+    That is what kept the gap chart blank through three wrong diagnoses. The
+    data must be inline, either per layer or shared at the top level.
+    """
+    import json as _json
+    import pandas as pd
+    import charts as _c
+    rows = [{"name": "A", "value_f": 91.0, "missed": True, "population": 10}]
+    built = {
+        "zone_gap": _c.zone_gap(rows, 90.0, 89.9),
+        "ladder": _c.ladder([{"label": "90 °F", "people": 1, "waves": 1, "zones": 1}]),
+        "wave_runs": _c.wave_runs([{"zone_name": "X", "start": "2025-08-02",
+                                    "end": "2025-08-05", "length_days": 4,
+                                    "peak_f": 95.0, "severity": "SEVERE",
+                                    "population": 10}]),
+        "rank_bar": _c.rank_bar(pd.DataFrame([{"l": "X", "v": 1.0}]), "v", "l", "t"),
+        "tradeoff": _c.tradeoff(pd.DataFrame([{"M": "A", "x": 1.0, "y": 2.0}]),
+                                "x", "y", "M", "xt", "yt", 1.0, 1.0),
+        "dumbbell": _c.spread_dumbbell(
+            pd.DataFrame([{"M": "A", "lo": 70.0, "hi": 90.0}]), "M", "lo", "hi"),
+    }
+    for name, chart in built.items():
+        spec = _json.loads(chart.to_json())
+        assert "datasets" not in spec, f"{name} still uses a named datasets block"
+        top_inline = "values" in (spec.get("data") or {})
+        layers = spec.get("layer", [])
+        per_layer = layers and all("values" in (L.get("data") or {}) for L in layers)
+        assert top_inline or per_layer, f"{name} has no inline data to draw"

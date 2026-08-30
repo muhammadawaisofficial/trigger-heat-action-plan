@@ -57,6 +57,18 @@ HEAT = ["#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26", "#a50f15"]
 
 FONT = "Inter, -apple-system, Segoe UI, sans-serif"
 
+# Altair hoists every layer's data into a top-level `datasets` block and leaves
+# each layer referencing it by name. Streamlit extracts and re-injects chart
+# data on the way to the frontend, and a spec whose layers carry no data of
+# their own comes out the other side with nothing to draw: a full-size container
+# and no marks, raising no error at any point.
+#
+# Inlining the values into each layer removes the indirection entirely. It costs
+# a little JSON size, which is irrelevant at fifteen rows, and it is the reason
+# the gap chart rendered blank on the deployment while every server-side test
+# passed.
+alt.data_transformers.enable("default", consolidate_datasets=False)
+
 
 #: Streamlit's bundled frontend renders Vega-Lite 5. Altair 6 builds an
 #: identical spec but stamps it v6, and a v6 stamp makes the renderer draw the
