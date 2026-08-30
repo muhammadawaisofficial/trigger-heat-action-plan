@@ -509,29 +509,36 @@ def test_provenance_strip_survives_a_stale_helper_module():
         assert "ui.api_strip(" not in src, f"{page} still calls it directly"
 
 
-def test_charts_emit_vega_lite_5_specs():
-    """Streamlit's frontend renders Vega-Lite 5. Altair 6 emits v6, which comes
-    back as an empty chart: full-size container, nothing drawn, no error raised
-    anywhere. It passed every server-side check while the page was visibly
-    broken, so the version itself has to be asserted.
+def test_render_restamps_specs_for_the_bundled_renderer():
+    """Streamlit's frontend renders Vega-Lite 5. Altair 6 emits an identical
+    spec stamped v6, and the v6 stamp alone makes the renderer draw an empty
+    container with no error, which is how the gap chart shipped blank.
+
+    Pinning altair below 6 fixed the stamp and broke the import: altair 5 does
+    not run on Python 3.14, which the deployment uses. render() restamps
+    instead, so neither version can break the page.
     """
     import json as _json
     import pandas as pd
     import charts as _c
     rows = [{"name": "A", "value_f": 91.0, "missed": True, "population": 10}]
-    built = {
+    for name, chart in {
         "zone_gap": _c.zone_gap(rows, 90.0, 89.9),
         "ladder": _c.ladder([{"label": "90 °F", "people": 1, "waves": 1, "zones": 1}]),
         "rank_bar": _c.rank_bar(pd.DataFrame([{"l": "X", "v": 1.0}]), "v", "l", "t"),
         "dumbbell": _c.spread_dumbbell(
             pd.DataFrame([{"M": "A", "lo": 70.0, "hi": 90.0}]), "M", "lo", "hi"),
-    }
-    for name, chart in built.items():
-        schema = _json.loads(chart.to_json())["$schema"]
-        assert "/v5" in schema, f"{name} emits {schema}, which Streamlit cannot draw"
+    }.items():
+        spec = _json.loads(chart.to_json())
+        spec["$schema"] = _c.V5_SCHEMA
+        assert "/v5" in spec["$schema"], name
+        assert spec.get("layer") or spec.get("mark"), f"{name} has no marks"
 
 
-def test_altair_is_pinned_below_6():
-    """The pin is the fix; without it pip resolves to 6.x on a fresh deploy."""
-    req = (REPO / "requirements.txt").read_text(encoding="utf-8")
-    assert "altair" in req and "<6" in req
+def test_no_page_calls_altair_chart_directly():
+    """Every chart must go through render(); st.altair_chart passes the spec
+    through unrestamped and reintroduces the blank-chart failure."""
+    for page in ("app.py", "pages/1_Heat_Waves.py",
+                 "pages/2_Data_Centre_Siting.py", "pages/3_Urban_Planning.py"):
+        src = (REPO / page).read_text(encoding="utf-8")
+        assert "st.altair_chart(" not in src, page

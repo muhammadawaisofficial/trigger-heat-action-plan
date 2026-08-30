@@ -37,8 +37,11 @@ still gets the ordering and the numbers.
 
 from __future__ import annotations
 
+import json
+
 import altair as alt
 import pandas as pd
+import streamlit as st
 
 # ---------------------------------------------------------------- palette
 ACCENT = "#b2182b"       # the measured thing that matters
@@ -53,6 +56,32 @@ SURFACE = "#ffffff"
 HEAT = ["#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26", "#a50f15"]
 
 FONT = "Inter, -apple-system, Segoe UI, sans-serif"
+
+
+#: Streamlit's bundled frontend renders Vega-Lite 5. Altair 6 builds an
+#: identical spec but stamps it v6, and a v6 stamp makes the renderer draw the
+#: container and nothing inside it, with no error raised anywhere.
+#:
+#: Verified rather than assumed: with the $schema line removed, altair 5.5.0 and
+#: altair 6.2.2 produce byte-identical JSON for these charts. Only the stamp
+#: differs, so restamping is safe and the chart code stays version-agnostic.
+#:
+#: Pinning altair below 6 was the obvious alternative and it fails differently:
+#: altair 5 cannot import on Python 3.14, which is what the deployment runs.
+V5_SCHEMA = "https://vega.github.io/schema/vega-lite/v5.json"
+
+
+def render(chart: alt.Chart, **_ignored) -> None:
+    """Draw a chart through Streamlit, stamped for the renderer it will meet.
+
+    Extra keyword arguments are accepted and dropped: st.altair_chart took
+    use_container_width and this does not, so a call site carrying it over
+    should lose an argument rather than take the page down.
+    """
+    spec = json.loads(chart.to_json())
+    spec["$schema"] = V5_SCHEMA
+    st.vega_lite_chart(spec, use_container_width=True)
+
 
 
 def _base(chart: alt.Chart, height: int = 300) -> alt.Chart:

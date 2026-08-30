@@ -135,14 +135,14 @@ Move between pages using the coloured nav strip, not the address bar. Each page 
 
 ## Figures to re-check the morning you record
 
-| Claim | Source |
-|---|---|
-| 1,184,971 · 72% of Phoenix | `run_demo.py` |
-| 10 of 15 urban villages | `run_demo.py` |
+| Claim                                                | Source                                                   |
+| ---------------------------------------------------- | -------------------------------------------------------- |
+| 1,184,971 · 72% of Phoenix                           | `run_demo.py`                                            |
+| 10 of 15 urban villages                              | `run_demo.py`                                            |
 | 125 calls · 11.19M tiles · 527,500 credits · 58 days | `data/results/api_usage.json`, or the home page expander |
-| 2026 replication: 9 of 15, 958,205 | Study window selector, or the README |
-| 90 °F → 10 waves / 110 °F → 0 | Heat waves page, threshold ladder |
-| 30 metros, wet-bulb measured | `data/results/wetbulb.json` |
+| 2026 replication: 9 of 15, 958,205                   | Study window selector, or the README                     |
+| 90 °F → 10 waves / 110 °F → 0                        | Heat waves page, threshold ladder                        |
+| 30 metros, wet-bulb measured                         | `data/results/wetbulb.json`                              |
 
 ## Things to keep straight on camera
 

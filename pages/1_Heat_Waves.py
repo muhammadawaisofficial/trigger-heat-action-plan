@@ -130,12 +130,10 @@ if ladder:
         "The same week, the same measurements, the same zones — detected "
         "against each threshold in turn. **Nothing about the weather changes "
         "down this table. Only the number written in the plan changes.**")
-    st.altair_chart(
-        charts.ladder([{"label": f"{r['Threshold °F']:g} °F",
+    charts.render(charts.ladder([{"label": f"{r['Threshold °F']:g} °F",
                         "people": r["Residents in those zones"],
                         "waves": r["Waves"],
-                        "zones": r[f"{city['unit'].title()}s"]} for r in ladder]),
-        use_container_width=True)
+                        "zones": r[f"{city['unit'].title()}s"]} for r in ladder]))
     st.caption("Bar height is residents inside a detected heat wave; the number "
                "above each bar is how many separate waves were detected.")
     with st.expander("The same figures as a table"):
@@ -233,7 +231,7 @@ else:
         "Peak °F": w["peak_f"], "Peak day": w["peak_day"],
         "Residents": w["population"],
     } for w in waves])
-    st.altair_chart(charts.wave_runs(waves), use_container_width=True)
+    charts.render(charts.wave_runs(waves))
     st.caption("Each bar is one continuous run of qualifying nights in one area. "
                "Length is the run; colour reinforces it.")
     st.dataframe(wdf, hide_index=True, use_container_width=True)

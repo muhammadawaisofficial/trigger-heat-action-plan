@@ -125,11 +125,9 @@ df = pd.DataFrame([{
     "Disaster": s.disaster_risk, "Grid": s.grid_headroom,
     "Strategy": s.cooling_strategy["strategy"],
 } for i, s in enumerate(scores, 1)])
-st.altair_chart(
-    charts.rank_bar(df.assign(**{"Metro ": df["Metro"]}), "Score", "Metro ",
+charts.render(charts.rank_bar(df.assign(**{"Metro ": df["Metro"]}), "Score", "Metro ",
                     "composite score (higher is better)",
-                    highlight=f'{best.name}'),
-    use_container_width=True)
+                    highlight=f'{best.name}'))
 st.caption(f"Ranked on the weights above. **{best.name}** leads; every other "
            f"metro is shown in context rather than competing for attention.")
 st.dataframe(df, hide_index=True, use_container_width=True, height=430)
@@ -153,13 +151,11 @@ _sc = pd.DataFrame([{
     "Free-cooling hours": s_.free_hours,
     "Water security": s_.sub.get("water", 0) * 100,
 } for s_ in scores])
-st.altair_chart(
-    charts.tradeoff(_sc, "Free-cooling hours", "Water security", "Metro",
+charts.render(charts.tradeoff(_sc, "Free-cooling hours", "Water security", "Metro",
                     "free-cooling hours (more is cheaper to cool)",
                     "water security (higher is safer)",
                     x_split=float(_sc["Free-cooling hours"].median()),
-                    y_split=50.0),
-    use_container_width=True)
+                    y_split=50.0))
 st.caption("Bottom-left is the quadrant to worry about: little free cooling "
            "**and** constrained water, so neither cooling route is open. Those "
            "metros are named on the chart; the rest are context.")

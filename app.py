@@ -312,9 +312,7 @@ if _gap_clause:
     _proxy_f = _f(_det["proxy"]["value"], _det["proxy"]["units"])
 
     st.markdown(f"##### The night of {_day}, neighbourhood by neighbourhood")
-    st.altair_chart(
-        charts.zone_gap(_rows, _thr, _proxy_f, unit=CITY["unit"]),
-        use_container_width=True)
+    charts.render(charts.zone_gap(_rows, _thr, _proxy_f, unit=CITY["unit"]))
     _n_over = sum(1 for r in _rows if r["value_f"] >= _thr)
     st.markdown(
         f'<div class="tg-legend">'

@@ -9,11 +9,12 @@ pytest>=8.0.0
 
 # Interface
 streamlit>=1.30.0
-# Altair 6 emits Vega-Lite v6 specs. Streamlit's bundled frontend renders
-# Vega-Lite 5, and hands a v6 spec back as an empty chart with no error --
-# the container draws at full size and nothing appears inside it. Pinned
-# because the failure is silent and passes every server-side test.
-altair>=5.2,<6
+# Deliberately unpinned. Altair 6 emits a Vega-Lite v6 stamp that Streamlit's
+# bundled v5 renderer draws as an empty chart; altair 5 fixes that but will not
+# import on Python 3.14, which the deployment runs. charts.render() restamps the
+# spec to v5 instead, which is safe because the two versions emit byte-identical
+# JSON for these charts, so neither bound is needed here.
+altair>=5.2
 folium>=0.15.0
 streamlit-folium>=0.18.0
 pandas>=2.1.0

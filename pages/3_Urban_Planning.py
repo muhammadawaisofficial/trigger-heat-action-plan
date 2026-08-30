@@ -97,9 +97,7 @@ else:
                   f"overnight low ≥ {planning.NIGHT_CRITICAL_F:.0f} °F",
                   delta_color="off")
 
-        st.altair_chart(
-            charts.spread_dumbbell(pdf, "Metro", "Coolest °F", "Hottest °F"),
-            use_container_width=True)
+        charts.render(charts.spread_dumbbell(pdf, "Metro", "Coolest °F", "Hottest °F"))
         st.caption("Each line runs from the coolest to the hottest ground "
                    "measured inside that metro's sample box. The length of the "
                    "line is the range a single citywide number stands in for.")
