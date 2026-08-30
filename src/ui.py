@@ -7,6 +7,7 @@ change to the palette or the masthead happens once rather than five times.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import streamlit as st
@@ -276,50 +277,101 @@ CITIES = {
 }
 
 
-def window_picker(city: dict, key: str = "window"):
-    """Choose which analysed window to display.
+_WINDOW_NAME = re.compile(r"^divergence_\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}\.json$")
 
-    A city can have several: the published one, and any re-run on a later
-    period. Keeping only the first was hiding the fact that this pipeline has
-    been run on data it had never seen -- which is the strongest evidence here
-    that nothing is hardcoded.
+
+def _windows_for(city: dict) -> dict:
+    """Every analysed window available for a city, registry plus disk.
+
+    A window analysed from inside the app lands in the results directory as
+    divergence_<start>_<end>.json. Discovering them here means a custom run
+    joins the list the moment it finishes, rather than needing the registry
+    above to be edited by hand.
     """
     windows = {k: v for k, v in (city.get("windows") or {}).items()
                if Path(v).exists()}
-    # Any window analysed from inside the app lands in the same results
-    # directory as divergence_<start>_<end>.json. Discovering them here means a
-    # custom run joins this list the moment it finishes, rather than needing
-    # the registry above to be edited by hand.
     known = {Path(v).name for v in windows.values()}
-    results_dir = REPO / "data" / "results"
+    # Scan the city's OWN results directory, not the shared root: New York's
+    # results live in a subdirectory, and globbing the root offered Phoenix's
+    # custom windows as if they were New York's.
+    results_dir = Path(city["results"]).parent
     if results_dir.exists():
         for f in sorted(results_dir.glob("divergence_*.json")):
-            if f.name in known:
+            # Require a full date range in the name, and a file with something
+            # in it. A run that failed before writing left a two-byte
+            # divergence__.json behind, which showed up here as a selectable
+            # window that rendered an empty page.
+            if f.name in known or not _WINDOW_NAME.match(f.name):
+                continue
+            if f.stat().st_size < 64:
                 continue
             stem = f.stem.replace("divergence_", "")
             windows[f"{stem}  ·  analysed in-app"] = f
+    return windows
+
+
+# Selection is read from state, and drawn separately by `controls` below.
+#
+# These two things are split because a page needs to know which city and window
+# it is showing before it loads any data, but the selector itself belongs under
+# the navigation rather than at the very top of the page. Reading state first
+# lets the widget be drawn later without the value arriving late: on the first
+# run there is no state and the default is used, and on every run after a change
+# Streamlit has already written the new value before the script re-executes.
+#
+# They live in the page and not the sidebar deliberately. The sidebar can be
+# collapsed, and Streamlit carries that collapsed state from page to page, so a
+# control that decides what the whole page shows would be one click away from
+# being unreachable. The same argument is why `topnav` exists.
+
+
+def current_city(available: dict, key: str) -> tuple[str, dict]:
+    """The selected city, without drawing anything."""
+    names = list(available)
+    name = st.session_state.get(key, names[0])
+    if name not in available:
+        name = names[0]
+    return name, available[name]
+
+
+def current_window(city: dict, key: str):
+    """The selected results file and its label, without drawing anything."""
+    windows = _windows_for(city)
     if len(windows) < 2:
         return city["results"], None
-    with st.sidebar:
-        st.markdown("### Study window")
-        label = st.radio("Window", list(windows), label_visibility="collapsed",
-                         key=key)
+    labels = list(windows)
+    label = st.session_state.get(key, labels[0])
+    if label not in windows:
+        label = labels[0]
     return windows[label], label
 
 
-def city_picker(key: str = "city") -> tuple[str, dict]:
-    """Sidebar city selector, identical on every page that offers one."""
-    with st.sidebar:
-        st.markdown("### City")
-        name = st.radio("City", list(CITIES), label_visibility="collapsed",
-                        key=key)
-        st.caption(CITIES[name]["note"])
-    return name, CITIES[name]
+def controls(available: dict, city_key: str, city: dict,
+             window_key: str | None = None) -> None:
+    """Draw the city and study-window selectors in the page body."""
+    windows = _windows_for(city) if window_key else {}
+    show_city = len(available) > 1
+    show_window = bool(window_key) and len(windows) > 1
+    if not (show_city or show_window):
+        return
+    with st.container(border=True):
+        cols = st.columns(2) if (show_city and show_window) else [st.container()]
+        i = 0
+        if show_city:
+            with cols[i]:
+                st.markdown("**City**")
+                st.radio("City", list(available), label_visibility="collapsed",
+                         key=city_key,
+                         captions=[available[c]["trigger"] for c in available])
+            i += 1
+        if show_window:
+            with cols[i]:
+                st.markdown("**Study window**")
+                st.radio("Window", list(windows), label_visibility="collapsed",
+                         key=window_key)
+        st.caption(city["note"])
 
 
-
-
-#: The pages, in reading order. One list, so nav and any page index agree.
 PAGES = [
     ("app.py", "The finding", "🏠"),
     ("pages/1_Heat_Waves.py", "Heat waves", "🌡"),

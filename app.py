@@ -43,7 +43,7 @@ REPO = Path(__file__).parent
 
 st.set_page_config(page_title="TRIGGER — who does the heat plan miss?",
                    page_icon="🌡", layout="wide",
-                   initial_sidebar_state="expanded")
+                   initial_sidebar_state="collapsed")
 ui.style()
 ui.theme("home")
 
@@ -86,17 +86,8 @@ if not AVAILABLE:
     st.error("No results found. Run `python run_analysis.py` first.")
     st.stop()
 
-with st.sidebar:
-    st.markdown("### Choose a city")
-    city_name = st.radio("City", list(AVAILABLE), label_visibility="collapsed",
-                         captions=[AVAILABLE[c]["trigger"] for c in AVAILABLE])
-    CITY = AVAILABLE[city_name]
-    st.caption(CITY["note"])
-    if len(AVAILABLE) > 1:
-        st.success("Switching city re-runs every number on this page from that "
-                   "city's own data. Same code, one profile file per city.")
-
-_results_path, _window_label = ui.window_picker(CITY, key="home_window")
+city_name, CITY = ui.current_city(AVAILABLE, "home_city")
+_results_path, _window_label = ui.current_window(CITY, "home_window")
 res = load_json(str(_results_path))
 geo = load_json(str(CITY["zones"]))
 pop = (load_json(str(CITY["pop"])) or {}).get("villages", {})
@@ -119,6 +110,7 @@ total_pop = summary.get("population_total")
 ui.masthead("who does the heat plan miss?",
             pills=[CITY["short"], f"{len(res['zones'])} {CITY['unit']}s", f"{CITY['tiles']} tiles/day at 100 m", "real API data"])
 ui.topnav()
+ui.controls(AVAILABLE, "home_city", CITY, "home_window")
 
 # ═══════════════════════════════════════════════════ 1 · WHAT IS WRONG
 st.markdown('<p class="tg-q">1 — The problem</p>', unsafe_allow_html=True)

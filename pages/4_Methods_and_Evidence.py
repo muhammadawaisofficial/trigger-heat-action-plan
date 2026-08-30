@@ -50,7 +50,7 @@ PROXY_LABEL = ("Citywide proxy — the area-weighted mean over the whole city AO
 
 st.set_page_config(page_title="TRIGGER — Methods & Evidence",
                    page_icon="🌡", layout="wide",
-                   initial_sidebar_state="expanded")
+                   initial_sidebar_state="collapsed")
 
 # --------------------------------------------------------------------- styling
 # One stylesheet for the WHOLE app, defined in src/ui.py and applied here and
@@ -84,18 +84,7 @@ if not AVAILABLE:
     st.error("No results found. Run `python run_analysis.py` first.")
     st.stop()
 
-with st.sidebar:
-    st.markdown("### City")
-    city_name = st.radio(
-        "City", list(AVAILABLE.keys()), label_visibility="collapsed",
-        key="me_city",
-        captions=[AVAILABLE[c]["trigger"] for c in AVAILABLE])
-    CITY = AVAILABLE[city_name]
-    st.caption(CITY["note"])
-    if len(AVAILABLE) > 1:
-        st.success("Switch cities to re-run every figure on this page. Same "
-                   "pipeline, no code changes — one profile file per city.")
-    st.divider()
+city_name, CITY = ui.current_city(AVAILABLE, "me_city")
 
 res = load_json(str(CITY["results"]))
 geo = load_json(str(CITY["zones"]))
@@ -138,6 +127,7 @@ for _ft in geo.get("features", []):
 ui.masthead("Methods & evidence",
             pills=[CITY["short"], "clause-level detail", "replication · retractions"])
 ui.topnav()
+ui.controls(AVAILABLE, "me_city", CITY)
 
 st.title("How the number was computed, and what would falsify it")
 

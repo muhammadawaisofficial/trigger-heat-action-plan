@@ -29,16 +29,17 @@ _api_strip = getattr(ui, "api_strip", lambda *a, **k: None)
 
 
 st.set_page_config(page_title="TRIGGER — Urban Planning", page_icon="🌡",
-                   layout="wide", initial_sidebar_state="expanded")
+                   layout="wide")
 ui.style()
 ui.theme("planning")
 
-city_name, city = ui.city_picker("up_city")
+city_name, city = ui.current_city(ui.CITIES, "up_city")
 national = ui.results("national.json")
 
 ui.masthead("Urban planning",
             pills=["30 US metros", "measured gap × published effect size"])
 ui.topnav()
+ui.controls(ui.CITIES, "up_city", city)
 
 st.title("How much intervention, and exactly where")
 

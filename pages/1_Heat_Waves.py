@@ -33,17 +33,18 @@ _api_strip = getattr(ui, "api_strip", lambda *a, **k: None)
 
 
 st.set_page_config(page_title="TRIGGER — Heat Waves", page_icon="🌡",
-                   layout="wide", initial_sidebar_state="expanded")
+                   layout="wide")
 ui.style()
 ui.theme("heat")
 
-city_name, city = ui.city_picker("hw_city")
+city_name, city = ui.current_city(ui.CITIES, "hw_city")
 guide = ui.guidance()
 national = ui.results("national.json")
 
 ui.masthead("Heat waves",
             pills=[city["short"], "per-neighbourhood detection", "absolute vs percentile basis"])
 ui.topnav()
+ui.controls(ui.CITIES, "hw_city", city)
 
 st.title("Which neighbourhoods are in a heat wave — and since when")
 
