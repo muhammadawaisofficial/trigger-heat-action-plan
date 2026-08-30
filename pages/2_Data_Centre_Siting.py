@@ -42,8 +42,7 @@ st.info(
     "and on cooling: the largest controllable operating cost, and the term "
     "measured worst. Every published free-cooling figure is a *city average* — "
     "Phoenix around 1,000 to 2,000 hours a year, Minneapolis 4,000 to 6,000. "
-    "Nobody sites a building on a city average.",
-    icon="🏢")
+    "Nobody sites a building on a city average.")
 st.markdown(
     "**How the FortyGuard API makes this answerable.** Every thermal term "
     "below is measured by us across 30 US metros, at full resolution: "
@@ -169,7 +168,7 @@ st.info(
     "**Energy-cheap but water-constrained** is the dangerous quadrant. Those "
     "sites get built and then fought over — data-centre water use is a "
     "documented flashpoint for community opposition in Arizona and California. "
-    "A single composite score hides them, so they are named here.", icon="💧")
+    "A single composite score hides them, so they are named here.")
 
 # ------------------------------------------------------------ cost model
 st.markdown("### 4 · What the thermal difference costs")

@@ -94,8 +94,7 @@ with st.sidebar:
     st.caption(CITY["note"])
     if len(AVAILABLE) > 1:
         st.success("Switch cities to re-run every figure on this page. Same "
-                   "pipeline, no code changes — one profile file per city.",
-                   icon="🔀")
+                   "pipeline, no code changes — one profile file per city.")
     st.divider()
 
 res = load_json(str(CITY["results"]))
@@ -148,8 +147,7 @@ st.info(
     "it came from, the map at clause resolution, the machine-readable alert "
     "payload, the New York replication, what we measured about the FortyGuard "
     "API, and a date picker that runs the full analysis on **any window you "
-    "choose**, from 2021 to yesterday.",
-    icon="🔬")
+    "choose**, from 2021 to yesterday.")
 st.markdown(
     "The landing page answers *what did you find*. This page answers **how, "
     "exactly** — every rule with the page and sentence it came from, the map at "
@@ -192,8 +190,7 @@ st.caption(
     "language model decides whether to alert, at what severity, or about whom.")
 
 if not _alerts:
-    st.success(f"No divergence alerts for {CITY['short']} in this window.",
-               icon="✅")
+    st.success(f"No divergence alerts for {CITY['short']} in this window.")
 else:
     _k1, _k2, _k3, _k4 = st.columns(4)
     _k1.metric("Alerts", _asum["alerts"])
@@ -578,7 +575,7 @@ with tab_nyc:
             "New York fixed the *between-city* problem: a national threshold did "
             "not describe New York. **Nobody has fixed the *within-city* one, and "
             "it survives the fix.** A better single number is still a single "
-            "number.", icon="⚠️")
+            "number.")
         st.caption(
             "What we do NOT claim: New York's evidence is that 105 °F was too "
             "high *for New York's climate*. It does not follow that Phoenix's "
@@ -591,7 +588,7 @@ with tab_nyc:
             f"**Same near-miss signature. Near-identical actionable share — "
             f"{_p['actionable_share']:.0%} against {ns['actionable_share']:.0%}.** "
             f"Two cities, opposite climates, opposite trigger metrics, the same "
-            f"structural failure. **{_tot:,} people** across both.", icon="🎯")
+            f"structural failure. **{_tot:,} people** across both.")
         st.caption(
             "New York was added with **zero code changes** — one profile JSON, "
             "one boundaries file, one clause file. Its AOI is the 346 mi² box "
@@ -710,7 +707,7 @@ with tab_api:
                 "that contradict its docs — `tcm` returns °C not °F, "
                 "`persistence` clamps to ~8 h at `filter_type=4`, and the real "
                 "area limit is ~1,053 mi² rather than the documented 50. "
-                "See `docs/api_findings.md`.", icon="🔬")
+                "See `docs/api_findings.md`.")
 
     st.markdown("---")
     st.markdown("#### Prove it: fetch one real reading right now")
@@ -741,7 +738,7 @@ with tab_api:
                 "anything else on the site — every other number reproduces "
                 "from the **125 real calls already committed** to the repo "
                 "(see the metrics above). Run this locally with a key to see "
-                "it fetch live.", icon="🔑")
+                "it fetch live.")
         else:
             try:
                 with st.spinner("Calling FortyGuard — polling until the task "
@@ -751,12 +748,12 @@ with tab_api:
                     st.success(
                         f"**Replayed today's real fetch** for {p.day} rather "
                         f"than paying again — this exact request already ran "
-                        f"live once today.", icon="♻️")
+                        f"live once today.")
                 else:
                     st.success(
                         f"**Fetched live just now** from FortyGuard, for "
                         f"{p.day} — a genuine network round trip that just "
-                        f"completed.", icon="📡")
+                        f"completed.")
                 m1, m2, m3 = st.columns(3)
                 m1.metric("Mean temperature", f"{p.mean_c:.1f} °C")
                 m2.metric("Range", f"{p.min_c:.1f} – {p.max_c:.1f} °C")
@@ -767,7 +764,7 @@ with tab_api:
                     f"This is exactly the failure mode documented in "
                     f"`docs/api_findings.md` — a 2,400 s poll timeout under "
                     f"load — and exactly why the headline number never "
-                    f"depends on a live call succeeding on demand.", icon="⚠️")
+                    f"depends on a live call succeeding on demand.")
 
     # ------------------------------------------------- any window, on demand
     st.markdown("---")
@@ -808,7 +805,7 @@ with tab_api:
             st.success(
                 f"**This window is already analysed** — no credits needed. "
                 f"Select it on the home page's Study window selector to view "
-                f"it.", icon="✅")
+                f"it.")
 
         st.caption(
             "Every call is cached as it arrives, so a run that fails partway "
@@ -825,7 +822,7 @@ with tab_api:
                     "windows already analysed remain available on the home "
                     "page. To run your own: set the key and use "
                     "`python run_analysis.py --start … --end …`, which is the "
-                    "same code path this button calls.", icon="🔑")
+                    "same code path this button calls.")
             else:
                 _bar = st.progress(0.0, text="Starting…")
 
@@ -842,8 +839,7 @@ with tab_api:
                         f"Whatever was fetched before the failure is cached, "
                         f"so pressing again resumes rather than restarting. "
                         f"Large windows on a small container are the documented "
-                        f"weak point here — see `docs/api_findings.md`.",
-                        icon="⚠️")
+                        f"weak point here — see `docs/api_findings.md`.")
                 else:
                     _bar.empty()
                     _path = customwindow.save(_res, _start.isoformat(),
@@ -852,7 +848,7 @@ with tab_api:
                     st.success(
                         f"**Analysed {_est['days']} days.** Saved as "
                         f"`{_path.name}` — it now appears in the Study window "
-                        f"selector on the home page.", icon="🎉")
+                        f"selector on the home page.")
                     _r1, _r2, _r3 = st.columns(3)
                     _r1.metric("Silent zones",
                                f"{_s.get('silent_zones', 0)} of "

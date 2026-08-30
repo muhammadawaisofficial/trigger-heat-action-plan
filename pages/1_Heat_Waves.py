@@ -55,7 +55,7 @@ st.info(
     "and ranks 30 US metros by how dangerous their nights run. It does **not** "
     "forecast days ahead: the API serves measured history and about twelve "
     "hours forward, so a multi-day prediction is not something this data "
-    "supports and none is shown. Full detail in section 6.", icon="🎯")
+    "supports and none is shown. Full detail in section 6.")
 st.markdown(
     "Every operational heat-wave definition has the same three parts: a "
     "**threshold**, a **persistence** requirement, and — in the definitions that "
@@ -148,7 +148,7 @@ if ladder:
             f"**{lo['Residents in those zones']:,} residents**. At "
             f"**{hi['Threshold °F']:.0f} °F** it is **{hi['Waves']}**. A city "
             f"that writes the higher number into its plan does not experience "
-            f"less heat — it just stops being able to see it.", icon="🚨")
+            f"less heat — it just stops being able to see it.")
 
 # Default to a clause that actually produces runs, so the detail view below
 # demonstrates the analysis rather than opening on an empty result. The ladder
@@ -206,8 +206,7 @@ if abs(gap) >= 0.5:
         f"The plan's threshold sits **{abs(gap):.1f} °F {higher}** the p{pct:.0f} "
         f"of this city's own measured distribution. A threshold above the local "
         f"distribution fires rarely and late; one below it fires often enough to "
-        f"be ignored. Neither is visible to a city that never compares the two.",
-        icon="📏")
+        f"be ignored. Neither is visible to a city that never compares the two.")
 
 # ------------------------------------------------------------------ the runs
 st.markdown("### 3 · The runs")
@@ -317,7 +316,7 @@ st.warning(
     "A forecast product would need a numerical weather prediction feed "
     "(NWS/NBM or ECMWF) joined to this hyperlocal layer. That is a real and "
     "buildable design — it is simply not what is running here, and we would "
-    "rather say so than show a number we cannot stand behind.", icon="⚠️")
+    "rather say so than show a number we cannot stand behind.")
 
 st.caption(
     "Danger tiers follow the structure of NOAA/NWS **HeatRisk** — five ordinal, "

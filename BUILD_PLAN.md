@@ -1,316 +1,243 @@
-# TRIGGER — Build Plan
+# TRIGGER — build plan
 
 The build order this project was developed against, kept for the record. Each
-phase has an acceptance criterion that had to pass before the next one started.
+phase had an acceptance criterion that had to pass before the next one started,
+and the gates are recorded here as they were written, not as they turned out.
 
 `SPEC.md` in the repo root is the specification every phase refers to.
 
-**Environment:** `FORTYGUARD_API_KEY`, `GEMINI_API_KEY` in `.env`. `.env` in
-`.gitignore`. Never commit keys.
+**Environment:** `FORTYGUARD_API_KEY` and `GEMINI_API_KEY` in `.env`, with
+`.env` in `.gitignore`. No key is committed anywhere in this repository.
 
 ---
 
-## Phase 0 — Verify (30 min) · Day 6
+## Phase 0 — Verify · Day 6
 
-```
-Follow SPEC.md.
+Set up the repo from the FortyGuard quickstart template, with their `fortyguard`
+client package vendored unmodified, plus `.env.example`, `.gitignore`, and
+`requirements.txt`.
 
-Set up the repo from the FortyGuard quickstart template. Vendor their
-`fortyguard` client package unmodified. Create .env.example, .gitignore,
-requirements.txt.
+Then one verification call, and nothing else: a small downtown Phoenix polygon
+of roughly 2 km², `analytic_type="persistence"`, threshold 35.0 with
+`direction="above"`, `filter_type=4`, one week of July 2025, granularity 100.
+Print the full `stats_data` and the count of tiles above zero, then repeat the
+identical window for July 2024 and July 2023.
 
-Then run ONE verification call and stop:
-- small downtown Phoenix polygon (~2 km²)
-- analytic_type="persistence", threshold=35.0, direction="above"
-- filter_type=4, start_date/end_date covering one week of July 2025
-- granularity=100
+The point of stopping here was to find out whether the API returns usable
+spatial variation before any of the rest was worth building.
 
-Print the full stats_data plus the count of tiles with value > 0.
-Then try the same window for July 2024 and July 2023.
-
-STOP. Report all three. Do not build anything else.
-```
-
-**Gate:** `n_cells` in the hundreds+, and a real spread between `min` and `max`.
-Reference: FortyGuard's San Jose sample spans 2.07 → 8.73 hours across 329
-tiles. If Phoenix is flatter than that, or a year returns empty, decide the
-study window before continuing.
+**Gate:** `n_cells` in the hundreds or more, with a real spread between `min`
+and `max`. The reference was FortyGuard's San Jose sample, 2.07 to 8.73 hours
+across 329 tiles. A flatter Phoenix, or an empty year, meant choosing a
+different study window before continuing.
 
 ---
 
-## Phase 1 — Foundation (Day 6, evening)
+## Phase 1 — Foundation · Day 6, evening
 
-```
-Build the foundation layer. No API calls beyond what the cache wraps.
+Three modules and their tests, with no API calls beyond what the cache wraps.
 
-1. src/cache.py
-   - Disk cache at data/cache/, key = sha256 of the canonical JSON request
-     payload (sorted keys).
-   - Decorator or wrapper around the client's heatmap and env_params calls.
-   - Second identical call must make ZERO network requests.
-   - Include a `list_cache()` helper and a manifest file recording what each
-     key represents in human-readable form.
+`src/cache.py` — a disk cache under `data/cache/`, keyed on the SHA-256 of the
+canonical JSON request payload with sorted keys, wrapping the client's heatmap
+and `env_params` calls. A second identical call must make zero network
+requests. A `list_cache()` helper and a manifest record what each key holds in
+human-readable form.
 
-2. src/schema.py
-   - Clause dataclass exactly as specified in SPEC.md.
-   - fahrenheit_to_celsius() lives here and NOWHERE else in the codebase.
-   - Validator: threshold_c must equal round((threshold_source - 32) * 5/9, 2);
-     source_text and source_page mandatory and non-empty; operator in
-     {above, below}; extraction_conf in [0,1].
-   - to_api_params() returning the exact kwargs for create_heatmap.
+`src/schema.py` — the `Clause` dataclass exactly as SPEC.md specifies.
+`fahrenheit_to_celsius()` lives here and in no other file. The validator
+requires `threshold_c` to equal `round((threshold_source - 32) * 5/9, 2)`,
+`source_text` and `source_page` to be present and non-empty, `operator` to be
+one of `above` or `below`, and `extraction_conf` to fall in [0, 1].
+`to_api_params()` returns the exact kwargs for `create_heatmap`.
 
-3. src/parse.py
-   - parse_heatmap(response) -> list[Tile], where Tile has
-     tile_id, value, units, polygon (shapely, built from [lon, lat] coords).
-   - MUST handle both shapes: properties.value for analysis types,
-     properties.average_temperature for tcm.
-   - Raise a clear error if neither field is present — never return silently
-     empty.
+`src/parse.py` — `parse_heatmap(response)` returns `list[Tile]`, each tile
+carrying `tile_id`, `value`, `units`, and a shapely polygon built from
+`[lon, lat]` coordinates. It handles both response shapes, `properties.value`
+for the analysis types and `properties.average_temperature` for `tcm`, and
+raises a clear error when neither field is present rather than returning
+silently empty.
 
-4. tests/ — pytest covering: cache hit/miss, the °F→°C round trip, both parse
-   paths, and [lon, lat] ordering (a Phoenix tile must land near
-   lon -112, lat 33 — assert this, it catches coordinate swaps immediately).
-
-Run the tests. STOP and report results.
-```
+The tests cover cache hit and miss, the °F to °C round trip, both parse paths,
+and coordinate ordering. That last one asserts a Phoenix tile lands near
+longitude −112, latitude 33, which catches a lon/lat swap the moment it happens
+instead of three phases later.
 
 **Gate:** all tests green, including the coordinate-order assertion.
 
 ---
 
-## Phase 2 — The compiler (Day 7)
+## Phase 2 — The compiler · Day 7
 
-This is the innovation. Give it the most care.
+The part of this project nothing else substitutes for, so it got the most care.
 
-```
-Build the clause compiler using the Gemini API (GEMINI_API_KEY in .env).
+Model selection came first, by listing the available Gemini models through the
+SDK rather than hardcoding a name from memory, preferring a fast model with
+JSON output support and recording the chosen name in a constant.
 
-First: check which Gemini model names are currently valid by listing available
-models via the SDK. Do not hardcode a model name from memory. Prefer a fast
-model with JSON output support; record the chosen name in a constant.
+`src/compile.py` takes `data/plan/phoenix_2026_heat_response_plan.pdf`,
+extracts text page by page with the page numbers preserved, chunks by section
+so a clause and its context stay together, and calls Gemini in JSON output mode
+against a schema matching the `Clause` dataclass.
 
-1. src/compile.py
-   - Input: data/plan/phoenix_2026_heat_response_plan.pdf
-   - Extract text page by page, preserving page numbers.
-   - Chunk by section so a clause and its context stay together.
-   - For each chunk, call Gemini with JSON output mode and a schema matching
-     the Clause dataclass.
+Five rules are stated in the system prompt and then validated on the output,
+because a rule that lives only in the prompt is a request rather than a
+guarantee:
 
-   Prompt rules (enforce these in the system prompt AND validate the output):
-   - Every clause MUST include the verbatim source sentence and its page number.
-   - If a field is inferred rather than stated, set extraction_note explaining
-     the inference and lower extraction_conf.
-   - If no numeric threshold is present, do NOT invent one — return the clause
-     with threshold_source=None and flag it for review.
-   - Thresholds as written (°F). Conversion happens in schema.py, not here.
-   - actor must come from the plan's own department key. Map abbreviations
-     (OHRM, PD, HSD, OEM, PRD, etc.) to full department names.
+- every clause carries the verbatim source sentence and its page number
+- an inferred field sets `extraction_note` explaining the inference and lowers
+  `extraction_conf`
+- a clause with no numeric threshold returns `threshold_source=None` and is
+  flagged for review, never given an invented number
+- thresholds stay as written, in °F; conversion happens in `schema.py`
+- `actor` comes from the plan's own department key, with the abbreviations it
+  prints (OHRM, PD, HSD, OEM, PRD) mapped to full department names
 
-   - Post-validate every returned clause: assert source_text appears verbatim
-     in the source page text. Reject and log any clause that fails — this is
-     the anti-hallucination guarantee and it must be mechanical, not trusted.
+Then the check the whole design rests on: every returned clause is asserted to
+have its `source_text` appear verbatim in the text of the page it cites. A
+clause that fails is rejected and logged. This is mechanical rather than
+trusted, which is what makes an unfamiliar plan safe to compile.
 
-2. eval_compiler.py
-   - Load data/golden/clauses.json (hand-compiled by teammate).
-   - Match compiled vs golden on clause_id and on threshold+actor pairs.
-   - Report precision, recall, F1, plus a field-level accuracy table
-     (threshold, duration, actor, action).
-   - Write results to data/eval/compiler_report.json AND print a summary.
+`eval_compiler.py` loads the hand-compiled golden set from
+`data/golden/clauses.json`, matches compiled against golden on `clause_id` and
+on threshold-plus-actor pairs, and reports precision, recall, F1, and a
+field-level accuracy table across threshold, duration, actor, and action. It
+writes `data/eval/compiler_report.json` and prints a summary. Compiled output
+lands in `data/clauses/compiled.json`.
 
-3. Save compiled output to data/clauses/compiled.json.
-
-Run eval_compiler.py. STOP and report precision/recall and any clauses that
-failed verbatim validation.
-```
-
-**Gate:** F1 above ~0.7 and zero clauses failing verbatim validation. Below
-that, iterate the prompt — do not proceed on a weak compiler, everything
-downstream inherits its errors.
+**Gate:** F1 above roughly 0.7 with zero clauses failing verbatim validation.
+Below that the fix was to iterate the prompt rather than proceed, since every
+downstream number inherits the compiler's errors.
 
 ---
 
-## Phase 3 — Zones and aggregation (Day 8, morning)
+## Phase 3 — Zones and aggregation · Day 8, morning
 
-```
-1. Acquire Phoenix administrative boundaries.
-   - Preferred: City of Phoenix **urban villages** (15 official named units —
-     Camelback East, Maryvale, South Mountain, Encanto, etc.). Ideal
-     granularity: official, named, few enough to display, large enough to
-     contain many tiles.
-   - Source from City of Phoenix open data / ArcGIS as GeoJSON.
-   - Fallback: census tracts clipped to city limits.
-   - Save to data/zones/phoenix_villages.geojson. Commit it.
+Phoenix administrative boundaries, preferring the city's 15 official urban
+villages — Camelback East, Maryvale, South Mountain, Encanto and the rest.
+They are the right unit because they are official, named, few enough to display
+on one map, and large enough to contain many tiles. Sourced as GeoJSON from
+City of Phoenix open data and committed to
+`data/zones/phoenix_villages.geojson`, with census tracts clipped to city
+limits as the fallback.
 
-2. src/aggregate.py
-   - aggregate_tiles_to_zones(tiles, zones) -> per-zone stats.
-   - AREA-WEIGHTED mean over every tile whose polygon intersects the zone,
-     weighted by intersection area. Not nearest-tile, not centroid lookup.
-   - Also return max, min, tile_count, and total_intersection_area per zone.
-   - Warn loudly if any zone has tile_count < 5 (under-covered).
+`src/aggregate.py` reduces tiles to zones by area-weighted mean over every tile
+whose polygon intersects the zone, weighted by intersection area. Not
+nearest-tile, and not a centroid lookup: both of those discard most of the
+measurement. It also returns max, min, `tile_count`, and total intersection
+area per zone, and warns loudly for any zone under five tiles.
 
-3. Verify: pick one small zone, compute its weighted mean by hand from the
-   intersecting tiles, assert the function matches. Include as a test.
+One small zone's weighted mean was then computed by hand from its intersecting
+tiles and asserted against the function, and that check stayed in as a test.
 
-STOP. Report per-zone tile counts and flag any under-covered zones.
-```
-
-**Gate:** every zone has meaningful tile coverage; hand-verification passes.
+**Gate:** every zone has meaningful tile coverage, and the hand verification
+passes.
 
 ---
 
-## Phase 4 — Evaluation and the number (Day 8 evening → Day 9)
+## Phase 4 — Evaluation and the number · Day 8 evening to Day 9
 
-**This is the hard gate. Nothing after this matters if this doesn't land.**
+The hard gate. Nothing after this matters if this does not land.
 
-```
-1. src/evaluate.py
-   - For each clause x each zone, over the chosen study window:
-     * duration_hours present  -> use analytic_type="persistence"
-                                  (longest CONSECUTIVE run)
-     * duration_hours absent   -> use analytic_type="exceedance"
-                                  (total hours past threshold)
-     * threshold_c and operator -> threshold and direction params
-   - Return ClauseResult: clause_id, zone_id, fired (bool),
-     value, margin (value - required), first_hour_met (local time).
-   - Batch API calls: one call per unique (threshold, direction, analytic_type)
-     covers ALL zones at once — aggregate afterwards. Do NOT call per zone.
-     Log the number of API calls made; it should be roughly the number of
-     distinct thresholds in the plan, not clauses x zones.
+`src/evaluate.py` runs each clause against each zone over the study window.
+A clause with `duration_hours` uses `analytic_type="persistence"`, the longest
+consecutive run; a clause without one uses `exceedance`, total hours past the
+threshold. `threshold_c` and `operator` become the threshold and direction
+parameters. Each `ClauseResult` carries `clause_id`, `zone_id`, `fired`,
+`value`, `margin` against what the clause required, and `first_hour_met` in
+local time.
 
-2. src/diverge.py
-   - Citywide baseline: area-weighted mean over the FULL city AOI, evaluated
-     against the same clauses. Label it `citywide_proxy` in every output
-     structure — it is a proxy for station sensing, not a station feed.
-   - Compute:
-     * lead_time_gained: per clause+zone, hours between first_hour_met locally
-       and first_hour_met citywide. Report median and distribution.
-     * silent_zones: zones where fired=True locally but citywide never fired.
-       Include population if available.
-     * false_calm_clauses: clauses never firing citywide but firing in >=1 zone.
-   - Write data/results/divergence.json.
-   - Print a plain-language summary block.
+Calls are batched so that one call per unique combination of threshold,
+direction, and analytic type covers every zone at once, with aggregation
+happening afterwards. Calling per zone would multiply cost by fifteen for
+identical data, so the logged call count should track the number of distinct
+thresholds in the plan rather than clauses times zones.
 
-3. Convert all reported hours to Phoenix local time (UTC-7, no DST) before
-   display. Assert this in a test.
+`src/diverge.py` builds the citywide baseline as an area-weighted mean over the
+full city AOI, evaluated against the same clauses, and labels it
+`citywide_proxy` in every output structure, because it stands in for station
+sensing rather than being a station feed. From that it computes
+`lead_time_gained` per clause and zone as the hours between the local and
+citywide `first_hour_met`, reported as a median and a distribution;
+`silent_zones`, where a clause fired locally and citywide never did, with
+population where available; and `false_calm_clauses`, which never fire citywide
+but fire in at least one zone. Results go to `data/results/divergence.json`
+alongside a plain-language summary.
 
-Run the full pipeline end to end from cache. STOP and report the three metrics.
-```
+Every reported hour is converted to Phoenix local time, UTC−7 with no DST,
+before display, and a test asserts it.
 
-**Gate: THE NUMBER EXISTS.** If it's weak, before abandoning — try a hotter
-study window, a lower-threshold clause, or finer granularity in the highest-
-variance zones. If it's still weak by end of 26 Aug, pivot the framing to "the
-plan triggers on the wrong metric" using env_params heat_index vs air
-temperature, and ship that instead.
+**Gate: the number exists.** If it came out weak, the options before abandoning
+the framing were a hotter study window, a lower-threshold clause, or finer
+granularity in the highest-variance zones. The last resort, had it still been
+weak by 26 August, was to pivot to "the plan triggers on the wrong metric"
+using `env_params` heat index against air temperature.
 
 ---
 
-## Phase 5 — Interface (Day 10)
+## Phase 5 — Interface · Day 10
 
-```
-Build app.py with Streamlit. Runs entirely from cache; no API key required.
+`app.py` in Streamlit, running entirely from cache with no API key required.
 
-Layout, in this order top to bottom:
+The layout as planned, top to bottom: a headline banner carrying the three
+divergence numbers, large, because it is what a judge sees first; a 2D map of
+the urban villages as a choropleth by lead time gained, with silent zones in a
+distinct alarm colour and a legend entry to match, clicking through to the
+clauses that fired there; a clause table giving id, threshold rendered as
+"95°F (35.0°C)", duration, actor, extraction confidence, and the count of zones
+it fired in, with each row opening its verbatim `source_text` and page number;
+a divergence panel with the lead-time histogram and the citywide-against-
+hyperlocal comparison, carrying the word "proxy" in the interface itself rather
+than only in the README; and preset questions as buttons instead of a free-text
+box.
 
-1. HEADLINE BANNER — the three divergence numbers, large. This is what a judge
-   sees first. Format: "N zones met the trigger H hours before the city
-   declared it. M zones met it and the city never did. K clauses never fired."
+That is the layout this phase was built against. The interface was later
+rebuilt around four questions — the problem, the number, where, and what to do
+— after the original proved hard to follow without someone narrating it. The
+provenance path and the proxy labelling survived that rewrite unchanged.
 
-2. MAP (folium or pydeck, 2D — no globe)
-   - Phoenix urban villages, choropleth by lead time gained.
-   - SILENT ZONES in a distinct alarm colour with a clear legend entry. This is
-     the hero visual — make it unmistakable.
-   - Click a zone -> side panel of clauses that fired there.
-
-3. CLAUSE TABLE
-   - Every compiled clause: id, threshold as "95°F (35.0°C)", duration, actor,
-     extraction confidence, fired-in-N-zones.
-   - Click a clause -> shows verbatim source_text and page number.
-     This provenance path must work; it is a scored differentiator.
-
-4. DIVERGENCE PANEL
-   - Lead time distribution histogram.
-   - Citywide vs hyperlocal comparison, with "citywide (proxy)" labelled
-     visibly in the UI, not just the README.
-
-5. Preset missions as buttons (NOT free-text input):
-   - "Which clauses fired during the July heat event?"
-   - "Which zones did the plan miss?"
-   - "What should OHRM do first tomorrow?"
-   - "Which clauses never fire at all?"
-
-Use Tailwind-free plain Streamlit; do not over-style. Correctness over polish.
-
-STOP. Report that it runs offline with no API key set.
-```
-
-**Gate:** unset the API key env var and confirm the app still fully works.
+**Gate:** unset the API key environment variable and confirm the app still
+works in full.
 
 ---
 
-## Phase 6 — Brief and hardening (Day 11)
+## Phase 6 — Brief and hardening · Day 11
 
-```
-1. src/brief.py
-   - Gemini generates a ranked action brief FROM data/results/divergence.json
-     ONLY. Pass the structured results as JSON in the prompt.
-   - Every recommendation must cite clause_id, page, zone, time window, actor.
-   - Post-validate: every clause_id and page number in the output must exist
-     in the compiled clause set. Reject and regenerate on mismatch.
-   - System prompt must forbid introducing any fact not present in the input
-     JSON.
+`src/brief.py` has Gemini produce a ranked action brief from
+`data/results/divergence.json` and nothing else, with the structured results
+passed as JSON in the prompt. Every recommendation cites a `clause_id`, page,
+zone, time window, and actor, and post-validation checks each cited id and page
+against the compiled clause set, regenerating on a mismatch. The system prompt
+forbids introducing any fact absent from the input JSON.
 
-2. Hardening:
-   - Fresh-clone test: clone to a new directory, no .env, run one command,
-     confirm the headline number reproduces from committed cache.
-   - Add `make demo` or `python run_demo.py` as that one command.
-   - Confirm data/cache/ is committed and not gitignored.
-
-STOP and report the fresh-clone result.
-```
+Hardening was the fresh-clone test: clone to a new directory with no `.env`,
+run one command, and confirm the headline number reproduces from committed
+cache. That command is `python run_demo.py`, and `data/cache/` is committed
+rather than gitignored so that it can work.
 
 ---
 
-## Phase 7 — Submission (Day 12)
+## Phase 7 — Submission · Day 12
 
-```
-Write README.md structured against the judging criteria:
+`README.md` structured against the four judging criteria, leading with the
+number before any explanation, then the problem, the approach, and a section
+each for impact and relevance (40%), technical execution (35%), innovation
+(15%), and communication (10%). Then the track claim, a limitations section
+stating plainly that the citywide baseline is an AOI-mean proxy rather than a
+station feed, and the one-command reproduction.
 
-## The number (first thing on the page, before any explanation)
-## Problem — plans trigger on one citywide reading
-## Approach — compile the plan, re-evaluate on 2m data
-## Impact & Relevance (40%) — who acts differently, and on what evidence
-## Technical Execution (35%) — architecture, the unit chain, area-weighted
-   aggregation, batched API calls, compiler F1 score
-## Innovation (15%) — policy-document compilation; nobody else does this
-## Communication (10%) — demo link, video, one-command reproduction
-## Tracks — 04 primary, 07 co-primary, 05 supporting
-## Limitations and honesty
-   - citywide baseline is an AOI-mean proxy, not a station feed
-   - compiler F1 is X; N clauses required human correction
-   - single city, single study window
-   - what we would validate next: Maricopa County heat-death records
-## Reproduce in one command
-
-Also write VIDEO_SCRIPT.md: 2.5 minutes.
-  0:00-0:20  the number, on the silent-zones map
-  0:20-0:50  the problem — one station, a whole city
-  0:50-1:30  compile a clause live: PDF sentence -> rule -> evaluated per zone
-  1:30-2:10  the divergence result and one named action for a named department
-  2:10-2:30  limitations, stated plainly, and what it generalises to
-
-STOP.
-```
+`VIDEO_SCRIPT.md` covers the same ground in under three minutes, opening on the
+number.
 
 ---
 
 ## Standing rules for every phase
 
-- After each phase: commit with a clear message. Never leave the repo broken
+- Commit after each phase with a clear message, and never leave the repo broken
   overnight.
-- If a phase runs long, say so and cut rather than sprawl. Cut order:
-  counterfactual → satellite layer → action brief. Never the divergence metric
-  or the offline cache.
-- Report API call counts and remaining credits after any phase that hits the
+- If a phase runs long, cut rather than sprawl. Cut order: counterfactual, then
+  satellite layer, then action brief. Never the divergence metric, and never
+  the offline cache.
+- Report API call counts and remaining credits after any phase that touches the
   network.
-- If a result looks surprisingly good, verify it before celebrating — silent
-  unit errors produce confident nonsense.
+- If a result looks surprisingly good, verify it before believing it. Silent
+  unit errors produce confident nonsense, and this project hit two of them.

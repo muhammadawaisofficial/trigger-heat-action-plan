@@ -94,8 +94,7 @@ with st.sidebar:
     st.caption(CITY["note"])
     if len(AVAILABLE) > 1:
         st.success("Switching city re-runs every number on this page from that "
-                   "city's own data. Same code, one profile file per city.",
-                   icon="🔀")
+                   "city's own data. Same code, one profile file per city.")
 
 _results_path, _window_label = ui.window_picker(CITY, key="home_window")
 res = load_json(str(_results_path))
@@ -200,7 +199,7 @@ if _window_label:
         f"sidebar. The 2026 window was **fetched live from the API**, a week "
         f"this analysis had never seen, and the finding reproduced: "
         f"9 of 15 {CITY['unit']}s, 958,205 residents, same near-miss "
-        f"signature. Nothing here is hardcoded to one week.", icon="🔁")
+        f"signature. Nothing here is hardcoded to one week.")
 
 with st.expander(f"Why {summary['days']} days, and not a whole summer?"):
     st.markdown(
@@ -419,14 +418,12 @@ if _picked:
                 st.error(
                     f"**{_row['name']} was hot enough to trigger the plan on "
                     f"{len(_days)} night(s) when the citywide reading never "
-                    f"was.** " + (f"Nights: {', '.join(_days)}." if _days else ""),
-                    icon="🔴")
+                    f"was.** " + (f"Nights: {', '.join(_days)}." if _days else ""))
             else:
                 st.success(f"{_row['name']} was never missed in this window — "
-                           f"the citywide reading and this area agreed.",
-                           icon="✅")
+                           f"the citywide reading and this area agreed.")
 else:
-    st.caption("👆 Click a neighbourhood on the map to see its detail.")
+    st.caption("Click a neighbourhood on the map to see its detail.")
 
 st.markdown(
     '<div class="tg-legend">'

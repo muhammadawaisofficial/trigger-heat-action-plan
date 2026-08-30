@@ -1,4 +1,4 @@
-# Submission checklist, deployment, and video script
+# Submission checklist and deployment
 
 Everything needed to ship TRIGGER.
 
@@ -85,131 +85,54 @@ of `requirements.txt` for the deployment leaves the app fully working.
 
 | Item | Status | Where |
 |---|---|---|
-| Public repository | ✅ | https://github.com/muhammadawaisofficial/trigger-heat-action-plan |
-| Live demo, no key needed | ✅ | https://trigger-heat.streamlit.app/ |
-| README against the four criteria | ✅ | `README.md` |
-| Headline number reproducible offline in one command | ✅ | `python run_demo.py` |
-| Fresh-clone test (clean clone, all keys stripped) | ✅ | `run_demo.py` and `verify_all.py` both exit 0 |
-| Retraction stays reproducible | ✅ | `verify_all.py` asserts `sweep_dwell.py` keeps failing |
-| Compiler accuracy measured, not asserted | ✅ | `python eval_compiler.py` — F1 0.962 |
-| Standalone research report | ✅ | `docs/trigger_divergence_report.md` |
-| Action brief with clause/page/owner citations | ✅ | `docs/action_brief.md` |
-| Measured API findings | ✅ | `docs/api_findings.md` |
-| Baseline labelled a proxy everywhere | ✅ | code, README, report, UI |
-| Limitations written honestly | ✅ | README §5, report §5 |
+| Public repository | done | https://github.com/muhammadawaisofficial/trigger-heat-action-plan |
+| Live demo, no key needed | done | https://trigger-heat.streamlit.app/ |
+| README against the four criteria | done | `README.md` |
+| Headline number reproducible offline in one command | done | `python run_demo.py` |
+| Fresh-clone test (clean clone, all keys stripped) | done | `run_demo.py` and `verify_all.py` both exit 0 |
+| Retraction stays reproducible | done | `verify_all.py` asserts `sweep_dwell.py` keeps failing |
+| Compiler accuracy measured, not asserted | done | `python eval_compiler.py` — F1 0.962 |
+| Standalone research report | done | `docs/trigger_divergence_report.md` |
+| Action brief with clause/page/owner citations | done | `docs/action_brief.md` |
+| Measured API findings | done | `docs/api_findings.md` |
+| Baseline labelled a proxy everywhere | done | code, README, report, UI |
+| Limitations written honestly | done | README §5, report §5 |
 | Video under three minutes | to record | `VIDEO_SCRIPT.md` — rewritten post-retraction |
 
-### Tracks to claim — confirmed, 7 tracks on the live site
+### Track claim — Track 04, Government & Environment
 
-**Track 04 — Government & Environment (PRIMARY).** The site's own build examples
-for this track are *Heat Vulnerability Map, Agricultural Stress Monitor, Climate
-Resilience Planner*, and its listed technologies are *Temperature API, Policy AI,
-GIS, Open Data*. TRIGGER is a heat vulnerability map driven by policy AI over GIS
-and open data. This is the closest fit of any track to any project we could have
-built, and the framing — "support policymakers and city agencies to act on heat
-intelligence" — is the sentence our whole submission answers.
+The site lists seven tracks and allows them to be combined. This submission
+claims one.
 
-**Track 07 — Data Analysis & Correlation (CO-PRIMARY).** Build examples include
-*Heat Equity Analysis*. Trigger Divergence is a correlation result between two
-sensing regimes over one rule set, with population weighting.
+Track 04's own build examples are *Heat Vulnerability Map, Agricultural Stress
+Monitor, Climate Resilience Planner*, and its listed technologies are
+*Temperature API, Policy AI, GIS, Open Data*. TRIGGER is a heat vulnerability
+map driven by policy AI over GIS and open data, and the track's framing —
+"support policymakers and city agencies to act on heat intelligence" — is the
+sentence this whole submission answers.
 
-**Track 05 — Model Designing (SUPPORTING).** The clause compiler is an
-extraction model with a hand-built golden set and a measured F1 of 0.962.
+Track 07, Data Analysis & Correlation, was considered and dropped. Its own
+example is *Heat Equity Analysis*, which expects demographic and socioeconomic
+joins this project does not perform: the population figures here are an areal
+interpolation used as a denominator, not an equity analysis. Claiming a track
+we half-fit would weaken the one we fit completely.
 
-The site says tracks may be combined, so claim 04 + 07 and mention 05.
-**Do not claim Track 06 Agentic AI** — we deliberately do not have an agent, and
-it is the most crowded track.
+Track 06, Agentic AI, is not claimed either. This system deliberately has no
+agent — the decisions are numeric comparisons, and the language model only
+extracts and narrates.
 
 ---
 
-## 3. Video script
+## 3. Video
 
-The shot-by-shot script lives in [`VIDEO_SCRIPT.md`](../VIDEO_SCRIPT.md) at the repo root, timed to 2:30 with the number landing in the first twenty seconds.
+The shot-by-shot script lives in [`VIDEO_SCRIPT.md`](../VIDEO_SCRIPT.md) at the
+repo root, with its pauses, delivery notes, and spoken-number table. It runs
+2:52 at the pace it specifies, against a three-minute cap.
 
-### Older 2:50 variant, kept for reference
-
-Record the app already loaded. **Never call the API live**: polling takes
-minutes and will look broken.
-
-### 0:00–0:30 — the number, first
-
-> *"Phoenix has a Heat Response Plan. It's a legal document — 23 actions, named
-> departments, numeric temperature thresholds. It is triggered by one
-> thermometer at the airport."*
->
-> *"On the eighth of August last year, that citywide reading was 89.9 degrees —
-> one tenth of a degree below the City's own 90-degree overnight benchmark. So
-> nothing fired."*
->
-> **[on screen: the false-calm banner]**
->
-> *"Ten of Phoenix's fifteen urban villages were above it. One point one eight
-> million people — seventy-two percent of the city — live in neighbourhoods that
-> met the City's own benchmark on nights the city never called."*
-
-### 0:30–1:10 — the plan is already a program
-
-> *"We didn't hardcode those rules. We compiled them out of the published PDF."*
->
-> **[on screen: mission 4, the clause inventory]**
->
-> *"Every clause carries a verbatim quote and a page number — and here's the
-> part that matters: if that quote isn't found on that page, the clause is
-> thrown away automatically. A model that invents a citation produces nothing,
-> not a wrong answer."*
->
-> *"On the free Gemini tier that scores an F1 of 0.962, with a hundred percent
-> quote verification rate."*
->
-> *"And compiling the whole document surfaced something we didn't expect.
-> Twenty of the twenty-three actions aren't conditioned on heat at all. They run
-> on the calendar. Of the two that do respond to temperature, both fire
-> citywide."*
-
-### 1:10–2:00 — the measurement
-
-> **[on screen: mission 1 table, then the map]**
->
-> *"So we re-ran every clause against FortyGuard's two-metre data — 272,000
-> tiles a day across the whole city — once per urban village, and once against
-> a citywide average."*
->
-> *"Red is where the condition was met. The heavy outlines are silent zones:
-> they met it on days the citywide number didn't."*
->
-> *"Median lead time, four days. Three of seven days were false calms."*
->
-> *"Our comparator is deliberately generous — it's the true city mean, a
-> perfect sensor. A real airport station is worse than that. So every number
-> here is a lower bound."*
-
-### 2:00–2:35 — validation
-
-> **[on screen: README §4.1 table]**
->
-> *"The plan says neighbourhoods differ by ten degrees or more. We measured
-> twenty-one degrees overnight."*
->
-> *"And the variation is biggest overnight — twenty-one degrees — and smallest
-> at the afternoon peak, ten degrees. Peak temperature is the metric heat plans
-> usually trigger on. It's the least informative one they could pick."*
-
-### 2:35–2:50 — close
-
-> *"Everything reproduces offline. Clone the repo, no API key, one command."*
->
-> **[on screen: `python run_analysis.py` printing the headline]**
->
-> *"We're not telling Phoenix its plan is wrong. The plan is good. It's being
-> executed with the wrong sensor — and now that gap has a number."*
-
-### Recording notes
-
-- Headline number **in the first thirty seconds** — non-negotiable.
-- Say "proxy" every time the baseline appears. An engineer judge who spots an
-  overclaim discounts everything else.
-- Show the terminal reproducing the number; it is the strongest single shot.
-- Rehearse three times, record the fourth.
+Two rules from it are worth repeating here, because breaking either one costs
+more than a retake. Record with every page already loaded, since the gap chart
+takes a moment on a cold render. And say "proxy" every time the citywide
+baseline appears: a judge who catches an overclaim discounts everything else.
 
 ---
 

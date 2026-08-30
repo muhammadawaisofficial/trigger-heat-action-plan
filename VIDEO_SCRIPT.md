@@ -1,153 +1,200 @@
-# Video script — 2:55
+# Video script
 
-Rewritten to lead with the finding and to make the FortyGuard API's role explicit throughout, rather than mentioning it once and moving on.
+**Runs 2:50 at the pace below. Hard cap 3:00** — the handbook says max three minutes, and a judge stopping the clock mid-sentence is a bad last impression. Every word here has already been cut once against that clock; if you add a line, take one out.
 
-Every figure below comes from `python run_demo.py` and `python verify_all.py`. Check them the morning you record; if one has moved, change the script, not the number.
-
-## Before you hit record
-
-Two windows, both prepared:
-
-- Browser: the deployed app, or `streamlit run app.py`. Open every page once first so nothing renders cold on camera. Start on the home page, scrolled to top.
-- Terminal: at the repo root, cleared, ready to run `python run_demo.py`.
-
-Close the sidebar before recording. The in-page nav strip is enough, and a closed sidebar gives the charts more width.
-
-Move between pages using the coloured nav strip, not the address bar. Each page carries its own accent on that bar (red, orange, blue, green, violet), so clicking across it reads as one structured app with five rooms. That transition is free production value; use it every time the script says "screen: switch to."
+Every figure below was re-checked against `run_demo.py` on the morning this was written. If one has moved, change the script, not the number.
 
 ---
 
-## 0:00 – 0:25 · The number first
+## How to read this script
 
-**Screen:** home page, top. Scroll immediately to the big red number.
+| Mark | Meaning |
+|---|---|
+| **bold** | Stress this word. Land on it, don't rush past. |
+| `[beat]` | Stop talking for about one second. |
+| `[hold 2s]` | Silence for two seconds while the screen does the work. |
+| ▸ | A screen action, not something you say. |
 
-> "One-point-one-eight million people. Seventy-two percent of Phoenix.
->
-> Those are the residents who live in a neighbourhood that got hot enough to trigger the city's Heat Action Plan, on nights the city's own reading never did. So the plan stayed off."
-
-**Pause on the number for a full beat before moving.** This is the 40% of the score; do not rush past it to get to the architecture.
-
----
-
-## 0:25 – 0:50 · Why it happens
-
-**Screen:** scroll up to the "What the plan sees / What people live in" panel.
-
-> "A Heat Action Plan is a legal document. Twenty-three actions, named departments, numeric thresholds. Open cooling centres at ninety degrees overnight.
->
-> The whole thing is switched on and off by one number. One reading, from one weather station at the airport. But heat isn't one number, and FortyGuard's data is what let us prove that at the resolution people actually live at."
+Read the narration out loud once before recording. If a sentence makes you run out of breath, cut a clause rather than speeding up.
 
 ---
 
-## 0:50 – 1:15 · The proof, in one chart
+## Before you press record
 
-**Screen:** the gap chart. Let it fill the frame.
+▸ Open every page once so nothing renders cold. The gap chart takes a moment on first load — that must happen before recording, not during.
 
-> "Here is that night, neighbourhood by neighbourhood. Every bar measured through the FortyGuard Temperature API, two metres above the ground, at hundred-metre resolution.
->
-> The dashed line is the threshold the plan names. The solid line is the single citywide reading. The solid line sits below the dashed one, so the plan stayed off.
->
-> And these ten bars are already above it."
+▸ Home page, scrolled to the top. Sidebar **closed** — the nav strip is enough, and it gives the charts more width.
 
-**[trace the red bars crossing the dashed line with the cursor]**
+▸ A terminal at the repo root, cleared, with `python run_demo.py` typed but **not run**.
 
-> "One number cannot be above and below the same line at once. That is the entire failure of the trigger, in one picture."
+▸ Browser zoom at 100%. Close other tabs so no notification appears mid-take.
 
----
+**Pace:** roughly 145 words a minute — this script is timed at that speed and has about ten seconds of slack. That feels slow while you're speaking and sounds right on playback. The most common mistake is rushing the first twenty seconds.
 
-## 1:15 – 1:45 · Built on the API, and auditable because of it
-
-**Screen:** home page, open the "Is this live data? Where did it come from?" expander. Four metric tiles: real API calls, tiles fetched, credits spent, MB committed.
-
-> "A hundred and twenty-five calls to the FortyGuard API. Eleven million tiles. Fifty-eight distinct days. Half a million credits. Nothing simulated, and no other weather source anywhere in this pipeline.
->
-> And because a single call covers the whole city, a thousand square miles and two hundred and seventy thousand tiles for one flat credit cost, we measure Phoenix in one request per day instead of fifteen."
-
-**Screen:** switch to Methods & evidence via the nav strip, clause provenance panel with a quote visible.
-
-> "Every rule the plan is built from carries the verbatim sentence and the page it came from. The language model extracts and narrates. It never decides; every fired-or-not call is a plain numeric comparison in Python, against FortyGuard measurements."
-
-**Screen:** switch to the terminal. Run `python run_demo.py`.
-
-> "And we kept every response. So you can re-derive that number yourself, in one command, and check us instead of taking my word for it."
-
-**Let the output land on screen.** Reproducibility is the 35%.
+**If you fluff a line:** stop, pause two seconds in silence, then say the sentence again from its start. A clean cut is easy in editing; a half-corrected sentence is not.
 
 ---
 
-## 1:45 – 2:05 · Not one week, and not one city
+## 0:00 – 0:22 · The number
 
-**Screen:** home page, the Study window selector in the sidebar. Switch to the 2026 window and let the numbers change.
+▸ Home page. The big red number visible.
 
-> "This isn't one hardcoded week. We re-ran the identical pipeline on August 2026, fetched live from the API on a week the analysis had never seen, and the finding reproduced. Nine of fifteen villages. Nine hundred and fifty-eight thousand people. The same near-miss signature."
-
-**Screen:** Methods & evidence, the date-range picker.
-
-> "And you can point it anywhere. Any dates the API serves, back to 2021. Pick a window, and it runs the whole analysis on it."
-
-**Screen:** switch the city selector to New York.
-
-> "Same pipeline, unchanged, on New York's plan and New York's districts. New York triggers on heat index; Phoenix triggers on dry-bulb. Opposite choices, same failure.
+> "One point one eight **million** people. `[beat]` Seventy-two percent of **Phoenix**.
 >
-> And adding a city is five files and one environment variable: the plan PDF, the zone boundaries, a forty-line profile, the compiled clauses, and the population join. No code changes. New York is the proof that works, and porting to it is what exposed three bugs Phoenix alone never would have."
+> `[beat]`
+>
+> Those are the residents who live in a neighbourhood that got hot enough to trigger the city's Heat Action Plan — on nights the city's own reading **never did**. `[beat]` So the plan stayed **off**."
+
+`[hold 2s]` ▸ Do not move the mouse. Let the number sit on screen in silence.
+
+**Delivery:** flat and factual. The number does the work; you do not need to sell it. This is the forty percent of the score.
 
 ---
 
-## 2:05 – 2:20 · Heat waves, and what the page actually claims
+## 0:22 – 0:45 · Why it happens
 
-**Screen:** Heat waves page, the threshold ladder.
+▸ Scroll up to the "What the plan sees / What people live in" panel.
 
-> "A heat wave is a run of nights, and it doesn't start city-wide. Same week, same measurements, detected against each threshold in turn. At ninety degrees that's ten heat waves covering 1.18 million residents. At a hundred and ten, zero. Nothing about the weather changes down that table. Only the number in the plan does.
+> "A Heat Action Plan is a **legal document** — named departments, numeric thresholds, real budgets. `[beat]` All of it switched on and off by **one number**: one reading, from one weather station at the airport.
 >
-> To be precise about what this does: it detects heat waves in measured data and ranks metros by how dangerous their nights run. It does not forecast days ahead. The API serves history and about twelve hours forward, so we don't claim a prediction we can't make."
+> But heat isn't one number."
+
+`[beat]`
 
 ---
 
-## 2:20 – 2:45 · What else the same measurement answers
+## 0:45 – 1:12 · The proof
 
-**Screen:** the siting page tradeoff scatter, then the urban planning dumbbell. Move quickly; these are breadth rather than the argument.
+▸ Scroll to the gap chart. Let it fill the frame.
 
-> "The same hyperlocal layer answers two more questions.
+> "Here is that night, neighbourhood by neighbourhood — every bar measured through the **FortyGuard Temperature API**, two metres above the ground.
 >
-> Where a data centre should go. Cooling is the biggest controllable cost in a data centre, and every published free-cooling figure is a city average. Nobody sites a building on a city average. So we measured it ourselves across thirty US metros through the API: free-cooling hours, overnight lows, and wet-bulb, which is what the evaporative-versus-mechanical decision actually turns on. That quantifies the industry's central trade-off: the places where evaporative cooling works best are the places least able to spare the water."
+> The **dashed** line is the plan's threshold. The **solid** line is the single citywide reading."
 
-**[move a weight slider on camera and let the ranking reorder]**
+▸ Trace the solid line with the cursor, slowly.
 
-> "And the weights are yours. Power, cooling, water, risk, renewables. A bank and a hyperscaler weigh these differently, so move a slider and the whole ranking recomputes on your priorities."
+> "The solid line sits **below** the dashed one."
 
-**Screen:** switch to Urban planning.
+▸ Now trace across the red bars, left to right.
 
-> "And how much tree canopy, and where. Heat kills more people than any other weather hazard and the fix is physical, but a citywide average never says how much, or which neighbourhood, so budgets get spread evenly across places that aren't equally hot. We measure the thermal gap at a hundred metres, then join it to published cooling effect sizes, so a recommendation carries a magnitude instead of being advice. Weighted by residents, that puts Maryvale first: the neighbourhood the literature already flags as Phoenix's most heat-vulnerable, reached here from measurement."
+> "And these **ten** bars were already above it. `[beat]` One number cannot be above and below the same line at once."
+
+`[hold 2s]`
+
+**Delivery:** slow down here. This is the most important shot in the video — the argument becomes visible instead of asserted.
 
 ---
 
-## 2:45 – 2:55 · The honest close
+## 1:12 – 1:40 · Why you can believe it
 
-**Screen:** back to the home page, open "How is this measured, and what is the comparison?"
+▸ Home page, open the "Is this live data? Where did it come from?" expander.
 
-> "One thing we put in the interface, not the footnotes. Our citywide comparator is the average across the whole city, a proxy for a station feed. It's a generous stand-in: a single real sensor would do worse.
->
-> So 1.18 million is a **lower bound**."
+> "A hundred and twenty-five **real** calls to the FortyGuard API. Eleven million tiles, fifty-eight days. `[beat]` Nothing simulated, and no other weather source in this pipeline."
 
-**End on the number.**
+▸ Click through the nav strip to **Methods & evidence**. Show a clause with its verbatim quote and page number.
+
+> "Every rule carries the **exact sentence** and the page it came from. The language model extracts and narrates — it never decides."
+
+▸ Switch to the terminal. Run `python run_demo.py`.
+
+> "Every response is stored. You can re-derive that number **yourself**, in one command."
+
+`[hold 2s]` ▸ Let the output finish printing before you speak again.
 
 ---
 
-## Figures to re-check the morning you record
+## 1:40 – 2:05 · Not one week, not one city
 
-| Claim                                                | Source                                                   |
-| ---------------------------------------------------- | -------------------------------------------------------- |
-| 1,184,971 · 72% of Phoenix                           | `run_demo.py`                                            |
-| 10 of 15 urban villages                              | `run_demo.py`                                            |
-| 125 calls · 11.19M tiles · 527,500 credits · 58 days | `data/results/api_usage.json`, or the home page expander |
-| 2026 replication: 9 of 15, 958,205                   | Study window selector, or the README                     |
-| 90 °F → 10 waves / 110 °F → 0                        | Heat waves page, threshold ladder                        |
-| 30 metros, wet-bulb measured                         | `data/results/wetbulb.json`                              |
+▸ Home page. Sidebar → **Study window** → switch to the 2026 window. Let the numbers visibly change.
 
-## Things to keep straight on camera
+> "This isn't one hardcoded week. We re-ran the identical pipeline on August **2026**, fetched live on data it had never seen. `[beat]` Nine of fifteen villages. The same near-miss."
+
+▸ Switch the city selector to **New York**.
+
+> "Same pipeline, unchanged, on New York — which triggers on heat **index**, where Phoenix uses **dry-bulb**. `[beat]` Opposite choices. Same failure. Two point four million more people."
+
+**Delivery:** "Opposite choices. Same failure." — full stop between them. Two sentences, not one.
+
+---
+
+## 1:58 – 2:12 · Heat waves
+
+▸ Nav strip → **Heat waves**. The threshold ladder.
+
+> "Same week, same measurements, each threshold in turn. At ninety degrees: ten heat waves. At a hundred and ten: **zero**. `[beat]` Only the number in the plan changes."
+
+---
+
+## 2:12 – 2:30 · What else it answers
+
+▸ Nav strip → **Data centre siting**. Move a weight slider and let the ranking reorder on camera.
+
+> "Two more questions. **Where a data centre should go** — thirty US metros, where evaporative cooling works best exactly where **water** is scarcest. The weights are yours."
+
+▸ Nav strip → **Urban planning**.
+
+> "And **how much tree canopy, and where** — a measured gap joined to published effect sizes."
+
+**Delivery:** fastest section in the video. This is breadth; do not linger.
+
+---
+
+## 2:30 – 2:45 · Close
+
+▸ Home page. Open "How is this measured, and what is the comparison?"
+
+> "One thing we put in the interface, not the footnotes. Our comparator is a **proxy** for a station feed — a *generous* one. A single real sensor would do worse.
+>
+> `[beat]`
+>
+> So one point one eight million is a **lower bound**."
+
+`[hold 2s]` ▸ End on the number. Stop recording.
+
+---
+
+## Saying the numbers
+
+Spoken numbers are where takes get ruined. Say them this way:
+
+| On screen | Say |
+|---|---|
+| 1,184,971 | "one point one eight **million**" |
+| 272,917 tiles | "two hundred and seventy thousand tiles" |
+| 11,189,301 | "eleven million" |
+| 527,500 credits | "half a million credits", or skip it |
+| 958,205 | "nine hundred and fifty-eight thousand" |
+| 2,453,713 | "two point four million" |
+| 1,053 mi² | "a thousand square miles" |
+| 89.9 °F against 90 °F | "a tenth of a degree below" |
+
+Round in speech, keep it exact on screen. The precise figure is visible behind you, so a judge reading 1,184,971 while hearing "one point one eight million" registers both.
+
+---
+
+## Things to keep straight
 
 - The citywide comparator is a **proxy**, always. Never call it a station feed.
-- The app **detects** heat waves in measured data and ranks metros climatologically. The API serves history and about twelve hours ahead, so do not describe it as a multi-day forecast.
-- The national work is a **30-metro panel**, sampled identically. Say "panel," not "grid."
-- Say "125 real API calls" in the same breath as anything about the stored responses. The data is real and was fetched through the API; the responses are kept so the result can be audited.
-- The headline is a **lower bound**. That is a strength, and it is worth saying out loud.
+- The app **detects** heat waves in measured data and ranks metros. It does not forecast days ahead. Do not say "predicts".
+- The national work is a **thirty-metro panel**, sampled identically. Say "panel", not "grid".
+- Say "125 real API calls" in the same breath as anything about stored responses.
+- The headline is a **lower bound**. That is a strength; say it.
+
+---
+
+## Recheck before recording
+
+| Claim | Where |
+|---|---|
+| 1,184,971 · 72% · 10 of 15 | `python run_demo.py` |
+| 125 calls · 11.19M tiles · 58 days | home page expander |
+| 2026: 9 of 15 · 958,205 | Study window selector |
+| New York: 2,453,713 | city selector |
+| 90 °F → 10 waves / 110 °F → 0 | Heat waves, threshold ladder |
+
+## After recording
+
+1. Check the runtime. If it came out over 3:00, cut from the siting and planning section — that is breadth, not argument. Never cut the opening number or the gap chart.
+2. Upload unlisted to YouTube, or to Drive with link-sharing on.
+3. Paste the link into `README.md` line 3, replacing `_link pending_`.
+4. Watch it once, muted, to check nothing on screen is stale or half-loaded.

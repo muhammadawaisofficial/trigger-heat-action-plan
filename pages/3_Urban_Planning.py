@@ -48,8 +48,7 @@ st.info(
     "surfaces. Cities know this. What a citywide average cannot tell them is "
     "**how much**, and **in which neighbourhood** — so budgets get spread "
     "evenly across places that are not equally hot, and the hottest blocks "
-    "stay hottest.",
-    icon="🌳")
+    "stay hottest.")
 st.markdown(
     "**How the FortyGuard API makes this answerable.** Intervention has to be "
     "aimed at a thermal gap, and a gap has to be measured before it can be "
@@ -114,7 +113,7 @@ else:
             "unjust heat island. What spread reliably measures is the *range of "
             "thermal conditions a single citywide number is standing in for* — "
             "which is the claim this project actually makes, and it holds "
-            "regardless of what causes the range.", icon="⚠️")
+            "regardless of what causes the range.")
 
         # ------------------------------------------------- per-metro detail
         st.markdown("### 2 · Recommendations for one metro")
@@ -183,7 +182,7 @@ else:
             f"above the coolest {city['unit']} with **{top['population']:,} "
             f"residents**. Priority score is normalised heat × residents — "
             f"deterministic arithmetic on measured values, with no model and no "
-            f"language layer involved.", icon="📍")
+            f"language layer involved.")
 
         st.caption(
             "Zone values are **area-weighted means** over every overlapping "

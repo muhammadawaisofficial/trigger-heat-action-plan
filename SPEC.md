@@ -64,12 +64,14 @@ Tracks — CONFIRMED, 7 on the live site: 01 Resilient Cities & Infrastructure,
 Environment, 05 Model Designing, 06 Agentic AI, 07 Data Analysis & Correlation.
 Tracks may be combined.
 
-We claim **04 Government & Environment** (primary), **07 Data Analysis &
-Correlation** (co-primary), **05 Model Designing** (supporting). Track 04's own
+We claim **04 Government & Environment**, and only that one. Track 04's own
 build examples are "Heat Vulnerability Map / Climate Resilience Planner" and its
-technologies are "Temperature API, Policy AI, GIS, Open Data" -- an exact
-description of this project. We do *not* lead with Track 06 Agentic AI; it is the
-most saturated track and we deliberately have no agent.
+technologies are "Temperature API, Policy AI, GIS, Open Data", which describes
+this project exactly. Track 07 Data Analysis & Correlation was considered and
+dropped: its own example is a heat-equity analysis joining temperature to
+demographic layers, and the population figures here are an areal interpolation
+used as a denominator rather than an equity analysis. Track 06 Agentic AI is not
+claimed either, since this system deliberately has no agent.
 
 Prizes: $3,000 / $2,000 / $1,000. Teams up to 3. All participants get a
 certificate; 1st adds an internship pathway and partner promotion.
