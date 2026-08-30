@@ -103,7 +103,7 @@ Read the narration out loud once before recording. If a sentence makes you run o
 
 ---
 
-## 1:40 – 2:05 · Not one week, not one city
+## 1:40 – 1:58 · Not one week, not one city
 
 ▸ Home page. Sidebar → **Study window** → switch to the 2026 window. Let the numbers visibly change.
 
