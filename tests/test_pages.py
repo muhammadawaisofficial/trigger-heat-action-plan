@@ -507,3 +507,31 @@ def test_provenance_strip_survives_a_stale_helper_module():
         src = (REPO / page).read_text(encoding="utf-8")
         assert '_api_strip = getattr(ui, "api_strip"' in src, page
         assert "ui.api_strip(" not in src, f"{page} still calls it directly"
+
+
+def test_charts_emit_vega_lite_5_specs():
+    """Streamlit's frontend renders Vega-Lite 5. Altair 6 emits v6, which comes
+    back as an empty chart: full-size container, nothing drawn, no error raised
+    anywhere. It passed every server-side check while the page was visibly
+    broken, so the version itself has to be asserted.
+    """
+    import json as _json
+    import pandas as pd
+    import charts as _c
+    rows = [{"name": "A", "value_f": 91.0, "missed": True, "population": 10}]
+    built = {
+        "zone_gap": _c.zone_gap(rows, 90.0, 89.9),
+        "ladder": _c.ladder([{"label": "90 °F", "people": 1, "waves": 1, "zones": 1}]),
+        "rank_bar": _c.rank_bar(pd.DataFrame([{"l": "X", "v": 1.0}]), "v", "l", "t"),
+        "dumbbell": _c.spread_dumbbell(
+            pd.DataFrame([{"M": "A", "lo": 70.0, "hi": 90.0}]), "M", "lo", "hi"),
+    }
+    for name, chart in built.items():
+        schema = _json.loads(chart.to_json())["$schema"]
+        assert "/v5" in schema, f"{name} emits {schema}, which Streamlit cannot draw"
+
+
+def test_altair_is_pinned_below_6():
+    """The pin is the fix; without it pip resolves to 6.x on a fresh deploy."""
+    req = (REPO / "requirements.txt").read_text(encoding="utf-8")
+    assert "altair" in req and "<6" in req
