@@ -101,8 +101,13 @@ of `requirements.txt` for the deployment leaves the app fully working.
 
 ### Track claim — Track 04, Government & Environment
 
-The site lists seven tracks and allows them to be combined. This submission
-claims one.
+Assessed in Track 04. Tagged Track 03 (Industrial & Enterprise) and Track 05
+(Model Designing) as secondary, because each track's own listed example is
+answered by a page of this app from the same measurement — Track 03 names "a
+data-center siting screener that flags candidate locations with elevated
+ambient heat", and Track 05 names packaging "the algorithms that turn raw
+temperature into vulnerability scores". They are tags, not claims. The entry is
+assessed on 04 alone.
 
 Track 04's own build examples are *Heat Vulnerability Map, Agricultural Stress
 Monitor, Climate Resilience Planner*, and its listed technologies are

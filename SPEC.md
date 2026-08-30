@@ -64,7 +64,10 @@ Tracks — CONFIRMED, 7 on the live site: 01 Resilient Cities & Infrastructure,
 Environment, 05 Model Designing, 06 Agentic AI, 07 Data Analysis & Correlation.
 Tracks may be combined.
 
-We claim **04 Government & Environment**, and only that one. Track 04's own
+We are assessed in **04 Government & Environment**, and tag **03 Industrial &
+Enterprise** and **05 Model Designing** as secondary. Those two are tags rather
+than claims: the same measurement and the same API calls answer their listed
+examples, which is the point, but the entry stands or falls on 04. Track 04's own
 build examples are "Heat Vulnerability Map / Climate Resilience Planner" and its
 technologies are "Temperature API, Policy AI, GIS, Open Data", which describes
 this project exactly. Track 07 Data Analysis & Correlation was considered and
