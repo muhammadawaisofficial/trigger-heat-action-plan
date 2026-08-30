@@ -97,7 +97,7 @@ of `requirements.txt` for the deployment leaves the app fully working.
 | Measured API findings | done | `docs/api_findings.md` |
 | Baseline labelled a proxy everywhere | done | code, README, report, UI |
 | Limitations written honestly | done | README §5, report §5 |
-| Video under three minutes | to record | `VIDEO_SCRIPT.md` — rewritten post-retraction |
+| Video under three minutes | done | https://youtu.be/R3xShqbcUdI |
 
 ### Track claim — Track 04, Government & Environment
 

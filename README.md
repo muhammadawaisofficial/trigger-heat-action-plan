@@ -1,6 +1,6 @@
 # TRIGGER — the Heat Action Plan Compiler
 
-### **[▶ Open the live demo](https://trigger-heat.streamlit.app/)** · [Repository](https://github.com/muhammadawaisofficial/trigger-heat-action-plan)  ·  Video: _link pending_
+### **[▶ Open the live demo](https://trigger-heat.streamlit.app/)** · [Repository](https://github.com/muhammadawaisofficial/trigger-heat-action-plan)  ·  [▶ Watch the 3-minute video](https://youtu.be/R3xShqbcUdI)
 
 Built on the **FortyGuard Temperature API**, provided by FortyGuard for FortyGuard Hackathon '26. Every temperature in this project was measured through that API: **125 calls, 11,189,301 tiles, 527,500 credits, across 58 distinct days.** No other weather, temperature, or climate source appears anywhere in the pipeline.
 
