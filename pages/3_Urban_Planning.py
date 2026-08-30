@@ -29,7 +29,7 @@ _api_strip = getattr(ui, "api_strip", lambda *a, **k: None)
 
 
 st.set_page_config(page_title="TRIGGER — Urban Planning", page_icon="🌡",
-                   layout="wide")
+                   layout="wide", initial_sidebar_state="expanded")
 ui.style()
 ui.theme("planning")
 

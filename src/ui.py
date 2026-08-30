@@ -19,7 +19,14 @@ CSS = """
 
   html, body, [class*="css"] { font-family:'Inter',-apple-system,sans-serif; }
   .block-container { padding-top:2rem; padding-bottom:4rem; max-width:1440px; }
-  #MainMenu, footer, header { visibility:hidden; }
+  #MainMenu, footer { visibility:hidden; }
+  /* Do NOT hide `header`. Streamlit renders the sidebar's expand arrow inside
+     it, so hiding the header hides the only control that reopens a collapsed
+     sidebar -- and the city and study-window pickers live in there. Hide the
+     toolbar instead and leave the header itself in place. */
+  header[data-testid="stHeader"] { background:transparent; }
+  [data-testid="stToolbar"] { visibility:hidden; }
+  [data-testid="stSidebarCollapsedControl"] { visibility:visible !important; }
 
   h1 { font-weight:900 !important; letter-spacing:-0.035em; }
   h2 { font-weight:800 !important; letter-spacing:-0.025em; }

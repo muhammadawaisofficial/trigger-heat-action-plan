@@ -33,7 +33,7 @@ _api_strip = getattr(ui, "api_strip", lambda *a, **k: None)
 
 
 st.set_page_config(page_title="TRIGGER — Heat Waves", page_icon="🌡",
-                   layout="wide")
+                   layout="wide", initial_sidebar_state="expanded")
 ui.style()
 ui.theme("heat")
 
