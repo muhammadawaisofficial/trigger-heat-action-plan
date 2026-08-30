@@ -84,3 +84,14 @@ Adding New York surfaced three defects that Phoenix alone never would have, and 
 - A hardcoded cache label meant every city's responses claimed to be Phoenix's. Harmless to correctness, since the cache key hashes the request payload, but misleading to anyone auditing the cache.
 - A hardcoded population path meant running under a second city overwrote the first city's population file. Running it for New York once produced 51 districts at zero population and destroyed Phoenix's denominator. `build_population.py` now refuses to write a total of zero.
 - A single-county Census query returned nothing for a five-county city, which is why `census_counties` is a list.
+
+---
+
+## Tips for Contributors
+
+When adding or testing a new city profile:
+
+1. **Verify Coordinate Ordering**: Ensure all spatial polygons and GeoJSON boundary files use strict `[longitude, latitude]` order.
+2. **Test Bounding Boxes**: Keep the AOI clipped closely to land to avoid FortyGuard API heatmap rejections on open water bodies.
+3. **Run Validation Checks**: Use `python build_golden.py` and `python verify_all.py` to ensure quote verification and analytical pipelines run cleanly for your new city profile.
+

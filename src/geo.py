@@ -35,7 +35,17 @@ def feature_collection(ring: list[tuple[float, float]]) -> dict:
 
 
 def bbox_aoi(min_lon: float, min_lat: float, max_lon: float, max_lat: float) -> dict:
-    """AOI from a bounding box."""
+    """Construct a GeoJSON FeatureCollection bounding box AOI.
+
+    Args:
+        min_lon: Minimum longitude (west bound).
+        min_lat: Minimum latitude (south bound).
+        max_lon: Maximum longitude (east bound).
+        max_lat: Maximum latitude (north bound).
+
+    Returns:
+        GeoJSON FeatureCollection dict formatted with closed coordinates ring.
+    """
     return feature_collection([
         (min_lon, min_lat), (max_lon, min_lat),
         (max_lon, max_lat), (min_lon, max_lat), (min_lon, min_lat),
@@ -43,7 +53,16 @@ def bbox_aoi(min_lon: float, min_lat: float, max_lon: float, max_lat: float) -> 
 
 
 def square_aoi(center_lat: float, center_lon: float, side_km: float) -> dict:
-    """Square AOI of the given side length, centred on a point."""
+    """Construct a square AOI of specified side length centred on a given point.
+
+    Args:
+        center_lat: Center point latitude in degrees.
+        center_lon: Center point longitude in degrees.
+        side_km: Side length of the bounding square in kilometres.
+
+    Returns:
+        GeoJSON FeatureCollection bounding box covering the target area.
+    """
     dlat = side_km / KM_PER_DEG_LAT / 2
     dlon = side_km / km_per_deg_lon(center_lat) / 2
     return bbox_aoi(center_lon - dlon, center_lat - dlat,
