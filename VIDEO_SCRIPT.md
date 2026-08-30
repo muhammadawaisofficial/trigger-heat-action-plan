@@ -8,12 +8,12 @@ Every figure below was re-checked against `run_demo.py` on the morning this was 
 
 ## How to read this script
 
-| Mark | Meaning |
-|---|---|
-| **bold** | Stress this word. Land on it, don't rush past. |
-| `[beat]` | Stop talking for about one second. |
+| Mark        | Meaning                                                 |
+| ----------- | ------------------------------------------------------- |
+| **bold**    | Stress this word. Land on it, don't rush past.          |
+| `[beat]`    | Stop talking for about one second.                      |
 | `[hold 2s]` | Silence for two seconds while the screen does the work. |
-| ▸ | A screen action, not something you say. |
+| ▸           | A screen action, not something you say.                 |
 
 Read the narration out loud once before recording. If a sentence makes you run out of breath, cut a clause rather than speeding up.
 
@@ -143,7 +143,7 @@ Read the narration out loud once before recording. If a sentence makes you run o
 
 ▸ Home page. Open "How is this measured, and what is the comparison?"
 
-> "One thing we put in the interface, not the footnotes. Our comparator is a **proxy** for a station feed — a *generous* one. A single real sensor would do worse.
+> "One thing we put in the interface, not the footnotes. Our comparator is a **proxy** for a station feed — a _generous_ one. A single real sensor would do worse.
 >
 > `[beat]`
 >
@@ -157,16 +157,16 @@ Read the narration out loud once before recording. If a sentence makes you run o
 
 Spoken numbers are where takes get ruined. Say them this way:
 
-| On screen | Say |
-|---|---|
-| 1,184,971 | "one point one eight **million**" |
-| 272,917 tiles | "two hundred and seventy thousand tiles" |
-| 11,189,301 | "eleven million" |
-| 527,500 credits | "half a million credits", or skip it |
-| 958,205 | "nine hundred and fifty-eight thousand" |
-| 2,453,713 | "two point four million" |
-| 1,053 mi² | "a thousand square miles" |
-| 89.9 °F against 90 °F | "a tenth of a degree below" |
+| On screen             | Say                                      |
+| --------------------- | ---------------------------------------- |
+| 1,184,971             | "one point one eight **million**"        |
+| 272,917 tiles         | "two hundred and seventy thousand tiles" |
+| 11,189,301            | "eleven million"                         |
+| 527,500 credits       | "half a million credits", or skip it     |
+| 958,205               | "nine hundred and fifty-eight thousand"  |
+| 2,453,713             | "two point four million"                 |
+| 1,053 mi²             | "a thousand square miles"                |
+| 89.9 °F against 90 °F | "a tenth of a degree below"              |
 
 Round in speech, keep it exact on screen. The precise figure is visible behind you, so a judge reading 1,184,971 while hearing "one point one eight million" registers both.
 
@@ -184,13 +184,13 @@ Round in speech, keep it exact on screen. The precise figure is visible behind y
 
 ## Recheck before recording
 
-| Claim | Where |
-|---|---|
-| 1,184,971 · 72% · 10 of 15 | `python run_demo.py` |
-| 125 calls · 11.19M tiles · 58 days | home page expander |
-| 2026: 9 of 15 · 958,205 | Study window selector |
-| New York: 2,453,713 | city selector |
-| 90 °F → 10 waves / 110 °F → 0 | Heat waves, threshold ladder |
+| Claim                              | Where                        |
+| ---------------------------------- | ---------------------------- |
+| 1,184,971 · 72% · 10 of 15         | `python run_demo.py`         |
+| 125 calls · 11.19M tiles · 58 days | home page expander           |
+| 2026: 9 of 15 · 958,205            | Study window selector        |
+| New York: 2,453,713                | city selector                |
+| 90 °F → 10 waves / 110 °F → 0      | Heat waves, threshold ladder |
 
 ## After recording
 

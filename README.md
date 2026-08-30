@@ -189,6 +189,38 @@ We are not claiming Track 06, Agentic AI. There is no agent here, by design: eve
 | [Replication](#replication-on-live-2026-data) | The finding reproduced on data the pipeline had never seen |
 | [The five pages](#the-five-pages) | What each page answers and what it is measured from |
 | [5. Scope](#5-scope) | What this analysis covers, and what it does not |
+| [The algorithms](docs/algorithms.md) | Every step that turns a temperature into a decision, in detail |
+| [How this was built, and what broke](docs/engineering.md) | The build story, the bugs, the retraction, and why Gemini |
+
+---
+
+## What this covers, and where to read further
+
+**Phoenix, Arizona.** All 15 official urban villages, over a 1,053 mi² area of
+interest at 100 m granularity, which is 272,917 tiles per day. The published
+study window is 2–8 August 2025, chosen by a scan across 46 candidate days
+rather than picked because it flattered the result. The same pipeline was then
+re-run on 16–22 August 2026, fetched live from the API on data the analysis had
+never seen, and on New York City (51 community districts, 22–28 June 2025).
+Across everything, 58 distinct days were measured.
+
+Two documents sit underneath this README and go further than a submission page
+reasonably can.
+
+[`docs/algorithms.md`](docs/algorithms.md) is the mechanism: how a sentence in a
+PDF becomes a fired-or-not determination, how tiles are reduced to zones, how
+heat waves are detected per neighbourhood, the data-centre weighting model with
+its default weights and the wet-bulb branch that decides a cooling strategy, and
+the canopy coefficients. It ends with a table of every step and what decides it,
+which is the fastest way to see that the language model decides nothing.
+
+[`docs/engineering.md`](docs/engineering.md) is the build: why the project
+exists, why Gemini and why the choice of model matters less than the
+verification wrapped around it, and what went wrong. Two unit errors that would
+have been invisible, three things the API does that its documentation does not
+mention, a published claim we withdrew and the failing script we kept in the
+repository to prove it, three defects that only appeared when we added a second
+city, and the rendering failures that cost more time than any of the analysis.
 
 ---
 
