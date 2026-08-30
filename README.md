@@ -513,9 +513,23 @@ The last row is not a stylistic preference. On the same 420 tiles on the same da
 
 ### Run it
 
+The fastest path is the live demo above, which needs nothing installed. To run
+it yourself, note that `git clone` pulls about 106 MB and takes a couple of
+minutes: the API responses are committed on purpose, so every number here can be
+re-derived with no key and no network.
+
 ```bash
 pip install -r requirements.txt
 
+python run_demo.py           # the headline number, offline, in under a second
+```
+
+That is the one command. Everything below re-derives rather than replays.
+`verify_all.py` runs twelve checks including the full test suite, the analysis,
+and report regeneration, so give it about ten minutes; it prints each check with
+its own timing as it goes, so you can watch it advance.
+
+```bash
 python verify_all.py         # runs everything below and asserts the headline
 python run_analysis.py       # the headline number
 python verify_api.py         # every API property we report
