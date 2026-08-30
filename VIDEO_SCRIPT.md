@@ -195,6 +195,12 @@ Round in speech, keep it exact on screen. The precise figure is visible behind y
 ## After recording
 
 1. Check the runtime. If it came out over 3:00, cut from the siting and planning section — that is breadth, not argument. Never cut the opening number or the gap chart.
-2. Upload unlisted to YouTube, or to Drive with link-sharing on.
-3. Paste the link into `README.md` line 3, replacing `_link pending_`.
-4. Watch it once, muted, to check nothing on screen is stale or half-loaded.
+2. Upload to YouTube as **Public**. Unlisted works for judging too, but a
+   public video stays findable by title if the submitted link is ever broken or
+   lost, and an unlisted one does not. Never Private: that grants access account
+   by account and locks the judges out.
+3. Watch the final take through before you post the link anywhere. YouTube
+   cannot swap the file on an existing upload, so a re-record means a new URL
+   and every place you pasted the old one is now wrong.
+4. Paste the link into `README.md` line 3, replacing `_link pending_`.
+5. Watch it once, muted, to check nothing on screen is stale or half-loaded.
